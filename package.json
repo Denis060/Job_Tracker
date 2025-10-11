@@ -1,0 +1,67 @@
+{
+  "name": "job-os",
+  "version": "3.0.0",
+  "description": "AI-Powered Career Management Platform - Intelligent job tracking with smart reminders, calendar integration, and AI resume tailoring for maximum interview success",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000",
+    "build": "echo 'No build process needed for this static site'",
+    "deploy": "echo 'Upload index.html and assets to your hosting provider'",
+    "validate": "echo 'Validating HTML structure...' && echo 'Please use online HTML validators for comprehensive validation'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/job-os.git"
+  },
+  "keywords": [
+    "job-tracking",
+    "career-management",
+    "networking",
+    "job-applications",
+    "dashboard",
+    "firebase",
+    "web-app",
+    "professional-tools",
+    "ai-assistant",
+    "smart-reminders",
+    "task-automation",
+    "intelligent-dashboard",
+    "calendar-integration",
+    "interview-scheduling",
+    "google-calendar",
+    "outlook-calendar",
+    "ai-resume-writing",
+    "resume-optimization",
+    "ats-friendly",
+    "keyword-optimization",
+    "job-matching"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/job-os/issues"
+  },
+  "homepage": "https://github.com/yourusername/job-os#readme",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "features": {
+    "intelligent_tasks": "Automated task generation based on application status",
+    "smart_reminders": "Follow-up reminders and interview preparation tasks", 
+    "calendar_integration": "Automatic calendar event creation for interviews",
+    "ai_resume_tailoring": "AI-powered resume optimization for specific job descriptions",
+    "proactive_networking": "Automated suggestions for networking outreach",
+    "priority_management": "Smart task prioritization and due date tracking",
+    "status_awareness": "Context-aware task creation and cleanup",
+    "multi_calendar_support": "Google Calendar, Outlook, and Apple Calendar integration",
+    "keyword_optimization": "ATS-friendly resume formatting with job-specific keywords"
+  }
+}

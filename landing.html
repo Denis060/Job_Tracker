@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job OS - Personal Career Management Dashboard</title>
+    <meta name="description" content="Comprehensive job application tracking, networking management, and career dashboard. Track applications, manage professional contacts, and visualize your job search progress.">
+    <meta name="keywords" content="job tracking, career management, job applications, networking, professional dashboard">
+    <meta name="author" content="Job OS">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://job-os.com/">
+    <meta property="og:title" content="Job OS - Personal Career Management Dashboard">
+    <meta property="og:description" content="Track job applications, manage your professional network, and visualize your career progress with Job OS.">
+    <meta property="og:image" content="./assets/images/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://job-os.com/">
+    <meta property="twitter:title" content="Job OS - Personal Career Management Dashboard">
+    <meta property="twitter:description" content="Track job applications, manage your professional network, and visualize your career progress with Job OS.">
+    <meta property="twitter:image" content="./assets/images/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://job-os.com/">
+    
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Job OS",
+        "description": "Personal Career Management Dashboard for tracking job applications, managing professional networks, and visualizing career progress.",
+        "url": "https://job-os.com",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Job Application Tracking",
+            "Professional Network Management", 
+            "Work History Recording",
+            "Visual Analytics Dashboard",
+            "Document Management",
+            "Real-time Data Sync"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Content will be loaded here -->
+    <div id="loading-screen" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-50">
+        <div class="text-center text-white">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <h1 class="text-2xl font-bold">Job OS</h1>
+            <p class="text-indigo-200">Loading your career dashboard...</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple loading screen that redirects to main app
+        setTimeout(() => {
+            window.location.href = './index.html';
+        }, 2000);
+        
+        // Hide loading screen if main app is already loaded
+        if (document.readyState === 'complete') {
+            window.location.href = './index.html';
+        }
+    </script>
+</body>
+</html>

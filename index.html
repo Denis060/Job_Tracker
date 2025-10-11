@@ -1041,20 +1041,32 @@ Software Developer at TechCorp (2020-2023)
     const noTasksDiv = document.getElementById('no-tasks');
 
     async function initializeFirebase() {
+        console.log('🔥 Starting Firebase initialization...'); // Debug log
         const authStatus = document.getElementById('auth-status');
         try {
             const finalConfig = userProvidedConfig;
+            console.log('📝 Firebase config:', finalConfig.projectId); // Debug log
 
             firebase.initializeApp(finalConfig);
             auth = firebase.auth();
             db = firebase.firestore();
             storage = firebase.storage();
+            
+            console.log('✅ Firebase services initialized'); // Debug log
 
             auth.onAuthStateChanged(async (user) => {
+                console.log('🔐 Auth state changed:', user ? `User: ${user.uid}` : 'No user'); // Debug log
+                
                 if (user) {
                     userId = user.uid;
                     authStatus.textContent = `User ID: ${userId.substring(0,8)}...`;
                     authStatus.classList.remove('text-red-500');
+                    
+                    // Store user ID in localStorage for persistence tracking
+                    localStorage.setItem('jobos_user_id', userId);
+                    localStorage.setItem('jobos_last_login', new Date().toISOString());
+                    
+                    console.log('📊 Loading user data...'); // Debug log
                     fetchJobs();
                     fetchContacts();
                     fetchHistory();
@@ -1062,6 +1074,7 @@ Software Developer at TechCorp (2020-2023)
                 } else {
                     userId = null;
                     authStatus.textContent = "Authenticating...";
+                    console.log('🚪 No user, rendering empty data...'); // Debug log
                     renderJobs([]);
                     renderContacts([]);
                     renderHistory([]);
@@ -1404,15 +1417,50 @@ Software Developer at TechCorp (2020-2023)
     }
     
     function fetchJobs() {
-        if (!userId) return;
+        console.log('📋 Fetching jobs for user:', userId); // Debug log
+        if (!userId) {
+            console.log('❌ No userId, cannot fetch jobs'); // Debug log
+            
+            // Try to recover from localStorage backup
+            const backup = localStorage.getItem('jobos_backup_jobs');
+            if (backup) {
+                try {
+                    const backupData = JSON.parse(backup);
+                    console.log('🔄 Recovered backup data:', backupData.data.length, 'jobs');
+                    allJobs = backupData.data;
+                    renderJobs(allJobs);
+                    renderKanbanBoard(allJobs);
+                    showToast('Loaded backup data (offline mode)', 'info');
+                } catch (e) {
+                    console.error('❌ Failed to parse backup data:', e);
+                }
+            }
+            return;
+        }
         if (jobsUnsubscribe) jobsUnsubscribe();
         const ref = db.collection('artifacts').doc('job-os-app').collection('users').doc(userId).collection('jobs');
         jobsUnsubscribe = ref.orderBy('submissionDate', 'desc').onSnapshot(snapshot => {
+            console.log('📊 Jobs snapshot received:', snapshot.docs.length, 'jobs'); // Debug log
             allJobs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Backup data to localStorage for data persistence
+            if (allJobs.length > 0) {
+                localStorage.setItem('jobos_backup_jobs', JSON.stringify({
+                    data: allJobs,
+                    timestamp: new Date().toISOString(),
+                    userId: userId
+                }));
+                console.log('💾 Data backed up to localStorage'); // Debug log
+            }
+            
+            console.log('📋 All jobs loaded:', allJobs.length); // Debug log
             renderJobs(allJobs);
             renderKanbanBoard(allJobs);
             updateDashboard();
-        }, e => console.error("Error fetching jobs: ", e));
+        }, e => {
+            console.error("❌ Error fetching jobs: ", e);
+            console.log('🔍 Trying to fetch jobs from path:', ref.path);
+        });
     }
     
     function fetchContacts() {
@@ -2530,14 +2578,25 @@ TAILORED RESUME:`;
     }
     
     async function downloadTailoredResume() {
+        console.log('Download button clicked!'); // Debug log
+        
         const resumeContainer = document.getElementById('tailored-resume-output');
+        if (!resumeContainer) {
+            console.error('Resume container not found!');
+            showToast('Resume container not found', 'error');
+            return;
+        }
+        
         const resumeText = resumeContainer.textContent || resumeContainer.innerText;
+        console.log('Resume text length:', resumeText.length); // Debug log
         
         if (!resumeText || resumeText.trim().length === 0) {
+            console.error('No resume content found!');
             showToast('No resume content to download', 'error');
             return;
         }
         
+        console.log('Calling showDownloadModal...'); // Debug log
         // Show download options modal
         showDownloadModal(resumeText);
     }
@@ -2552,6 +2611,8 @@ TAILORED RESUME:`;
         // Store resume text in a global variable for easy access
         window.currentResumeText = resumeText;
         
+        console.log('Creating download modal...'); // Debug log
+        
         // Create modal HTML
         const modalHTML = `
             <div id="download-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -2560,7 +2621,7 @@ TAILORED RESUME:`;
                     <p class="text-gray-600 mb-6">Choose your preferred download format:</p>
                     
                     <div class="space-y-3">
-                        <button onclick="downloadAsPDF()" 
+                        <button onclick="window.downloadAsPDF()" 
                             class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition duration-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -2568,7 +2629,7 @@ TAILORED RESUME:`;
                             Download as PDF (Recommended)
                         </button>
                         
-                        <button onclick="downloadAsText()" 
+                        <button onclick="window.downloadAsText()" 
                             class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -2577,7 +2638,7 @@ TAILORED RESUME:`;
                         </button>
                     </div>
                     
-                    <button onclick="closeDownloadModal()" 
+                    <button onclick="window.closeDownloadModal()" 
                         class="w-full mt-4 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-200">
                         Cancel
                     </button>
@@ -2587,6 +2648,7 @@ TAILORED RESUME:`;
         
         // Add modal to page
         document.body.insertAdjacentHTML('beforeend', modalHTML);
+        console.log('Modal created and added to page'); // Debug log
     }
     
     async function downloadAsPDF() {
@@ -3349,10 +3411,24 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
     }
     // Make functions globally accessible for debugging
     window.clearUploadedFile = clearUploadedFile;
+    window.downloadAsPDF = downloadAsPDF;
+    window.downloadAsText = downloadAsText;
+    window.closeDownloadModal = closeDownloadModal;
+    window.showDownloadModal = showDownloadModal;
     
     initializeFirebase();
     initializeSmartResume();
     switchTab(document.querySelector('.nav-tab[data-tab="dashboard"]'));
+    
+    // Test download button connection
+    setTimeout(() => {
+        const downloadBtn = document.getElementById('download-resume-btn');
+        if (downloadBtn) {
+            console.log('Download button found and connected');
+        } else {
+            console.error('Download button not found!');
+        }
+    }, 1000);
 
     });
 </script>

@@ -130,6 +130,25 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
         
+        /* Interview Prep Styles */
+        .question-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .difficulty-easy { border-left-color: #10b981; }
+        .difficulty-medium { border-left-color: #f59e0b; }
+        .difficulty-hard { border-left-color: #ef4444; }
+        
+        .practice-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
         .ai-processing-animation {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
@@ -251,6 +270,7 @@
                         <button class="nav-tab active-tab" data-tab="dashboard">Dashboard</button>
                         <button class="nav-tab" data-tab="jobs">Job Tracker</button>
                         <button class="nav-tab" data-tab="smart-resume">Smart Resume</button>
+                        <button class="nav-tab" data-tab="interview-prep">Interview Prep</button>
                         <button class="nav-tab" data-tab="network">Network Manager</button>
                         <button class="nav-tab" data-tab="history">Work History</button>
                     </div>
@@ -644,6 +664,139 @@ Software Developer at TechCorp (2020-2023)
                     </div>
                 </div>
             </div>
+            
+            <!-- Interview Prep View -->
+            <div id="interview-prep-view" class="app-view hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <!-- Header -->
+                    <div class="mb-8">
+                        <div class="text-center mb-6">
+                            <h1 class="text-4xl font-bold text-gray-900 mb-3">🎯 AI Interview Coach</h1>
+                            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                                Get personalized interview questions and practice sessions tailored to your specific job applications
+                            </p>
+                        </div>
+                        
+                        <!-- Job Selection -->
+                        <div class="bg-white p-6 rounded-xl shadow-lg max-w-2xl mx-auto">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800">Select Job Application</h3>
+                            </div>
+                            
+                            <select id="interview-job-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Select a job application for interview prep...</option>
+                            </select>
+                            
+                            <div id="selected-job-info" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h4 id="selected-job-title" class="font-semibold text-gray-900"></h4>
+                                        <p id="selected-job-company" class="text-gray-600"></p>
+                                        <span id="selected-job-status" class="inline-block px-2 py-1 text-xs rounded-full mt-2"></span>
+                                    </div>
+                                    <button id="generate-questions-btn" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        Generate Questions
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content Area -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Questions Panel -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-xl font-semibold text-gray-800">Interview Questions</h3>
+                                    <div class="flex items-center space-x-2">
+                                        <button id="filter-all" class="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">
+                                            Show All
+                                        </button>
+                                        <button id="filter-behavioral" class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition">
+                                            Behavioral
+                                        </button>
+                                        <button id="filter-technical" class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition">
+                                            Technical
+                                        </button>
+                                        <button id="filter-company" class="px-3 py-1 text-sm rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition">
+                                            Company
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="questions-container" class="space-y-4">
+                                    <div class="text-center py-12 text-gray-500">
+                                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <p class="text-lg font-medium">No questions generated yet</p>
+                                        <p class="text-sm">Select a job application and click "Generate Questions" to get started</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Practice Panel -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-6">Practice Session</h3>
+                                
+                                <div id="practice-container" class="hidden">
+                                    <div class="mb-4">
+                                        <h4 id="practice-question" class="font-medium text-gray-900 mb-3"></h4>
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Your Answer:</label>
+                                            <textarea id="practice-answer" rows="6" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Type your answer here..."></textarea>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button id="get-feedback-btn" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200">
+                                                Get AI Feedback
+                                            </button>
+                                            <button id="next-question-btn" class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200">
+                                                Next Question
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="feedback-container" class="hidden mt-4 p-4 bg-green-50 rounded-lg">
+                                        <h5 class="font-medium text-green-800 mb-2">AI Feedback:</h5>
+                                        <div id="feedback-content" class="text-green-700 text-sm"></div>
+                                    </div>
+                                </div>
+                                
+                                <div id="practice-placeholder" class="text-center py-8 text-gray-500">
+                                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="font-medium">Practice Mode</p>
+                                    <p class="text-sm">Click on any question to start practicing</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Tips -->
+                            <div class="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6">
+                                <h4 class="font-semibold text-gray-800 mb-3">💡 Interview Tips</h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use the STAR method (Situation, Task, Action, Result)</li>
+                                    <li>• Prepare specific examples from your experience</li>
+                                    <li>• Practice out loud, not just in your head</li>
+                                    <li>• Research the company culture and values</li>
+                                    <li>• Prepare thoughtful questions to ask them</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- Footer -->
@@ -975,7 +1128,6 @@ Software Developer at TechCorp (2020-2023)
         </div>
     </div>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         
@@ -1120,6 +1272,13 @@ Software Developer at TechCorp (2020-2023)
         if (tab.dataset.tab === 'smart-resume') {
             setTimeout(() => {
                 initializeResumeInputHandlers();
+            }, 100);
+        }
+        
+        // Initialize Interview Prep when tab is opened
+        if (tab.dataset.tab === 'interview-prep') {
+            setTimeout(() => {
+                populateJobSelection();
             }, 100);
         }
     }
@@ -2271,6 +2430,647 @@ Research Assistant | Pace University | September 2023 – Present
         showToast('File cleared', 'info');
     };
     
+    // ===== INTERVIEW PREP AI FUNCTIONALITY =====
+    
+    let interviewQuestions = [];
+    let currentPracticeQuestion = null;
+    let currentJobForInterview = null;
+    
+    function initializeInterviewPrep() {
+        console.log('Initializing Interview Prep...');
+        
+        const jobSelect = document.getElementById('interview-job-select');
+        const generateBtn = document.getElementById('generate-questions-btn');
+        const selectedJobInfo = document.getElementById('selected-job-info');
+        
+        if (!jobSelect || !generateBtn) {
+            console.log('Interview Prep elements not found, skipping initialization');
+            return;
+        }
+        
+        // Populate job selection dropdown
+        populateJobSelection();
+        
+        // Job selection handler
+        jobSelect.addEventListener('change', function() {
+            const selectedJobId = this.value;
+            if (selectedJobId) {
+                const job = allJobs.find(j => j.id === selectedJobId);
+                if (job) {
+                    currentJobForInterview = job;
+                    displaySelectedJobInfo(job);
+                    selectedJobInfo.classList.remove('hidden');
+                } else {
+                    selectedJobInfo.classList.add('hidden');
+                }
+            } else {
+                selectedJobInfo.classList.add('hidden');
+                currentJobForInterview = null;
+            }
+        });
+        
+        // Generate questions handler
+        generateBtn.addEventListener('click', generateInterviewQuestions);
+        
+        // Filter handlers
+        document.getElementById('filter-all').addEventListener('click', () => {
+            console.log('Showing all questions');
+            displayInterviewQuestions(interviewQuestions);
+            updateFilterButtons('all');
+        });
+        document.getElementById('filter-behavioral').addEventListener('click', () => filterQuestions('behavioral'));
+        document.getElementById('filter-technical').addEventListener('click', () => filterQuestions('technical'));
+        document.getElementById('filter-company').addEventListener('click', () => filterQuestions('company'));
+        
+        // Practice mode handlers
+        document.getElementById('get-feedback-btn').addEventListener('click', generateFeedback);
+        document.getElementById('next-question-btn').addEventListener('click', nextPracticeQuestion);
+        
+        console.log('Interview Prep initialized successfully');
+    }
+    
+    function populateJobSelection() {
+        const jobSelect = document.getElementById('interview-job-select');
+        
+        if (!jobSelect) {
+            console.error('Job select element not found');
+            return;
+        }
+        
+        console.log('Populating job selection, available jobs:', allJobs.length);
+        
+        // Debug: Log the structure of jobs to see field names
+        if (allJobs.length > 0) {
+            console.log('Sample job structure:', allJobs[0]);
+            console.log('Available fields:', Object.keys(allJobs[0]));
+        }
+        
+        // Clear existing options (except first)
+        while (jobSelect.children.length > 1) {
+            jobSelect.removeChild(jobSelect.lastChild);
+        }
+        
+        // Check if there are any jobs
+        if (!allJobs || allJobs.length === 0) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No job applications found. Add jobs in Job Tracker first.';
+            option.disabled = true;
+            jobSelect.appendChild(option);
+            
+            // Show helpful message
+            const container = document.getElementById('questions-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="bg-blue-50 rounded-xl p-8 max-w-md mx-auto">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">No Job Applications Found</h3>
+                            <p class="text-gray-600 mb-4">To test the Interview Prep feature, you need to add some job applications first.</p>
+                            <div class="space-y-2">
+                                <button onclick="switchTab(document.querySelector('[data-tab=\\"jobs\\"]'))" class="w-full bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                                    Go to Job Tracker
+                                </button>
+                                <button onclick="loadDemoJob()" class="w-full bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                                    Try Demo Mode
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            return;
+        }
+        
+        // Add jobs to dropdown
+        allJobs.forEach((job, index) => {
+            const option = document.createElement('option');
+            option.value = job.id;
+            
+            // Try multiple possible field names for position
+            const position = job.position || job.jobTitle || job.title || job.role || job.positionTitle || 'Position Not Specified';
+            // Try multiple possible field names for company  
+            const company = job.company || job.companyName || job.employer || job.organization || 'Company Not Specified';
+            
+            console.log(`Job ${index + 1}:`, { position, company, originalJob: job });
+            
+            option.textContent = `${position} at ${company}`;
+            jobSelect.appendChild(option);
+        });
+        
+        console.log('Job selection populated with', allJobs.length, 'jobs');
+    }
+    
+    function displaySelectedJobInfo(job) {
+        console.log('Displaying job info for:', job);
+        
+        // Try multiple possible field names for position
+        const position = job.position || job.jobTitle || job.title || job.role || job.positionTitle || 'Position Not Specified';
+        // Try multiple possible field names for company  
+        const company = job.company || job.companyName || job.employer || job.organization || 'Company Not Specified';
+        // Try multiple possible field names for status
+        const status = job.appStatus || job.status || job.applicationStatus || 'Status Not Set';
+        
+        console.log('Extracted fields:', { position, company, status });
+        
+        document.getElementById('selected-job-title').textContent = position;
+        document.getElementById('selected-job-company').textContent = company;
+        
+        const statusSpan = document.getElementById('selected-job-status');
+        statusSpan.textContent = status;
+        statusSpan.className = `inline-block px-2 py-1 text-xs rounded-full mt-2 ${getStatusColor(status)}`;
+    }
+    
+    function getStatusColor(status) {
+        if (!status) return 'bg-gray-100 text-gray-700';
+        
+        const statusLower = status.toLowerCase();
+        
+        if (statusLower.includes('applied') || statusLower.includes('submitted')) {
+            return 'bg-blue-100 text-blue-700';
+        } else if (statusLower.includes('interview') || statusLower.includes('screening')) {
+            return 'bg-yellow-100 text-yellow-700';
+        } else if (statusLower.includes('offer') || statusLower.includes('accepted')) {
+            return 'bg-green-100 text-green-700';
+        } else if (statusLower.includes('rejected') || statusLower.includes('declined')) {
+            return 'bg-red-100 text-red-700';
+        } else if (statusLower.includes('pending') || statusLower.includes('waiting')) {
+            return 'bg-orange-100 text-orange-700';
+        } else {
+            return 'bg-gray-100 text-gray-700';
+        }
+    }
+    
+    async function generateInterviewQuestions() {
+        if (!currentJobForInterview) {
+            showToast('Please select a job application first', 'error');
+            return;
+        }
+        
+        const generateBtn = document.getElementById('generate-questions-btn');
+        const originalHTML = generateBtn.innerHTML;
+        
+        // Show loading state
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = `
+            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Generating...
+        `;
+        
+        try {
+            // Simulate AI processing delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Generate questions based on job
+            console.log('Generating questions for job:', currentJobForInterview);
+            interviewQuestions = await generateQuestionsForJob(currentJobForInterview);
+            console.log('Generated questions:', interviewQuestions.length);
+            
+            // Display questions
+            displayInterviewQuestions(interviewQuestions);
+            
+            showToast(`${interviewQuestions.length} interview questions generated successfully!`, 'success');
+            
+        } catch (error) {
+            console.error('Error generating questions:', error);
+            showToast('Failed to generate questions. Please try again.', 'error');
+        } finally {
+            // Reset button
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalHTML;
+        }
+    }
+    
+    async function generateQuestionsForJob(job) {
+        console.log('🔧 Starting question generation for job:', job);
+        
+        // AI-powered question generation based on job description and role
+        const questions = [];
+        
+        // Analyze job title and description for question generation
+        const jobTitle = (job.position || job.jobTitle || job.title || 'unknown role').toLowerCase();
+        const jobDescription = job.jobDescription || job.description || '';
+        const company = job.company || job.companyName || job.employer || 'the company';
+        
+        console.log('📋 Job analysis:', { jobTitle, company, hasDescription: !!jobDescription });
+        
+        // Behavioral Questions (always relevant)
+        const behavioralQuestions = [
+            {
+                id: 1,
+                type: 'behavioral',
+                difficulty: 'easy',
+                question: 'Tell me about yourself and why you\'re interested in this role.',
+                category: 'Introduction',
+                tips: 'Structure: Current situation → Relevant experience → Why this role → Future goals'
+            },
+            {
+                id: 2,
+                type: 'behavioral',
+                difficulty: 'medium',
+                question: 'Describe a challenging project you worked on. How did you overcome the obstacles?',
+                category: 'Problem Solving',
+                tips: 'Use STAR method: Situation, Task, Action, Result. Focus on your specific contributions.'
+            },
+            {
+                id: 3,
+                type: 'behavioral',
+                difficulty: 'medium',
+                question: 'Tell me about a time when you had to work with a difficult team member.',
+                category: 'Teamwork',
+                tips: 'Show emotional intelligence, conflict resolution, and positive outcomes.'
+            },
+            {
+                id: 4,
+                type: 'behavioral',
+                difficulty: 'hard',
+                question: 'Describe a situation where you failed or made a significant mistake. What did you learn?',
+                category: 'Learning & Growth',
+                tips: 'Be honest but focus on lessons learned and how you applied them later.'
+            }
+        ];
+        
+        // Technical Questions (based on job type)
+        let technicalQuestions = [];
+        
+        if (jobTitle.includes('data') || jobTitle.includes('analyst') || jobTitle.includes('scientist')) {
+            technicalQuestions = [
+                {
+                    id: 5,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'Walk me through your approach to analyzing a large dataset with missing values.',
+                    category: 'Data Analysis',
+                    tips: 'Discuss data exploration, cleaning strategies, and validation methods.'
+                },
+                {
+                    id: 6,
+                    type: 'technical',
+                    difficulty: 'hard',
+                    question: 'How would you explain a complex statistical concept to a non-technical stakeholder?',
+                    category: 'Communication',
+                    tips: 'Use analogies, avoid jargon, focus on business impact.'
+                },
+                {
+                    id: 7,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'Describe your experience with Python/R and which libraries you prefer for data analysis.',
+                    category: 'Technical Skills',
+                    tips: 'Mention specific libraries (pandas, numpy, matplotlib) and use cases.'
+                }
+            ];
+        } else if (jobTitle.includes('software') || jobTitle.includes('developer') || jobTitle.includes('engineer')) {
+            technicalQuestions = [
+                {
+                    id: 5,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'Explain the difference between a stack and a queue, and when you would use each.',
+                    category: 'Data Structures',
+                    tips: 'Give clear definitions and practical examples from your experience.'
+                },
+                {
+                    id: 6,
+                    type: 'technical',
+                    difficulty: 'hard',
+                    question: 'How do you approach debugging a complex issue in production?',
+                    category: 'Problem Solving',
+                    tips: 'Discuss systematic approaches, logging, monitoring, and collaboration.'
+                },
+                {
+                    id: 7,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'Describe your experience with version control and collaborative development.',
+                    category: 'Development Process',
+                    tips: 'Mention Git workflows, code reviews, and team collaboration strategies.'
+                }
+            ];
+        } else if (jobTitle.includes('marketing') || jobTitle.includes('manager')) {
+            technicalQuestions = [
+                {
+                    id: 5,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'How do you measure the success of a marketing campaign?',
+                    category: 'Analytics',
+                    tips: 'Discuss KPIs, attribution models, and ROI calculations.'
+                },
+                {
+                    id: 6,
+                    type: 'technical',
+                    difficulty: 'medium',
+                    question: 'Describe your experience with digital marketing tools and platforms.',
+                    category: 'Tools & Platforms',
+                    tips: 'Mention specific tools (Google Analytics, HubSpot, etc.) and results achieved.'
+                }
+            ];
+        }
+        
+        // Company-specific questions
+        const companyQuestions = [
+            {
+                id: 8,
+                type: 'company',
+                difficulty: 'easy',
+                question: `What do you know about ${company} and why do you want to work here?`,
+                category: 'Company Knowledge',
+                tips: 'Research company mission, values, recent news, and connect to your goals.'
+            },
+            {
+                id: 9,
+                type: 'company',
+                difficulty: 'medium',
+                question: `How do you see yourself contributing to ${company}'s goals in the first 90 days?`,
+                category: 'Impact Planning',
+                tips: 'Show you understand the role and have thought about quick wins.'
+            },
+            {
+                id: 10,
+                type: 'company',
+                difficulty: 'easy',
+                question: 'What questions do you have for us about the role or company?',
+                category: 'Your Questions',
+                tips: 'Prepare thoughtful questions about growth, team dynamics, and challenges.'
+            }
+        ];
+        
+        // Combine all questions
+        questions.push(...behavioralQuestions, ...technicalQuestions, ...companyQuestions);
+        
+        console.log('✅ Generated questions:', questions.length, 'total');
+        console.log('📊 Breakdown:', {
+            behavioral: behavioralQuestions.length,
+            technical: technicalQuestions.length, 
+            company: companyQuestions.length
+        });
+        
+        return questions;
+    }
+    
+    function displayInterviewQuestions(questions) {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        
+        if (questions.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12 text-gray-500">
+                    <p class="text-lg font-medium">No questions available</p>
+                    <p class="text-sm">Try generating questions for a different job application</p>
+                </div>
+            `;
+            return;
+        }
+        
+        questions.forEach(question => {
+            const questionCard = document.createElement('div');
+            questionCard.className = `question-card bg-white p-4 rounded-lg border cursor-pointer hover:shadow-md transition-all duration-200 difficulty-${question.difficulty}`;
+            questionCard.onclick = () => startPracticeMode(question);
+            
+            questionCard.innerHTML = `
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 text-xs rounded-full ${getQuestionTypeColor(question.type)}">${question.type}</span>
+                        <span class="px-2 py-1 text-xs rounded-full ${getDifficultyColor(question.difficulty)}">${question.difficulty}</span>
+                    </div>
+                    <span class="text-xs text-gray-500">${question.category}</span>
+                </div>
+                <h4 class="font-medium text-gray-900 mb-2">${question.question}</h4>
+                <p class="text-sm text-gray-600">${question.tips}</p>
+            `;
+            
+            container.appendChild(questionCard);
+        });
+    }
+    
+    function getQuestionTypeColor(type) {
+        switch (type) {
+            case 'behavioral': return 'bg-blue-100 text-blue-700';
+            case 'technical': return 'bg-green-100 text-green-700';
+            case 'company': return 'bg-purple-100 text-purple-700';
+            default: return 'bg-gray-100 text-gray-700';
+        }
+    }
+    
+    function getDifficultyColor(difficulty) {
+        switch (difficulty) {
+            case 'easy': return 'bg-green-100 text-green-700';
+            case 'medium': return 'bg-yellow-100 text-yellow-700';
+            case 'hard': return 'bg-red-100 text-red-700';
+            default: return 'bg-gray-100 text-gray-700';
+        }
+    }
+    
+    function updateFilterButtons(activeFilter) {
+        // Reset all buttons
+        document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+            btn.classList.remove('bg-indigo-200', 'text-indigo-800');
+            btn.classList.add('hover:bg-opacity-75');
+        });
+        
+        // Activate selected button
+        const activeBtn = document.getElementById(`filter-${activeFilter}`);
+        if (activeBtn) {
+            activeBtn.classList.add('bg-indigo-200', 'text-indigo-800');
+        }
+    }
+    
+    function filterQuestions(type) {
+        console.log('Filtering questions by type:', type, 'Total questions:', interviewQuestions.length);
+        
+        if (!interviewQuestions || interviewQuestions.length === 0) {
+            showToast('No questions available to filter. Generate questions first.', 'warning');
+            return;
+        }
+        
+        const filteredQuestions = interviewQuestions.filter(q => q.type === type);
+        console.log('Filtered questions:', filteredQuestions.length);
+        
+        displayInterviewQuestions(filteredQuestions);
+        updateFilterButtons(type);
+    }
+    
+    function startPracticeMode(question) {
+        currentPracticeQuestion = question;
+        
+        // Hide placeholder and show practice container
+        document.getElementById('practice-placeholder').classList.add('hidden');
+        document.getElementById('practice-container').classList.remove('hidden');
+        
+        // Set question
+        document.getElementById('practice-question').textContent = question.question;
+        
+        // Clear previous answer and feedback
+        document.getElementById('practice-answer').value = '';
+        document.getElementById('feedback-container').classList.add('hidden');
+        
+        // Scroll to practice panel
+        document.getElementById('practice-container').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    async function generateFeedback() {
+        const answer = document.getElementById('practice-answer').value.trim();
+        
+        if (!answer) {
+            showToast('Please enter your answer first', 'error');
+            return;
+        }
+        
+        if (!currentPracticeQuestion) {
+            showToast('No question selected', 'error');
+            return;
+        }
+        
+        const feedbackBtn = document.getElementById('get-feedback-btn');
+        const originalHTML = feedbackBtn.innerHTML;
+        
+        // Show loading state
+        feedbackBtn.disabled = true;
+        feedbackBtn.innerHTML = 'Analyzing...';
+        
+        try {
+            // Simulate AI feedback generation
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const feedback = await generateAIFeedback(currentPracticeQuestion, answer);
+            
+            // Display feedback
+            document.getElementById('feedback-content').innerHTML = feedback;
+            document.getElementById('feedback-container').classList.remove('hidden');
+            
+            showToast('Feedback generated!', 'success');
+            
+        } catch (error) {
+            console.error('Error generating feedback:', error);
+            showToast('Failed to generate feedback. Please try again.', 'error');
+        } finally {
+            // Reset button
+            feedbackBtn.disabled = false;
+            feedbackBtn.innerHTML = originalHTML;
+        }
+    }
+    
+    async function generateAIFeedback(question, answer) {
+        // AI-powered feedback generation
+        const answerLength = answer.length;
+        const hasSpecificExample = answer.toLowerCase().includes('example') || answer.toLowerCase().includes('project') || answer.toLowerCase().includes('experience');
+        const hasNumbers = /\d/.test(answer);
+        const hasStructure = answer.includes('.') || answer.includes(',');
+        
+        let feedback = '<div class="space-y-2">';
+        
+        // Positive feedback
+        const positives = [];
+        if (answerLength > 100) positives.push('Good detail level');
+        if (hasSpecificExample) positives.push('Includes specific examples');
+        if (hasNumbers) positives.push('Uses quantifiable results');
+        if (hasStructure) positives.push('Well-structured response');
+        
+        if (positives.length > 0) {
+            feedback += '<div><strong class="text-green-600">Strengths:</strong><ul class="list-disc list-inside ml-2">';
+            positives.forEach(positive => {
+                feedback += `<li>${positive}</li>`;
+            });
+            feedback += '</ul></div>';
+        }
+        
+        // Improvement suggestions
+        const improvements = [];
+        if (answerLength < 50) improvements.push('Consider providing more detail and specific examples');
+        if (!hasSpecificExample) improvements.push('Add a specific example from your experience');
+        if (!hasNumbers) improvements.push('Include quantifiable results or metrics where possible');
+        if (question.type === 'behavioral' && !answer.toLowerCase().includes('situation')) {
+            improvements.push('Try using the STAR method (Situation, Task, Action, Result)');
+        }
+        
+        if (improvements.length > 0) {
+            feedback += '<div class="mt-2"><strong class="text-amber-600">Suggestions:</strong><ul class="list-disc list-inside ml-2">';
+            improvements.forEach(improvement => {
+                feedback += `<li>${improvement}</li>`;
+            });
+            feedback += '</ul></div>';
+        }
+        
+        // Overall score
+        const score = Math.min(10, Math.max(4, positives.length * 2 + (answerLength > 100 ? 2 : 0)));
+        feedback += `<div class="mt-2"><strong>Overall Score:</strong> <span class="font-bold text-indigo-600">${score}/10</span></div>`;
+        
+        feedback += '</div>';
+        
+        return feedback;
+    }
+    
+    function nextPracticeQuestion() {
+        if (interviewQuestions.length === 0) {
+            showToast('No questions available', 'error');
+            return;
+        }
+        
+        // Find next question
+        const currentIndex = interviewQuestions.findIndex(q => q.id === currentPracticeQuestion.id);
+        const nextIndex = (currentIndex + 1) % interviewQuestions.length;
+        const nextQuestion = interviewQuestions[nextIndex];
+        
+        startPracticeMode(nextQuestion);
+    }
+    
+    // Demo function for testing without real jobs
+    window.loadDemoJob = function() {
+        console.log('🎯 Loading demo job for testing...');
+        
+        // Create a demo job
+        const demoJob = {
+            id: 'demo-job-1',
+            company: 'TechCorp',
+            position: 'Senior Data Scientist',
+            jobTitle: 'Senior Data Scientist', // Alternative field name
+            companyName: 'TechCorp', // Alternative field name
+            jobDescription: 'We are seeking a Senior Data Scientist with expertise in Python, machine learning, and statistical analysis. The ideal candidate will have experience with large datasets, data visualization, and communicating findings to stakeholders. Knowledge of cloud platforms (AWS, GCP) and deep learning frameworks is a plus. Experience with SQL, pandas, numpy, scikit-learn, and TensorFlow/PyTorch preferred.',
+            appStatus: 'Applied',
+            status: 'Applied', // Alternative field name
+            submissionDate: new Date().toISOString(),
+            jobSource: 'LinkedIn'
+        };
+        
+        console.log('📋 Demo job created:', demoJob);
+        
+        // Add to allJobs temporarily
+        const originalJobs = [...allJobs];
+        allJobs.push(demoJob);
+        
+        // Update the dropdown
+        populateJobSelection();
+        
+        // Auto-select the demo job
+        const jobSelect = document.getElementById('interview-job-select');
+        if (jobSelect) {
+            jobSelect.value = demoJob.id;
+            
+            // Trigger change event manually
+            currentJobForInterview = demoJob;
+            displaySelectedJobInfo(demoJob);
+            document.getElementById('selected-job-info').classList.remove('hidden');
+            
+            showToast('Demo job loaded! Click "Generate Questions" to test the feature.', 'success');
+        } else {
+            console.error('❌ Job select element not found');
+        }
+        
+        // Restore original jobs after 5 minutes
+        setTimeout(() => {
+            allJobs.length = 0;
+            allJobs.push(...originalJobs);
+            populateJobSelection();
+            console.log('Demo mode ended, restored original jobs');
+        }, 300000); // 5 minutes
+    };
+    
     async function generateTailoredResume() {
         const jobDescription = document.getElementById('job-description-input').value.trim();
         
@@ -3418,6 +4218,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
     
     initializeFirebase();
     initializeSmartResume();
+    initializeInterviewPrep();
     switchTab(document.querySelector('.nav-tab[data-tab="dashboard"]'));
     
     // Test download button connection

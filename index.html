@@ -369,6 +369,7 @@
                         <div class="bg-gray-200 p-1 rounded-lg flex items-center">
                             <button id="view-table-btn" class="px-3 py-1 text-sm font-semibold rounded-md bg-white text-indigo-600 shadow">Table</button>
                             <button id="view-board-btn" class="px-3 py-1 text-sm font-semibold rounded-md text-gray-600">Board</button>
+                            <button id="view-analytics-btn" class="px-3 py-1 text-sm font-semibold rounded-md text-gray-600">Analytics</button>
                         </div>
                         <button id="add-job-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
                             <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -376,6 +377,164 @@
                             </svg>
                             Add Application
                         </button>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Job Application Analytics Dashboard -->
+                <div id="jobs-analytics-view" class="job-view hidden mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <!-- Analytics Cards -->
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-blue-100 text-sm font-medium">Total Applications</p>
+                                    <p id="total-applications" class="text-3xl font-bold">0</p>
+                                </div>
+                                <div class="bg-blue-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-green-100 text-sm font-medium">Interviews Scheduled</p>
+                                    <p id="interviews-scheduled" class="text-3xl font-bold">0</p>
+                                </div>
+                                <div class="bg-green-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-yellow-100 text-sm font-medium">Response Rate</p>
+                                    <p id="response-rate" class="text-3xl font-bold">0%</p>
+                                </div>
+                                <div class="bg-yellow-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-purple-100 text-sm font-medium">Avg Time to Response</p>
+                                    <p id="avg-response-time" class="text-3xl font-bold">-</p>
+                                </div>
+                                <div class="bg-purple-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Application Timeline & Quick Stats -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Application Timeline -->
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                Application Pipeline
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-600">Applied</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                                            <div id="applied-progress" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                        <span id="applied-count" class="text-sm font-semibold text-gray-700">0</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-600">Interviewing</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                                            <div id="interviewing-progress" class="bg-green-600 h-2 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                        <span id="interviewing-count" class="text-sm font-semibold text-gray-700">0</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-600">Offers</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                                            <div id="offer-progress" class="bg-yellow-600 h-2 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                        <span id="offer-count" class="text-sm font-semibold text-gray-700">0</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-600">Closed</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                                            <div id="closed-progress" class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                        <span id="closed-count" class="text-sm font-semibold text-gray-700">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions & Insights -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Quick Actions
+                            </h3>
+                            <div class="space-y-3">
+                                <button id="bulk-update-btn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 text-sm font-medium">
+                                    Bulk Update Status
+                                </button>
+                                <button id="export-applications-btn" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200 text-sm font-medium">
+                                    Export Applications
+                                </button>
+                                <button id="salary-tracker-btn" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-200 text-sm font-medium">
+                                    Salary Tracker
+                                </button>
+                                <button id="application-insights-btn" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200 text-sm font-medium">
+                                    View Insights
+                                </button>
+                            </div>
+                            
+                            <!-- Upcoming Interviews -->
+                            <div class="mt-6">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">Upcoming Interviews</h4>
+                                <div id="upcoming-interviews" class="space-y-2">
+                                    <p class="text-xs text-gray-500">No upcoming interviews</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Recent Activity
+                        </h3>
+                        <div id="recent-job-activity" class="space-y-3">
+                            <p class="text-gray-500 text-center py-4">No recent activity</p>
+                        </div>
                     </div>
                 </div>
                 <!-- Table View -->
@@ -386,9 +545,72 @@
                 </div>
                 <!-- Kanban Board View -->
                 <div id="jobs-board-view" class="job-view hidden">
+                    <!-- Advanced Filtering Section -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
+                            </svg>
+                            Filter & Search Applications
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                                <input type="text" id="job-search" placeholder="Company, role, location..." 
+                                       class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select id="job-status-filter" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="all">All Statuses</option>
+                                    <option value="applied">Applied</option>
+                                    <option value="interviewing">Interviewing</option>
+                                    <option value="offer">Offers</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                                <select id="job-date-filter" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="all">All Time</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="quarter">This Quarter</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
+                                <select id="job-salary-filter" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="all">All Ranges</option>
+                                    <option value="0-50k">$0 - $50k</option>
+                                    <option value="50k-100k">$50k - $100k</option>
+                                    <option value="100k-150k">$100k - $150k</option>
+                                    <option value="150k+">$150k+</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button id="clear-job-filters" class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200 text-sm font-medium">
+                                    Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Kanban Board -->
                     <div id="jobs-board-container" class="kanban-board-wrapper">
+                        <div class="mb-4 flex justify-between items-center">
+                            <p id="filtered-results-count" class="text-sm text-gray-600">Showing all applications</p>
+                            <div class="flex space-x-2">
+                                <button id="collapse-all-columns" class="text-sm text-gray-600 hover:text-gray-800 px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition duration-200">
+                                    Collapse All
+                                </button>
+                                <button id="expand-all-columns" class="text-sm text-gray-600 hover:text-gray-800 px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition duration-200">
+                                    Expand All
+                                </button>
+                            </div>
+                        </div>
                         <div id="kanban-board" class="flex space-x-4 pb-4">
-                            <!-- Columns will be injected here by JS -->
+                            <!-- Enhanced Columns will be injected here by JS -->
                         </div>
                     </div>
                 </div>
@@ -1270,8 +1492,8 @@ Software Developer at TechCorp (2020-2023)
                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Salary (Posted or Offered)</label>
                         <input type="text" id="j-salary" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="$XX,XXX">
                         
-                        <!-- Calendar Integration Section -->
-                        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <!-- Calendar Integration Section - Hidden by default -->
+                        <div id="interview-scheduling-section" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200" style="display: none;">
                             <h4 class="text-sm font-semibold text-blue-800 mb-3 flex items-center">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -1321,6 +1543,159 @@ Software Developer at TechCorp (2020-2023)
                         <textarea id="j-notes" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
                          <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Job Description</label>
                         <textarea id="j-description" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
+                        
+                        <!-- Enhanced Tracking Fields - Collapsible -->
+                        <div class="mt-6">
+                            <button type="button" id="toggle-advanced-tracking" class="w-full p-3 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 transition duration-200 flex items-center justify-between text-left">
+                                <span class="text-sm font-semibold text-gray-800 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Advanced Tracking (Optional)
+                                </span>
+                                <svg id="advanced-tracking-chevron" class="w-4 h-4 text-gray-500 transform transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="advanced-tracking-content" class="hidden mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <input type="text" id="j-location" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" placeholder="City, State/Country">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Work Type</label>
+                                    <select id="j-workType" class="w-full border-gray-300 rounded-lg shadow-sm text-sm">
+                                        <option value="">Select...</option>
+                                        <option value="remote">Remote</option>
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="onsite">On-site</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+                                    <select id="j-companySize" class="w-full border-gray-300 rounded-lg shadow-sm text-sm">
+                                        <option value="">Select...</option>
+                                        <option value="startup">Startup (1-10)</option>
+                                        <option value="small">Small (11-50)</option>
+                                        <option value="medium">Medium (51-200)</option>
+                                        <option value="large">Large (201-1000)</option>
+                                        <option value="enterprise">Enterprise (1000+)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                                    <input type="text" id="j-industry" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" placeholder="e.g., Technology, Healthcare">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Expected Response Date</label>
+                                    <input type="date" id="j-expectedResponse" class="w-full border-gray-300 rounded-lg shadow-sm text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Priority Level</label>
+                                    <select id="j-priority" class="w-full border-gray-300 rounded-lg shadow-sm text-sm">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="dream">Dream Job</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Key Skills Required</label>
+                                <input type="text" id="j-skills" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" placeholder="Comma-separated skills (e.g., JavaScript, React, Node.js)">
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Application Source</label>
+                                <select id="j-applicationSource" class="w-full border-gray-300 rounded-lg shadow-sm text-sm">
+                                    <option value="">Select source...</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="indeed">Indeed</option>
+                                    <option value="glassdoor">Glassdoor</option>
+                                    <option value="company-website">Company Website</option>
+                                    <option value="referral">Employee Referral</option>
+                                    <option value="recruiter">Recruiter Contact</option>
+                                    <option value="job-fair">Job Fair</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Salary & Benefits Tracking - Collapsible -->
+                <div class="md:col-span-3 mt-6 pt-6 border-t">
+                    <button type="button" id="toggle-salary-benefits" class="w-full p-3 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition duration-200 flex items-center justify-between text-left mb-4">
+                        <span class="text-lg font-medium text-gray-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                            Salary & Benefits Information (Optional)
+                        </span>
+                        <svg id="salary-benefits-chevron" class="w-4 h-4 text-gray-500 transform transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="salary-benefits-content" class="hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Salary Range (Min)</label>
+                            <input type="number" id="j-salaryMin" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="50000">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Salary Range (Max)</label>
+                            <input type="number" id="j-salaryMax" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="75000">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Salary Type</label>
+                            <select id="j-salaryType" class="w-full border-gray-300 rounded-lg shadow-sm">
+                                <option value="annual">Annual</option>
+                                <option value="hourly">Hourly</option>
+                                <option value="contract">Contract</option>
+                                <option value="equity">Equity</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Benefits & Perks</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-health" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Health Insurance
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-dental" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Dental/Vision
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-401k" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    401(k) Match
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-pto" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Unlimited PTO
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-equity" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Stock Options
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-bonus" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Performance Bonus
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-learning" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Learning Budget
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" id="j-benefits-flexible" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2">
+                                    Flexible Hours
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Document Management Section -->
@@ -2152,6 +2527,9 @@ Software Developer at TechCorp (2020-2023)
             renderJobs(allJobs);
             renderKanbanBoard(allJobs);
             updateDashboard();
+            
+            // Initialize Enhanced Job Tracker
+            initializeJobTrackerOnLoad();
         }, e => {
             console.error("❌ Error fetching jobs: ", e);
             console.log('🔍 Trying to fetch jobs from path:', ref.path);
@@ -6594,6 +6972,887 @@ Sincerely,
             followups: networkData.followups
         }));
     }
+    
+    // ===== ENHANCED JOB APPLICATION TRACKER FUNCTIONALITY =====
+    
+    let jobTrackerData = {
+        analytics: {
+            totalApplications: 0,
+            interviewsScheduled: 0,
+            responseRate: 0,
+            avgResponseTime: 0
+        },
+        activities: [],
+        filters: {
+            search: '',
+            status: 'all',
+            dateRange: 'all',
+            salaryRange: 'all'
+        }
+    };
+    
+    function initializeEnhancedJobTracker() {
+        console.log('🚀 Initializing Enhanced Job Application Tracker...');
+        
+        // Set up view switcher listeners
+        setupJobViewSwitcher();
+        
+        // Set up filtering system
+        setupJobFiltering();
+        
+        // Set up analytics dashboard
+        setTimeout(() => {
+            updateJobAnalytics();
+            setupQuickActions();
+        }, 500);
+        
+        console.log('✅ Enhanced Job Application Tracker initialized');
+    }
+    
+    function setupJobViewSwitcher() {
+        const viewTableBtn = document.getElementById('view-table-btn');
+        const viewBoardBtn = document.getElementById('view-board-btn');
+        const viewAnalyticsBtn = document.getElementById('view-analytics-btn');
+        
+        const tableView = document.getElementById('jobs-table-view');
+        const boardView = document.getElementById('jobs-board-view');
+        const analyticsView = document.getElementById('jobs-analytics-view');
+        
+        if (!viewTableBtn || !viewBoardBtn || !viewAnalyticsBtn) {
+            console.log('⚠️ View buttons not found, will retry...');
+            return;
+        }
+        
+        // Analytics view button
+        viewAnalyticsBtn.addEventListener('click', () => {
+            // Update button states
+            [viewTableBtn, viewBoardBtn, viewAnalyticsBtn].forEach(btn => {
+                btn.classList.remove('bg-white', 'text-indigo-600', 'shadow');
+                btn.classList.add('text-gray-600');
+            });
+            viewAnalyticsBtn.classList.remove('text-gray-600');
+            viewAnalyticsBtn.classList.add('bg-white', 'text-indigo-600', 'shadow');
+            
+            // Show/hide views
+            if (tableView) tableView.classList.add('hidden');
+            if (boardView) boardView.classList.add('hidden');
+            if (analyticsView) analyticsView.classList.remove('hidden');
+            
+            // Update analytics
+            updateJobAnalytics();
+        });
+        
+        // Enhance existing table/board switching
+        viewTableBtn.addEventListener('click', () => {
+            if (analyticsView) analyticsView.classList.add('hidden');
+        });
+        
+        viewBoardBtn.addEventListener('click', () => {
+            if (analyticsView) analyticsView.classList.add('hidden');
+        });
+        
+        console.log('📋 Job view switcher setup complete');
+    }
+    
+    function setupJobFiltering() {
+        const searchInput = document.getElementById('job-search');
+        const statusFilter = document.getElementById('job-status-filter');
+        const dateFilter = document.getElementById('job-date-filter');
+        const salaryFilter = document.getElementById('job-salary-filter');
+        const clearFiltersBtn = document.getElementById('clear-job-filters');
+        
+        if (!searchInput || !statusFilter || !dateFilter || !salaryFilter) {
+            console.log('⚠️ Filter elements not found');
+            return;
+        }
+        
+        // Search input
+        searchInput.addEventListener('input', (e) => {
+            jobTrackerData.filters.search = e.target.value.toLowerCase();
+            applyJobFilters();
+        });
+        
+        // Status filter
+        statusFilter.addEventListener('change', (e) => {
+            jobTrackerData.filters.status = e.target.value;
+            applyJobFilters();
+        });
+        
+        // Date filter
+        dateFilter.addEventListener('change', (e) => {
+            jobTrackerData.filters.dateRange = e.target.value;
+            applyJobFilters();
+        });
+        
+        // Salary filter
+        salaryFilter.addEventListener('change', (e) => {
+            jobTrackerData.filters.salaryRange = e.target.value;
+            applyJobFilters();
+        });
+        
+        // Clear filters
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                statusFilter.value = 'all';
+                dateFilter.value = 'all';
+                salaryFilter.value = 'all';
+                
+                jobTrackerData.filters = {
+                    search: '',
+                    status: 'all',
+                    dateRange: 'all',
+                    salaryRange: 'all'
+                };
+                
+                applyJobFilters();
+            });
+        }
+        
+        console.log('🔍 Job filtering setup complete');
+    }
+    
+    function applyJobFilters() {
+        let filteredJobs = [...allJobs];
+        const filters = jobTrackerData.filters;
+        
+        // Apply search filter
+        if (filters.search) {
+            filteredJobs = filteredJobs.filter(job => 
+                (job.company && job.company.toLowerCase().includes(filters.search)) ||
+                (job.positionTitle && job.positionTitle.toLowerCase().includes(filters.search)) ||
+                (job.location && job.location.toLowerCase().includes(filters.search)) ||
+                (job.industry && job.industry.toLowerCase().includes(filters.search))
+            );
+        }
+        
+        // Apply status filter
+        if (filters.status !== 'all') {
+            const statusMap = {
+                'applied': ['Waiting for application response', 'Application under review'],
+                'interviewing': ['First round interview', 'Second round interview', 'Third round interview', 'Fourth round interview'],
+                'offer': ['Waiting for offer', 'I accepted their offer', 'I rejected their offer'],
+                'closed': ['Denied', 'Position was filled', 'I withdrew']
+            };
+            
+            if (statusMap[filters.status]) {
+                filteredJobs = filteredJobs.filter(job => 
+                    statusMap[filters.status].some(status => 
+                        job.appStatus && job.appStatus.includes(status)
+                    )
+                );
+            }
+        }
+        
+        // Apply date filter
+        if (filters.dateRange !== 'all') {
+            const now = new Date();
+            const filterDate = new Date();
+            
+            switch (filters.dateRange) {
+                case 'week':
+                    filterDate.setDate(now.getDate() - 7);
+                    break;
+                case 'month':
+                    filterDate.setMonth(now.getMonth() - 1);
+                    break;
+                case 'quarter':
+                    filterDate.setMonth(now.getMonth() - 3);
+                    break;
+            }
+            
+            filteredJobs = filteredJobs.filter(job => {
+                if (!job.submissionDate) return false;
+                return new Date(job.submissionDate) >= filterDate;
+            });
+        }
+        
+        // Apply salary filter
+        if (filters.salaryRange !== 'all') {
+            filteredJobs = filteredJobs.filter(job => {
+                const salary = job.salaryMin || job.salaryMax || extractSalaryFromString(job.salary);
+                if (!salary) return false;
+                
+                switch (filters.salaryRange) {
+                    case '0-50k':
+                        return salary <= 50000;
+                    case '50k-100k':
+                        return salary > 50000 && salary <= 100000;
+                    case '100k-150k':
+                        return salary > 100000 && salary <= 150000;
+                    case '150k+':
+                        return salary > 150000;
+                    default:
+                        return true;
+                }
+            });
+        }
+        
+        // Update results count
+        const resultsCount = document.getElementById('filtered-results-count');
+        if (resultsCount) {
+            const totalCount = allJobs.length;
+            const filteredCount = filteredJobs.length;
+            resultsCount.textContent = totalCount === filteredCount ? 
+                `Showing all ${totalCount} applications` : 
+                `Showing ${filteredCount} of ${totalCount} applications`;
+        }
+        
+        // Re-render with filtered data
+        renderJobs(filteredJobs);
+        if (document.getElementById('jobs-board-view') && !document.getElementById('jobs-board-view').classList.contains('hidden')) {
+            renderKanbanBoard(filteredJobs);
+        }
+        
+        console.log('🔍 Applied filters:', filters, 'Results:', filteredJobs.length);
+    }
+    
+    function extractSalaryFromString(salaryString) {
+        if (!salaryString) return null;
+        const match = salaryString.replace(/[,$]/g, '').match(/\d+/);
+        return match ? parseInt(match[0]) : null;
+    }
+    
+    function updateJobAnalytics() {
+        if (!allJobs || allJobs.length === 0) {
+            console.log('📊 No jobs data available for analytics');
+            return;
+        }
+        
+        const analytics = calculateJobAnalytics(allJobs);
+        
+        // Update analytics cards
+        const totalApplicationsEl = document.getElementById('total-applications');
+        const interviewsScheduledEl = document.getElementById('interviews-scheduled');
+        const responseRateEl = document.getElementById('response-rate');
+        const avgResponseTimeEl = document.getElementById('avg-response-time');
+        
+        if (totalApplicationsEl) totalApplicationsEl.textContent = analytics.totalApplications;
+        if (interviewsScheduledEl) interviewsScheduledEl.textContent = analytics.interviewsScheduled;
+        if (responseRateEl) responseRateEl.textContent = analytics.responseRate + '%';
+        if (avgResponseTimeEl) avgResponseTimeEl.textContent = analytics.avgResponseTime;
+        
+        // Update pipeline progress bars
+        updatePipelineProgress(analytics.pipeline);
+        
+        // Update upcoming interviews
+        updateUpcomingInterviews(analytics.upcomingInterviews);
+        
+        // Update recent activity
+        updateRecentJobActivity();
+        
+        console.log('📊 Job analytics updated:', analytics);
+    }
+    
+    function calculateJobAnalytics(jobs) {
+        const totalApplications = jobs.length;
+        
+        // Count interviews scheduled
+        const interviewsScheduled = jobs.filter(job => 
+            job.appStatus && (
+                job.appStatus.includes('interview') || 
+                job.interviewDate
+            )
+        ).length;
+        
+        // Calculate response rate
+        const responsesReceived = jobs.filter(job => 
+            job.appStatus && !job.appStatus.includes('Waiting for application response')
+        ).length;
+        const responseRate = totalApplications > 0 ? 
+            Math.round((responsesReceived / totalApplications) * 100) : 0;
+        
+        // Calculate average response time
+        const avgResponseTime = calculateAverageResponseTime(jobs);
+        
+        // Pipeline breakdown
+        const pipeline = {
+            applied: jobs.filter(job => getKanbanColumnForStatus(job.appStatus) === 'Applied').length,
+            interviewing: jobs.filter(job => getKanbanColumnForStatus(job.appStatus) === 'Interviewing').length,
+            offer: jobs.filter(job => getKanbanColumnForStatus(job.appStatus) === 'Offer').length,
+            closed: jobs.filter(job => getKanbanColumnForStatus(job.appStatus) === 'Closed').length
+        };
+        
+        // Upcoming interviews
+        const upcomingInterviews = jobs.filter(job => {
+            if (!job.interviewDate) return false;
+            const interviewDate = new Date(job.interviewDate);
+            const now = new Date();
+            const oneWeekFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+            return interviewDate >= now && interviewDate <= oneWeekFromNow;
+        }).sort((a, b) => new Date(a.interviewDate) - new Date(b.interviewDate));
+        
+        return {
+            totalApplications,
+            interviewsScheduled,
+            responseRate,
+            avgResponseTime,
+            pipeline,
+            upcomingInterviews
+        };
+    }
+    
+    function calculateAverageResponseTime(jobs) {
+        const jobsWithResponse = jobs.filter(job => {
+            return job.submissionDate && job.appStatus && 
+                   !job.appStatus.includes('Waiting for application response');
+        });
+        
+        if (jobsWithResponse.length === 0) return '-';
+        
+        const totalDays = jobsWithResponse.reduce((sum, job) => {
+            const submissionDate = new Date(job.submissionDate);
+            const responseDate = new Date(job.updatedAt || job.createdAt || new Date());
+            const daysDiff = Math.floor((responseDate - submissionDate) / (1000 * 60 * 60 * 24));
+            return sum + Math.max(0, daysDiff);
+        }, 0);
+        
+        const avgDays = Math.round(totalDays / jobsWithResponse.length);
+        return avgDays > 0 ? `${avgDays} days` : '-';
+    }
+    
+    function updatePipelineProgress(pipeline) {
+        const total = pipeline.applied + pipeline.interviewing + pipeline.offer + pipeline.closed;
+        
+        if (total === 0) return;
+        
+        const elements = [
+            { id: 'applied', count: pipeline.applied, progress: 'applied-progress' },
+            { id: 'interviewing', count: pipeline.interviewing, progress: 'interviewing-progress' },
+            { id: 'offer', count: pipeline.offer, progress: 'offer-progress' },
+            { id: 'closed', count: pipeline.closed, progress: 'closed-progress' }
+        ];
+        
+        elements.forEach(({ id, count, progress }) => {
+            const countEl = document.getElementById(`${id}-count`);
+            const progressEl = document.getElementById(progress);
+            
+            if (countEl) countEl.textContent = count;
+            if (progressEl) {
+                const percentage = Math.round((count / total) * 100);
+                progressEl.style.width = `${percentage}%`;
+            }
+        });
+    }
+    
+    function updateUpcomingInterviews(interviews) {
+        const container = document.getElementById('upcoming-interviews');
+        if (!container) return;
+        
+        if (interviews.length === 0) {
+            container.innerHTML = '<p class="text-xs text-gray-500">No upcoming interviews</p>';
+            return;
+        }
+        
+        const interviewsHTML = interviews.slice(0, 3).map(interview => {
+            const interviewDate = new Date(interview.interviewDate);
+            const daysDiff = Math.ceil((interviewDate - new Date()) / (1000 * 60 * 60 * 24));
+            const timeText = daysDiff === 0 ? 'Today' : 
+                            daysDiff === 1 ? 'Tomorrow' : 
+                            `In ${daysDiff} days`;
+            
+            return `
+                <div class="text-xs p-2 bg-blue-50 rounded border">
+                    <div class="font-medium text-gray-800">${interview.company}</div>
+                    <div class="text-gray-600">${interview.positionTitle}</div>
+                    <div class="text-blue-600 font-medium">${timeText}</div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = interviewsHTML;
+    }
+    
+    function updateRecentJobActivity() {
+        const container = document.getElementById('recent-job-activity');
+        if (!container) return;
+        
+        // Get recent job activities (applications, status changes, interviews)
+        const recentJobs = allJobs
+            .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+            .slice(0, 5);
+        
+        if (recentJobs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
+            return;
+        }
+        
+        const activitiesHTML = recentJobs.map(job => {
+            const date = new Date(job.updatedAt || job.createdAt || new Date()).toLocaleDateString();
+            const activity = job.updatedAt ? 'Updated application' : 'Applied to position';
+            
+            return `
+                <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                    <div class="flex-shrink-0 w-2 h-2 bg-indigo-500 rounded-full mt-2"></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-800 truncate">${activity} at ${job.company}</p>
+                        <p class="text-xs text-gray-500">${job.positionTitle} • ${date}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = activitiesHTML;
+    }
+    
+    function setupQuickActions() {
+        const bulkUpdateBtn = document.getElementById('bulk-update-btn');
+        const exportBtn = document.getElementById('export-applications-btn');
+        const salaryTrackerBtn = document.getElementById('salary-tracker-btn');
+        const insightsBtn = document.getElementById('application-insights-btn');
+        
+        if (bulkUpdateBtn) {
+            bulkUpdateBtn.addEventListener('click', showBulkUpdateModal);
+        }
+        
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportApplications);
+        }
+        
+        if (salaryTrackerBtn) {
+            salaryTrackerBtn.addEventListener('click', showSalaryTracker);
+        }
+        
+        if (insightsBtn) {
+            insightsBtn.addEventListener('click', showApplicationInsights);
+        }
+        
+        console.log('⚡ Quick actions setup complete');
+    }
+    
+    function showBulkUpdateModal() {
+        showToast('Bulk update feature coming soon!', 'info');
+    }
+    
+    function exportApplications() {
+        if (!allJobs || allJobs.length === 0) {
+            showToast('No applications to export', 'warning');
+            return;
+        }
+        
+        const csvContent = generateApplicationsCSV(allJobs);
+        downloadCSV(csvContent, 'job-applications.csv');
+        showToast('Applications exported successfully!', 'success');
+    }
+    
+    function generateApplicationsCSV(jobs) {
+        const headers = [
+            'Company', 'Position', 'Status', 'Submission Date', 'Salary Range', 
+            'Location', 'Work Type', 'Interview Date', 'Priority', 'Source'
+        ];
+        
+        const rows = jobs.map(job => [
+            job.company || '',
+            job.positionTitle || '',
+            job.appStatus || '',
+            job.submissionDate || '',
+            (job.salaryMin && job.salaryMax) ? `$${job.salaryMin}-$${job.salaryMax}` : job.salary || '',
+            job.location || '',
+            job.workType || '',
+            job.interviewDate || '',
+            job.priority || '',
+            job.applicationSource || job.foundVia || ''
+        ]);
+        
+        return [headers, ...rows]
+            .map(row => row.map(cell => `"${cell}"`).join(','))
+            .join('\n');
+    }
+    
+    function downloadCSV(content, filename) {
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    
+    function showSalaryTracker() {
+        const salaryData = generateSalaryInsights(allJobs);
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b">
+                    <h3 class="text-2xl font-semibold">Salary Tracker & Insights</h3>
+                </div>
+                <div class="p-6">
+                    ${salaryData}
+                </div>
+                <div class="p-6 border-t flex justify-end">
+                    <button onclick="this.closest('.modal').remove()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200">Close</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    function generateSalaryInsights(jobs) {
+        const jobsWithSalary = jobs.filter(job => 
+            job.salaryMin || job.salaryMax || job.salary
+        );
+        
+        if (jobsWithSalary.length === 0) {
+            return '<p class="text-gray-500 text-center py-8">No salary data available. Add salary information to your applications to see insights!</p>';
+        }
+        
+        const salaries = jobsWithSalary.map(job => {
+            if (job.salaryMin && job.salaryMax) {
+                return (job.salaryMin + job.salaryMax) / 2;
+            }
+            return extractSalaryFromString(job.salary) || job.salaryMin || job.salaryMax;
+        }).filter(Boolean);
+        
+        const avgSalary = Math.round(salaries.reduce((sum, sal) => sum + sal, 0) / salaries.length);
+        const minSalary = Math.min(...salaries);
+        const maxSalary = Math.max(...salaries);
+        
+        return `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-green-600">$${avgSalary.toLocaleString()}</div>
+                    <div class="text-sm text-green-700">Average Salary</div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-blue-600">$${minSalary.toLocaleString()}</div>
+                    <div class="text-sm text-blue-700">Minimum</div>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-purple-600">$${maxSalary.toLocaleString()}</div>
+                    <div class="text-sm text-purple-700">Maximum</div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-semibold text-gray-800 mb-2">Applications with Salary Data</h4>
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                    ${jobsWithSalary.map(job => `
+                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                            <div>
+                                <span class="font-medium">${job.company}</span>
+                                <span class="text-gray-600"> - ${job.positionTitle}</span>
+                            </div>
+                            <span class="font-semibold text-green-600">
+                                ${job.salaryMin && job.salaryMax ? 
+                                    `$${job.salaryMin.toLocaleString()}-$${job.salaryMax.toLocaleString()}` : 
+                                    job.salary || '$' + (job.salaryMin || job.salaryMax).toLocaleString()
+                                }
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    function showApplicationInsights() {
+        const insights = generateApplicationInsights(allJobs);
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b">
+                    <h3 class="text-2xl font-semibold">Application Insights & Recommendations</h3>
+                </div>
+                <div class="p-6">
+                    ${insights}
+                </div>
+                <div class="p-6 border-t flex justify-end">
+                    <button onclick="this.closest('.modal').remove()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200">Close</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    function generateApplicationInsights(jobs) {
+        if (jobs.length === 0) {
+            return '<p class="text-gray-500 text-center py-8">No applications to analyze. Add some job applications to see insights!</p>';
+        }
+        
+        // Analyze application patterns
+        const companyStats = {};
+        const industryStats = {};
+        const sourceStats = {};
+        const priorityStats = { high: 0, medium: 0, low: 0, dream: 0 };
+        
+        jobs.forEach(job => {
+            // Company distribution
+            if (job.company) {
+                companyStats[job.company] = (companyStats[job.company] || 0) + 1;
+            }
+            
+            // Industry distribution
+            if (job.industry) {
+                industryStats[job.industry] = (industryStats[job.industry] || 0) + 1;
+            }
+            
+            // Source distribution
+            const source = job.applicationSource || job.foundVia || 'Unknown';
+            sourceStats[source] = (sourceStats[source] || 0) + 1;
+            
+            // Priority distribution
+            const priority = job.priority || 'medium';
+            priorityStats[priority] = (priorityStats[priority] || 0) + 1;
+        });
+        
+        const topCompanies = Object.entries(companyStats)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5);
+            
+        const topSources = Object.entries(sourceStats)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5);
+        
+        return `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-3">Application Summary</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span>Total Applications:</span>
+                            <span class="font-medium">${jobs.length}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>High Priority:</span>
+                            <span class="font-medium text-red-600">${priorityStats.high + priorityStats.dream}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>With Salary Info:</span>
+                            <span class="font-medium">${jobs.filter(j => j.salaryMin || j.salaryMax || j.salary).length}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Remote Opportunities:</span>
+                            <span class="font-medium">${jobs.filter(j => j.workType === 'remote').length}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-3">Top Application Sources</h4>
+                    <div class="space-y-2 text-sm">
+                        ${topSources.map(([source, count]) => `
+                            <div class="flex justify-between">
+                                <span class="capitalize">${source}:</span>
+                                <span class="font-medium">${count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
+                <h4 class="font-semibold text-yellow-800 mb-3">🎯 Recommendations</h4>
+                <ul class="text-sm text-yellow-700 space-y-2">
+                    ${generateRecommendations(jobs, sourceStats, priorityStats)}
+                </ul>
+            </div>
+            
+            ${topCompanies.length > 0 ? `
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-3">Companies Applied To</h4>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        ${topCompanies.map(([company, count]) => `
+                            <div class="flex justify-between">
+                                <span class="truncate">${company}:</span>
+                                <span class="font-medium">${count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        `;
+    }
+    
+    function generateRecommendations(jobs, sourceStats, priorityStats) {
+        const recommendations = [];
+        
+        // Source diversity
+        const uniqueSources = Object.keys(sourceStats).length;
+        if (uniqueSources < 3) {
+            recommendations.push('📈 Diversify your application sources - try job boards beyond your current favorites');
+        }
+        
+        // Follow-up recommendations
+        const awaitingResponse = jobs.filter(j => j.appStatus?.includes('Waiting for application response')).length;
+        if (awaitingResponse > 5) {
+            recommendations.push('📞 Consider following up on applications submitted over 2 weeks ago');
+        }
+        
+        // Priority recommendations
+        const highPriorityJobs = priorityStats.high + priorityStats.dream;
+        if (highPriorityJobs < jobs.length * 0.2) {
+            recommendations.push('🎯 Focus more on high-priority or dream positions for better engagement');
+        }
+        
+        // Response rate improvement
+        const responseRate = calculateJobAnalytics(jobs).responseRate;
+        if (responseRate < 20) {
+            recommendations.push('✍️ Consider improving your resume and cover letters to increase response rates');
+        }
+        
+        if (recommendations.length === 0) {
+            recommendations.push('🌟 Great job! Your application strategy looks solid. Keep up the good work!');
+        }
+        
+        return recommendations.map(rec => `<li>${rec}</li>`).join('');
+    }
+    
+    // Initialize Enhanced Job Tracker when jobs are loaded
+    function initializeJobTrackerOnLoad() {
+        if (typeof initializeEnhancedJobTracker === 'function') {
+            initializeEnhancedJobTracker();
+        }
+        
+        // Set up smart job modal functionality
+        setupSmartJobModal();
+    }
+    
+    function setupSmartJobModal() {
+        // Set up collapsible sections
+        setupCollapsibleSections();
+        
+        // Set up status change listener for interview scheduling
+        setupStatusChangeListener();
+        
+        console.log('🎯 Smart job modal setup complete');
+    }
+    
+    function setupCollapsibleSections() {
+        // Advanced Tracking toggle
+        const advancedTrackingToggle = document.getElementById('toggle-advanced-tracking');
+        const advancedTrackingContent = document.getElementById('advanced-tracking-content');
+        const advancedTrackingChevron = document.getElementById('advanced-tracking-chevron');
+        
+        if (advancedTrackingToggle && advancedTrackingContent) {
+            advancedTrackingToggle.addEventListener('click', () => {
+                const isHidden = advancedTrackingContent.classList.contains('hidden');
+                
+                if (isHidden) {
+                    advancedTrackingContent.classList.remove('hidden');
+                    advancedTrackingChevron.style.transform = 'rotate(180deg)';
+                } else {
+                    advancedTrackingContent.classList.add('hidden');
+                    advancedTrackingChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+        
+        // Salary & Benefits toggle
+        const salaryBenefitsToggle = document.getElementById('toggle-salary-benefits');
+        const salaryBenefitsContent = document.getElementById('salary-benefits-content');
+        const salaryBenefitsChevron = document.getElementById('salary-benefits-chevron');
+        
+        if (salaryBenefitsToggle && salaryBenefitsContent) {
+            salaryBenefitsToggle.addEventListener('click', () => {
+                const isHidden = salaryBenefitsContent.classList.contains('hidden');
+                
+                if (isHidden) {
+                    salaryBenefitsContent.classList.remove('hidden');
+                    salaryBenefitsChevron.style.transform = 'rotate(180deg)';
+                } else {
+                    salaryBenefitsContent.classList.add('hidden');
+                    salaryBenefitsChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+    }
+    
+    function setupStatusChangeListener() {
+        const statusSelect = document.getElementById('j-appStatus');
+        const interviewSection = document.getElementById('interview-scheduling-section');
+        
+        if (statusSelect && interviewSection) {
+            statusSelect.addEventListener('change', function() {
+                const selectedStatus = this.value;
+                const isInterviewStatus = selectedStatus.toLowerCase().includes('interview') || 
+                                        selectedStatus.includes('Waiting for offer');
+                
+                if (isInterviewStatus) {
+                    interviewSection.style.display = 'block';
+                    // Add a subtle animation
+                    interviewSection.style.opacity = '0';
+                    setTimeout(() => {
+                        interviewSection.style.opacity = '1';
+                        interviewSection.style.transition = 'opacity 0.3s ease-in-out';
+                    }, 10);
+                } else {
+                    interviewSection.style.display = 'none';
+                }
+            });
+            
+            console.log('📋 Status change listener attached');
+        }
+    }
+    
+    // Enhanced openJobModal to handle smart sections
+    function openJobModalEnhanced(job = null) {
+        // Call existing openJobModal first
+        if (typeof openJobModal === 'function') {
+            openJobModal(job);
+        }
+        
+        // Then apply smart enhancements
+        setTimeout(() => {
+            const interviewSection = document.getElementById('interview-scheduling-section');
+            const advancedTrackingContent = document.getElementById('advanced-tracking-content');
+            const salaryBenefitsContent = document.getElementById('salary-benefits-content');
+            
+            if (job) {
+                // If editing existing job, check if interview section should be shown
+                const isInterviewStatus = job.appStatus && (
+                    job.appStatus.toLowerCase().includes('interview') || 
+                    job.appStatus.includes('Waiting for offer')
+                );
+                
+                if (interviewSection) {
+                    interviewSection.style.display = isInterviewStatus ? 'block' : 'none';
+                }
+                
+                // Expand advanced tracking if job has advanced data
+                const hasAdvancedData = job.location || job.workType || job.companySize || 
+                                       job.industry || job.priority || job.skills;
+                if (hasAdvancedData && advancedTrackingContent) {
+                    advancedTrackingContent.classList.remove('hidden');
+                    const chevron = document.getElementById('advanced-tracking-chevron');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
+                
+                // Expand salary section if job has salary data
+                const hasSalaryData = job.salaryMin || job.salaryMax || job.salaryType;
+                if (hasSalaryData && salaryBenefitsContent) {
+                    salaryBenefitsContent.classList.remove('hidden');
+                    const chevron = document.getElementById('salary-benefits-chevron');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
+            } else {
+                // New job - hide interview section and collapse optional sections
+                if (interviewSection) {
+                    interviewSection.style.display = 'none';
+                }
+                if (advancedTrackingContent) {
+                    advancedTrackingContent.classList.add('hidden');
+                    const chevron = document.getElementById('advanced-tracking-chevron');
+                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+                }
+                if (salaryBenefitsContent) {
+                    salaryBenefitsContent.classList.add('hidden');
+                    const chevron = document.getElementById('salary-benefits-chevron');
+                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+                }
+            }
+            
+            // Re-setup listeners in case modal was recreated
+            setupSmartJobModal();
+        }, 100);
+    }
 
     // Make functions globally accessible for debugging
     window.clearUploadedFile = clearUploadedFile;
@@ -6601,6 +7860,21 @@ Sincerely,
     window.downloadAsText = downloadAsText;
     window.closeDownloadModal = closeDownloadModal;
     window.showDownloadModal = showDownloadModal;
+    window.initializeEnhancedJobTracker = initializeEnhancedJobTracker;
+    window.setupSmartJobModal = setupSmartJobModal;
+    window.openJobModalEnhanced = openJobModalEnhanced;
+    
+    // Override openJobModal with enhanced version after page loads
+    setTimeout(() => {
+        if (typeof openJobModal === 'function') {
+            const originalOpenJobModal = openJobModal;
+            window.openJobModal = function(job = null) {
+                originalOpenJobModal(job);
+                openJobModalEnhanced(job);
+            };
+            console.log('🎯 Enhanced job modal override applied');
+        }
+    }, 1000);
     
     initializeFirebase();
     initializeSmartResume();

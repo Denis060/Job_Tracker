@@ -1,0 +1,267 @@
+/* Job OS - Main Styles */
+/* Base Styles */
+body { 
+    font-family: 'Inter', sans-serif; 
+}
+
+/* Modal Styles */
+.modal { 
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.modal.active { 
+    display: flex; 
+}
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1001;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar { 
+    width: 8px; 
+    height: 8px; 
+}
+::-webkit-scrollbar-track { 
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb { 
+    background: #a5b4fc; 
+    border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+    background: #818cf8; 
+}
+
+/* Table and Kanban Responsive */
+.table-responsive, .kanban-board-wrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Navigation Tabs */
+.nav-tab {
+    padding-bottom: 8px;
+    border-bottom-width: 2px;
+    border-color: transparent;
+    transition: all 0.2s ease-in-out;
+}
+.nav-tab.active-tab {
+    border-color: #6366f1; /* indigo-500 */
+    color: #4f46e5; /* indigo-600 */
+    font-weight: 600;
+}
+
+/* View Visibility */
+.app-view.hidden, .job-view.hidden {
+    display: none;
+}
+
+/* Metric Cards */
+.metric-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Kanban Board */
+.kanban-column {
+    min-width: 300px;
+    max-width: 300px;
+}
+.kanban-card {
+    cursor: grab;
+    transition: box-shadow 0.2s, background-color 0.2s;
+}
+.kanban-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.kanban-card.dragging {
+    opacity: 0.5;
+    transform: rotate(3deg);
+}
+.drag-over {
+    background-color: #e0e7ff; /* indigo-100 */
+    border-color: #818cf8;
+}
+
+/* Task Management Styles */
+.task-item {
+    transition: all 0.2s ease-in-out;
+}
+.task-item:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.task-item .task-complete-btn:hover {
+    background-color: #dcfce7;
+    border-radius: 4px;
+}
+.task-item .task-edit-btn:hover,
+.task-item .task-delete-btn:hover {
+    background-color: #f3f4f6;
+    border-radius: 4px;
+}
+
+/* Task Priority Animations */
+.task-item.priority-high {
+    animation: pulse-red 2s infinite;
+}
+@keyframes pulse-red {
+    0%, 100% { border-left-color: #ef4444; }
+    50% { border-left-color: #fca5a5; }
+}
+
+/* Smart To-Do List Container */
+#tasks-container::-webkit-scrollbar {
+    width: 6px;
+}
+#tasks-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+#tasks-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+#tasks-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Smart Resume Styles */
+.smart-resume-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.resume-input-area {
+    transition: all 0.3s ease;
+}
+.resume-input-area:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Interview Prep Styles */
+.question-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #6366f1;
+}
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.difficulty-easy { border-left-color: #10b981; }
+.difficulty-medium { border-left-color: #f59e0b; }
+.difficulty-hard { border-left-color: #ef4444; }
+
+.practice-mode {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.ai-processing-animation {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 3s ease infinite;
+}
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.resume-output-container {
+    font-family: 'Courier New', 'Monaco', monospace;
+    line-height: 1.6;
+}
+
+.generate-button-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.generate-button-hover:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Enhanced Resume Formatting */
+.formatted-resume {
+    line-height: 1.7;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.formatted-resume h1 {
+    color: #1f2937;
+    border-bottom: 3px solid #6366f1;
+    padding-bottom: 0.5rem;
+}
+.formatted-resume h3 {
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.formatted-resume h4 {
+    color: #4b5563;
+}
+.formatted-resume li {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+}
+
+.resume-input-option {
+    transition: all 0.3s ease;
+}
+
+/* Calendar Integration Styles */
+.calendar-event-indicator {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    margin-left: 0.5rem;
+}
+
+.interview-upcoming {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    animation: pulse-interview 2s infinite;
+}
+@keyframes pulse-interview {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.calendar-integration-success {
+    background: #10b981;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.calendar-integration-error {
+    background: #ef4444;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}

@@ -396,142 +396,14 @@
 
             <!-- Network Manager View -->
             <div id="network-view" class="app-view hidden">
-                <!-- Network Analytics Dashboard -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-blue-100 text-sm font-medium">Total Contacts</p>
-                                <p id="total-contacts" class="text-3xl font-bold">0</p>
-                            </div>
-                            <div class="bg-blue-400 bg-opacity-30 p-3 rounded-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-green-100 text-sm font-medium">Active Relationships</p>
-                                <p id="active-relationships" class="text-3xl font-bold">0</p>
-                            </div>
-                            <div class="bg-green-400 bg-opacity-30 p-3 rounded-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6 rounded-xl text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-yellow-100 text-sm font-medium">Pending Follow-ups</p>
-                                <p id="pending-followups" class="text-3xl font-bold">0</p>
-                            </div>
-                            <div class="bg-yellow-400 bg-opacity-30 p-3 rounded-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-purple-100 text-sm font-medium">Network Score</p>
-                                <p id="network-score" class="text-3xl font-bold">0</p>
-                            </div>
-                            <div class="bg-purple-400 bg-opacity-30 p-3 rounded-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Quick Actions & Insights -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <!-- Quick Actions -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                            Quick Actions
-                        </h3>
-                        <div class="space-y-3">
-                            <button id="add-contact-btn" class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
-                                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                                </svg>
-                                Add New Contact
-                            </button>
-                            <button id="bulk-follow-up-btn" class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-200 flex items-center justify-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                                Schedule Follow-ups
-                            </button>
-                            <button id="networking-insights-btn" class="w-full bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-purple-700 transition duration-200 flex items-center justify-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                                View Insights
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Recent Activity -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Recent Activity
-                        </h3>
-                        <div id="recent-activity" class="space-y-3 text-sm">
-                            <p class="text-gray-500 text-center py-4">No recent activity</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Follow-up Reminders -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 00-15 0v8h5m5-13l5 5-5 5"></path>
-                            </svg>
-                            Follow-up Reminders
-                        </h3>
-                        <div id="followup-reminders" class="space-y-3 text-sm">
-                            <p class="text-gray-500 text-center py-4">No pending follow-ups</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contacts Management -->
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
-                    <h2 class="text-3xl font-semibold text-gray-700">Professional Network</h2>
-                    <div class="flex gap-3">
-                        <select id="relationship-filter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500">
-                            <option value="all">All Relationships</option>
-                            <option value="active">Active</option>
-                            <option value="lost-touch">Lost Touch</option>
-                        </select>
-                        <select id="contact-type-filter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500">
-                            <option value="all">All Types</option>
-                            <option value="recruiter">Recruiters</option>
-                            <option value="professional">Professional</option>
-                            <option value="academic">Academic</option>
-                            <option value="personal">Personal</option>
-                        </select>
-                        <input type="text" id="contact-search" placeholder="Search contacts..." class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500">
-                    </div>
+                    <h2 class="text-3xl font-semibold text-gray-700">Network & Recruiters</h2>
+                    <button id="add-contact-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
+                        <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Add Contact
+                    </button>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <div id="network-table-container" class="table-responsive">
@@ -1349,178 +1221,64 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
     <!-- Add/Edit Contact Modal -->
-    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30" style="display: none;">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="modal-title" class="text-2xl font-semibold">Add New Contact</h3>
             </div>
             <form id="contact-form" class="p-6">
                 <input type="hidden" id="contact-id">
-                
-                <!-- Tabs for organized input -->
-                <div class="flex border-b mb-6">
-                    <button type="button" class="contact-tab-btn active px-4 py-2 border-b-2 border-indigo-500 text-indigo-600 font-medium" data-tab="basic">Basic Info</button>
-                    <button type="button" class="contact-tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium" data-tab="relationship">Relationship</button>
-                    <button type="button" class="contact-tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium" data-tab="followup">Follow-up</button>
-                </div>
-                
-                <!-- Basic Info Tab -->
-                <div id="basic-tab" class="contact-tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Column 1 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                            <input type="text" id="name" class="w-full border-gray-300 rounded-lg shadow-sm" required>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Company</label>
-                            <input type="text" id="company" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Job Title</label>
-                            <input type="text" id="job-title" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Contact Type</label>
-                            <select id="type" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="professional">Professional</option>
-                                <option value="recruiter">Recruiter</option>
-                                <option value="academic">Academic</option>
-                                <option value="personal">Personal</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Column 2 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input type="email" id="email" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Phone</label>
-                            <input type="tel" id="phone" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">LinkedIn Profile</label>
-                            <input type="url" id="linkedin-url" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="https://linkedin.com/in/...">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Location</label>
-                            <input type="text" id="location" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="City, State/Country">
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Column 1 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input type="text" id="name" class="w-full border-gray-300 rounded-lg shadow-sm" required>
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Company</label>
+                        <input type="text" id="company" class="w-full border-gray-300 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Type</label>
+                        <select id="type" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option>Professional</option>
+                            <option>Academic</option>
+                            <option>Recruiter</option>
+                            <option>Personal</option>
+                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Is Reference?</label>
+                        <select id="is-reference" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Relationship Standing</label>
+                        <select id="relationship-standing" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option value="Active">Active</option>
+                            <option value="Lost touch">Lost touch</option>
+                        </select>
+                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Last Communication Date</label>
+                        <input type="date" id="last-comm-date" class="w-full border-gray-300 rounded-lg shadow-sm">
+                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">When we met</label>
+                        <input type="date" id="when-we-met" class="w-full border-gray-300 rounded-lg shadow-sm">
+                    </div>
+                    <!-- Column 2 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" class="w-full border-gray-300 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Phone</label>
+                        <input type="tel" id="phone" class="w-full border-gray-300 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Contact Info (e.g., LinkedIn)</label>
+                        <input type="text" id="contact-info" class="w-full border-gray-300 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Last Communication Method</label>
+                        <select id="last-comm-method" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option>Email</option>
+                            <option>LinkedIn</option>
+                            <option>Phone Call</option>
+                            <option>In-person</option>
+                             <option>Unknown</option>
+                        </select>
+                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">How we met</label>
+                        <input type="text" id="how-we-met" class="w-full border-gray-300 rounded-lg shadow-sm">
+                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Notes on the person</label>
+                        <textarea id="notes" rows="4" class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
                     </div>
                 </div>
-                
-                <!-- Relationship Tab -->
-                <div id="relationship-tab" class="contact-tab-content hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Column 1 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Relationship Strength</label>
-                            <select id="relationship-strength" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="1">1 - Just met</option>
-                                <option value="2">2 - Acquaintance</option>
-                                <option value="3" selected>3 - Professional contact</option>
-                                <option value="4">4 - Strong professional relationship</option>
-                                <option value="5">5 - Close mentor/friend</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Relationship Status</label>
-                            <select id="relationship-standing" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="Active">Active</option>
-                                <option value="Lost touch">Lost touch</option>
-                                <option value="Need to reconnect">Need to reconnect</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Is Reference?</label>
-                            <select id="is-reference" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                                <option value="Potential">Potential</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">When We Met</label>
-                            <input type="date" id="when-we-met" class="w-full border-gray-300 rounded-lg shadow-sm">
-                        </div>
-                        
-                        <!-- Column 2 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">How We Met</label>
-                            <select id="how-we-met" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="">Select...</option>
-                                <option value="LinkedIn">LinkedIn</option>
-                                <option value="Networking Event">Networking Event</option>
-                                <option value="Conference">Conference</option>
-                                <option value="Work">Work</option>
-                                <option value="Referral">Referral</option>
-                                <option value="Cold Outreach">Cold Outreach</option>
-                                <option value="Social Media">Social Media</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Last Communication Date</label>
-                            <input type="date" id="last-comm-date" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Last Communication Method</label>
-                            <select id="last-comm-method" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="Email">Email</option>
-                                <option value="LinkedIn">LinkedIn</option>
-                                <option value="Phone Call">Phone Call</option>
-                                <option value="In-person">In-person</option>
-                                <option value="Text Message">Text Message</option>
-                                <option value="Video Call">Video Call</option>
-                                <option value="Unknown">Unknown</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Mutual Connections</label>
-                            <input type="text" id="mutual-connections" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Names of mutual connections">
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Notes About Person</label>
-                        <textarea id="notes" rows="4" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Personal details, interests, conversation topics, etc."></textarea>
-                    </div>
-                </div>
-                
-                <!-- Follow-up Tab -->
-                <div id="followup-tab" class="contact-tab-content hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Column 1 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Follow-up Frequency</label>
-                            <select id="followup-frequency" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="none">No automatic follow-up</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="biweekly">Bi-weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="quarterly">Quarterly</option>
-                                <option value="biannual">Twice a year</option>
-                                <option value="annual">Annually</option>
-                            </select>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Next Follow-up Date</label>
-                            <input type="date" id="next-followup-date" class="w-full border-gray-300 rounded-lg shadow-sm">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Priority Level</label>
-                            <select id="priority-level" class="w-full border-gray-300 rounded-lg shadow-sm">
-                                <option value="low">Low</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="high">High</option>
-                                <option value="critical">Critical</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Column 2 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-                            <input type="text" id="contact-tags" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="e.g., hiring manager, mentor, potential referral">
-                            <p class="text-xs text-gray-500 mt-1">Separate tags with commas</p>
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Opportunities</label>
-                            <textarea id="opportunities" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Potential job opportunities, projects, collaborations, etc."></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Follow-up Notes/Reminders</label>
-                        <textarea id="followup-notes" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Specific things to mention in next conversation, goals for relationship, etc."></textarea>
-                    </div>
-                </div>
-                
                 <div class="mt-6 pt-4 border-t flex justify-end space-x-3">
                     <button type="button" id="cancel-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-200">Cancel</button>
                     <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200">Save Contact</button>
@@ -1834,7 +1592,7 @@ Software Developer at TechCorp (2020-2023)
     }
     function closeJobModal() { jobModal.classList.remove('active'); }
 
-    function openContactModal_old(contact = null) {
+    function openModal(contact = null) {
         contactForm.reset();
         contactIdField.value = contact ? contact.id : '';
         modalTitle.textContent = contact ? 'Edit Contact' : 'Add New Contact';
@@ -1847,23 +1605,6 @@ Software Developer at TechCorp (2020-2023)
         contactModal.classList.add('active');
     }
     function closeModal() { contactModal.classList.remove('active'); }
-    
-    // Generic modal functions for enhanced components
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('active');
-            modal.style.display = 'flex';
-        }
-    }
-    
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('active');
-            modal.style.display = 'none';
-        }
-    }
 
     function openHistoryModal(job = null) {
         historyForm.reset();
@@ -2167,11 +1908,6 @@ Software Developer at TechCorp (2020-2023)
             allContacts.sort((a, b) => (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()));
             renderContacts(allContacts);
             updateDashboard();
-            
-            // Initialize enhanced Network Manager
-            if (typeof initializeNetworkManager === 'function') {
-                initializeNetworkManager();
-            }
         }, e => console.error("Error fetching contacts: ", e));
     }
 
@@ -4618,7 +4354,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         const ref = db.collection('artifacts').doc('job-os-app').collection('users').doc(userId).collection('contacts').doc(id);
         if (target.classList.contains('edit-btn')) {
             const doc = await ref.get();
-            if (doc.exists) openContactModal_old({ id: doc.id, ...doc.data() });
+            if (doc.exists) openModal({ id: doc.id, ...doc.data() });
         }
         if (target.classList.contains('delete-btn')) {
             await ref.delete();
@@ -4697,7 +4433,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
     jobForm.addEventListener('submit', saveJob);
     jobsTableContainer.addEventListener('click', handleJobTableClick);
 
-    addContactBtn.addEventListener('click', () => openContactModal_old());
+    addContactBtn.addEventListener('click', () => openModal());
     cancelBtn.addEventListener('click', closeModal);
     contactForm.addEventListener('submit', saveContact);
     networkTableContainer.addEventListener('click', handleTableClick);
@@ -5954,647 +5690,6 @@ Sincerely,
     // Make Cover Letter functions globally accessible
     window.clearCoverUploadedFile = clearCoverUploadedFile;
     
-    // ===== ENHANCED NETWORK MANAGER FUNCTIONALITY =====
-    
-    let networkData = {
-        contacts: [],
-        activities: [],
-        followups: [],
-        analytics: {
-            totalContacts: 0,
-            activeRelationships: 0,
-            pendingFollowups: 0,
-            networkScore: 0
-        }
-    };
-    
-    function initializeNetworkManager() {
-        console.log('🚀 Initializing Enhanced Network Manager...');
-        
-        // Initialize contact form tabs
-        initializeContactTabs();
-        
-        // Set up event listeners after a short delay to ensure elements exist
-        setTimeout(() => {
-            console.log('⏰ Setting up Network Manager event listeners...');
-            
-            // Initialize event listeners
-            const addContactBtn = document.getElementById('add-contact-btn');
-            const bulkFollowUpBtn = document.getElementById('bulk-follow-up-btn');
-            const insightsBtn = document.getElementById('networking-insights-btn');
-            const contactForm = document.getElementById('contact-form');
-            const cancelBtn = document.getElementById('cancel-btn');
-            
-            console.log('🔍 Found elements:', {
-                addContactBtn: !!addContactBtn,
-                bulkFollowUpBtn: !!bulkFollowUpBtn,
-                insightsBtn: !!insightsBtn,
-                contactForm: !!contactForm,
-                cancelBtn: !!cancelBtn
-            });
-            
-            // Filter elements
-            const relationshipFilter = document.getElementById('relationship-filter');
-            const contactTypeFilter = document.getElementById('contact-type-filter');
-            const contactSearch = document.getElementById('contact-search');
-            
-            if (addContactBtn) {
-                addContactBtn.addEventListener('click', () => {
-                    console.log('🎯 Add Contact button clicked!');
-                    openContactModal();
-                });
-                console.log('✅ Add contact button listener attached');
-            } else {
-                console.error('❌ Add contact button not found!');
-            }
-            
-            if (bulkFollowUpBtn) {
-                bulkFollowUpBtn.addEventListener('click', showBulkFollowUpModal);
-            }
-            
-            if (insightsBtn) {
-                insightsBtn.addEventListener('click', showNetworkInsights);
-            }
-            
-            if (contactForm) {
-                contactForm.addEventListener('submit', saveContact);
-            }
-            
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => closeModal('contact-modal'));
-            }
-            
-            // Filter listeners with debugging
-            if (relationshipFilter) {
-                relationshipFilter.addEventListener('change', () => {
-                    console.log('Relationship filter changed:', relationshipFilter.value);
-                    filterContacts();
-                });
-                console.log('Relationship filter listener attached');
-            }
-            
-            if (contactTypeFilter) {
-                contactTypeFilter.addEventListener('change', () => {
-                    console.log('Type filter changed:', contactTypeFilter.value);
-                    filterContacts();
-                });
-                console.log('Type filter listener attached');
-            }
-            
-            if (contactSearch) {
-                contactSearch.addEventListener('input', () => {
-                    console.log('Search input changed:', contactSearch.value);
-                    filterContacts();
-                });
-                console.log('Search filter listener attached');
-            }
-            
-            // Load data and update dashboard
-            loadNetworkData();
-            
-            // Update analytics when contacts are available
-            if (allContacts && allContacts.length > 0) {
-                updateNetworkAnalytics();
-            }
-            
-        }, 500);
-        
-        console.log('Enhanced Network Manager initialized successfully');
-    }
-    
-    function initializeContactTabs() {
-        const tabButtons = document.querySelectorAll('.contact-tab-btn');
-        const tabContents = document.querySelectorAll('.contact-tab-content');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active from all tabs
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                });
-                
-                tabContents.forEach(content => {
-                    content.classList.add('hidden');
-                });
-                
-                // Add active to clicked tab
-                button.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-                button.classList.remove('border-transparent', 'text-gray-500');
-                
-                // Show corresponding content
-                const targetTab = button.dataset.tab;
-                const targetContent = document.getElementById(targetTab + '-tab');
-                if (targetContent) {
-                    targetContent.classList.remove('hidden');
-                }
-            });
-        });
-    }
-    
-    function openContactModal(contact = null) {
-        console.log('🔓 Opening contact modal...', contact);
-        
-        const modal = document.getElementById('contact-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const form = document.getElementById('contact-form');
-        
-        console.log('🔍 Modal elements found:', {
-            modal: !!modal,
-            modalTitle: !!modalTitle,
-            form: !!form
-        });
-        
-        if (!modal) {
-            console.error('❌ Contact modal not found!');
-            return;
-        }
-        
-        // Reset form and tabs
-        form.reset();
-        document.getElementById('contact-id').value = '';
-        
-        // Reset to first tab
-        document.querySelectorAll('.contact-tab-btn').forEach(btn => {
-            btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-            btn.classList.add('border-transparent', 'text-gray-500');
-        });
-        document.querySelectorAll('.contact-tab-content').forEach(content => {
-            content.classList.add('hidden');
-        });
-        
-        // Activate first tab
-        const firstTab = document.querySelector('.contact-tab-btn[data-tab="basic"]');
-        if (firstTab) {
-            firstTab.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-            firstTab.classList.remove('border-transparent', 'text-gray-500');
-        }
-        document.getElementById('basic-tab').classList.remove('hidden');
-        
-        if (contact) {
-            modalTitle.textContent = 'Edit Contact';
-            populateContactForm(contact);
-        } else {
-            modalTitle.textContent = 'Add New Contact';
-            // Set default values
-            document.getElementById('relationship-strength').value = '3';
-            document.getElementById('relationship-standing').value = 'Active';
-            document.getElementById('priority-level').value = 'medium';
-        }
-        
-        openModal('contact-modal');
-    }
-    
-    function populateContactForm(contact) {
-        document.getElementById('contact-id').value = contact.id || '';
-        document.getElementById('name').value = contact.name || '';
-        document.getElementById('company').value = contact.company || '';
-        document.getElementById('job-title').value = contact.jobTitle || '';
-        document.getElementById('type').value = contact.type || 'professional';
-        document.getElementById('email').value = contact.email || '';
-        document.getElementById('phone').value = contact.phone || '';
-        document.getElementById('linkedin-url').value = contact.linkedinUrl || '';
-        document.getElementById('location').value = contact.location || '';
-        
-        // Relationship tab
-        document.getElementById('relationship-strength').value = contact.relationshipStrength || '3';
-        document.getElementById('relationship-standing').value = contact.relationshipStanding || 'Active';
-        document.getElementById('is-reference').value = contact.isReference || 'No';
-        document.getElementById('when-we-met').value = contact.whenWeMet || '';
-        document.getElementById('how-we-met').value = contact.howWeMet || '';
-        document.getElementById('last-comm-date').value = contact.lastCommDate || '';
-        document.getElementById('last-comm-method').value = contact.lastCommMethod || 'Email';
-        document.getElementById('mutual-connections').value = contact.mutualConnections || '';
-        document.getElementById('notes').value = contact.notes || '';
-        
-        // Follow-up tab
-        document.getElementById('followup-frequency').value = contact.followupFrequency || 'none';
-        document.getElementById('next-followup-date').value = contact.nextFollowupDate || '';
-        document.getElementById('priority-level').value = contact.priorityLevel || 'medium';
-        document.getElementById('contact-tags').value = contact.tags || '';
-        document.getElementById('opportunities').value = contact.opportunities || '';
-        document.getElementById('followup-notes').value = contact.followupNotes || '';
-    }
-    
-    async function saveContact(e) {
-        e.preventDefault();
-        
-        try {
-            const contactData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                jobTitle: document.getElementById('job-title').value,
-                type: document.getElementById('type').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                linkedinUrl: document.getElementById('linkedin-url').value,
-                location: document.getElementById('location').value,
-                
-                // Relationship data
-                relationshipStrength: document.getElementById('relationship-strength').value,
-                relationshipStanding: document.getElementById('relationship-standing').value,
-                isReference: document.getElementById('is-reference').value,
-                whenWeMet: document.getElementById('when-we-met').value,
-                howWeMet: document.getElementById('how-we-met').value,
-                lastCommDate: document.getElementById('last-comm-date').value,
-                lastCommMethod: document.getElementById('last-comm-method').value,
-                mutualConnections: document.getElementById('mutual-connections').value,
-                notes: document.getElementById('notes').value,
-                
-                // Follow-up data
-                followupFrequency: document.getElementById('followup-frequency').value,
-                nextFollowupDate: document.getElementById('next-followup-date').value,
-                priorityLevel: document.getElementById('priority-level').value,
-                tags: document.getElementById('contact-tags').value,
-                opportunities: document.getElementById('opportunities').value,
-                followupNotes: document.getElementById('followup-notes').value,
-                
-                // Metadata
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            
-            const contactId = document.getElementById('contact-id').value;
-            
-            if (contactId) {
-                // Update existing contact
-                contactData.id = contactId;
-                await updateDoc(doc(db, `users/${userId}/contacts`, contactId), contactData);
-                showToast('Contact updated successfully!', 'success');
-                
-                // Log activity
-                logNetworkActivity('contact_updated', `Updated contact: ${contactData.name}`);
-            } else {
-                // Add new contact
-                const docRef = await addDoc(collection(db, `users/${userId}/contacts`), contactData);
-                contactData.id = docRef.id;
-                showToast('Contact added successfully!', 'success');
-                
-                // Log activity
-                logNetworkActivity('contact_added', `Added new contact: ${contactData.name}`);
-            }
-            
-            // Schedule follow-up if specified
-            if (contactData.nextFollowupDate) {
-                scheduleFollowUp(contactData);
-            }
-            
-            closeModal('contact-modal');
-            updateNetworkAnalytics();
-            
-        } catch (error) {
-            console.error('Error saving contact:', error);
-            showToast('Error saving contact. Please try again.', 'error');
-        }
-    }
-    
-    function logNetworkActivity(type, description) {
-        const activity = {
-            type: type,
-            description: description,
-            timestamp: new Date().toISOString(),
-            date: new Date().toLocaleDateString()
-        };
-        
-        networkData.activities.unshift(activity);
-        
-        // Keep only last 10 activities for display
-        if (networkData.activities.length > 10) {
-            networkData.activities = networkData.activities.slice(0, 10);
-        }
-        
-        updateRecentActivity();
-        saveNetworkData();
-    }
-    
-    function scheduleFollowUp(contact) {
-        const followup = {
-            contactId: contact.id,
-            contactName: contact.name,
-            contactCompany: contact.company,
-            followupDate: contact.nextFollowupDate,
-            priorityLevel: contact.priorityLevel,
-            notes: contact.followupNotes,
-            createdAt: new Date().toISOString()
-        };
-        
-        networkData.followups.push(followup);
-        updateFollowUpReminders();
-        saveNetworkData();
-    }
-    
-    function updateNetworkAnalytics() {
-        const totalContacts = allContacts.length;
-        const activeRelationships = allContacts.filter(c => c.relationshipStanding === 'Active').length;
-        
-        // Get pending follow-ups from the enhanced contact data
-        const pendingFollowups = allContacts.filter(contact => {
-            if (!contact.nextFollowupDate) return false;
-            return new Date(contact.nextFollowupDate) <= new Date();
-        }).length;
-        
-        // Calculate network score (0-100)
-        let networkScore = 0;
-        if (totalContacts > 0) {
-            const activePercentage = (activeRelationships / totalContacts) * 40;
-            const referenceContacts = allContacts.filter(c => c.isReference === 'Yes').length;
-            const referenceScore = Math.min((referenceContacts / Math.max(totalContacts * 0.2, 1)) * 30, 30);
-            const recentActivity = allContacts.filter(c => {
-                if (!c.lastCommDate) return false;
-                const daysSince = (new Date() - new Date(c.lastCommDate)) / (1000 * 60 * 60 * 24);
-                return daysSince <= 90; // Active in last 3 months
-            }).length;
-            const activityScore = Math.min((recentActivity / Math.max(totalContacts * 0.3, 1)) * 30, 30);
-            
-            networkScore = Math.round(activePercentage + referenceScore + activityScore);
-        }
-        
-        // Update dashboard elements
-        const totalContactsEl = document.getElementById('total-contacts');
-        const activeRelationshipsEl = document.getElementById('active-relationships');
-        const pendingFollowupsEl = document.getElementById('pending-followups');
-        const networkScoreEl = document.getElementById('network-score');
-        
-        if (totalContactsEl) totalContactsEl.textContent = totalContacts;
-        if (activeRelationshipsEl) activeRelationshipsEl.textContent = activeRelationships;
-        if (pendingFollowupsEl) pendingFollowupsEl.textContent = pendingFollowups;
-        if (networkScoreEl) networkScoreEl.textContent = networkScore;
-        
-        // Store analytics
-        networkData.analytics = {
-            totalContacts,
-            activeRelationships,
-            pendingFollowups,
-            networkScore
-        };
-        
-        console.log('Network analytics updated:', networkData.analytics);
-    }
-    
-    function updateRecentActivity() {
-        const container = document.getElementById('recent-activity');
-        
-        if (!container || networkData.activities.length === 0) {
-            if (container) container.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
-            return;
-        }
-        
-        const activitiesHTML = networkData.activities.slice(0, 5).map(activity => `
-            <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50">
-                <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-800 truncate">${activity.description}</p>
-                    <p class="text-xs text-gray-500">${activity.date}</p>
-                </div>
-            </div>
-        `).join('');
-        
-        container.innerHTML = activitiesHTML;
-    }
-    
-    function updateFollowUpReminders() {
-        const container = document.getElementById('followup-reminders');
-        
-        if (!container) return;
-        
-        // Get upcoming follow-ups (next 30 days)
-        const upcoming = networkData.followups.filter(f => {
-            const followupDate = new Date(f.followupDate);
-            const now = new Date();
-            const thirtyDays = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
-            return followupDate >= now && followupDate <= thirtyDays;
-        }).sort((a, b) => new Date(a.followupDate) - new Date(b.followupDate));
-        
-        if (upcoming.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-4">No pending follow-ups</p>';
-            return;
-        }
-        
-        const remindersHTML = upcoming.slice(0, 5).map(reminder => {
-            const daysUntil = Math.ceil((new Date(reminder.followupDate) - new Date()) / (1000 * 60 * 60 * 24));
-            const urgencyClass = daysUntil <= 3 ? 'text-red-600' : daysUntil <= 7 ? 'text-yellow-600' : 'text-gray-600';
-            
-            return `
-                <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                    <div class="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm text-gray-800 truncate">${reminder.contactName}</p>
-                        <p class="text-xs ${urgencyClass}">${daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`}</p>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        container.innerHTML = remindersHTML;
-    }
-    
-    function filterContacts() {
-        const relationshipFilter = document.getElementById('relationship-filter');
-        const typeFilter = document.getElementById('contact-type-filter');
-        const searchInput = document.getElementById('contact-search');
-        
-        if (!relationshipFilter || !typeFilter || !searchInput) {
-            console.log('Filter elements not found');
-            return;
-        }
-        
-        const relationshipValue = relationshipFilter.value;
-        const typeValue = typeFilter.value;
-        const searchTerm = searchInput.value.toLowerCase();
-        
-        let filteredContacts = [...allContacts];
-        
-        // Apply relationship filter
-        if (relationshipValue !== 'all') {
-            if (relationshipValue === 'active') {
-                filteredContacts = filteredContacts.filter(contact => 
-                    contact.relationshipStanding === 'Active'
-                );
-            } else if (relationshipValue === 'lost-touch') {
-                filteredContacts = filteredContacts.filter(contact => 
-                    contact.relationshipStanding === 'Lost touch'
-                );
-            }
-        }
-        
-        // Apply type filter
-        if (typeValue !== 'all') {
-            filteredContacts = filteredContacts.filter(contact => 
-                contact.type && contact.type.toLowerCase() === typeValue.toLowerCase()
-            );
-        }
-        
-        // Apply search filter
-        if (searchTerm) {
-            filteredContacts = filteredContacts.filter(contact => 
-                (contact.name && contact.name.toLowerCase().includes(searchTerm)) ||
-                (contact.company && contact.company.toLowerCase().includes(searchTerm)) ||
-                (contact.jobTitle && contact.jobTitle.toLowerCase().includes(searchTerm)) ||
-                (contact.email && contact.email.toLowerCase().includes(searchTerm)) ||
-                (contact.phone && contact.phone.toLowerCase().includes(searchTerm))
-            );
-        }
-        
-        console.log('Filtered contacts:', filteredContacts.length, 'from', allContacts.length);
-        renderFilteredContacts(filteredContacts);
-    }
-    
-    function renderFilteredContacts(contacts) {
-        const networkTableContainer = document.getElementById('network-table-container');
-        
-        if (contacts.length === 0) {
-            networkTableContainer.innerHTML = '<p class="text-center text-gray-500 py-8">No contacts match your filters.</p>';
-            return;
-        }
-        
-        renderContacts(contacts);
-    }
-    
-    function showBulkFollowUpModal() {
-        showToast('Bulk follow-up feature coming soon!', 'info');
-    }
-    
-    function showNetworkInsights() {
-        const insights = generateNetworkInsights();
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-        modal.innerHTML = `
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                <div class="p-6 border-b">
-                    <h3 class="text-2xl font-semibold">Network Insights & Analytics</h3>
-                </div>
-                <div class="p-6">
-                    ${insights}
-                </div>
-                <div class="p-6 border-t flex justify-end">
-                    <button onclick="this.closest('.modal').remove()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200">Close</button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-    }
-    
-    function generateNetworkInsights() {
-        const contacts = allContacts;
-        const analytics = networkData.analytics;
-        
-        if (contacts.length === 0) {
-            return '<p class="text-gray-500 text-center py-8">Add some contacts to see insights!</p>';
-        }
-        
-        // Generate insights
-        const companyDistribution = {};
-        const typeDistribution = {};
-        const strengthDistribution = {};
-        
-        contacts.forEach(contact => {
-            // Company distribution
-            const company = contact.company || 'Unknown';
-            companyDistribution[company] = (companyDistribution[company] || 0) + 1;
-            
-            // Type distribution
-            const type = contact.type || 'Unknown';
-            typeDistribution[type] = (typeDistribution[type] || 0) + 1;
-            
-            // Strength distribution
-            const strength = contact.relationshipStrength || '3';
-            strengthDistribution[strength] = (strengthDistribution[strength] || 0) + 1;
-        });
-        
-        const topCompanies = Object.entries(companyDistribution)
-            .sort(([,a], [,b]) => b - a)
-            .slice(0, 5);
-            
-        const needsFollowUp = contacts.filter(contact => {
-            if (!contact.lastCommDate) return true;
-            const daysSince = (new Date() - new Date(contact.lastCommDate)) / (1000 * 60 * 60 * 24);
-            return daysSince > 90; // No contact in 3 months
-        });
-        
-        return `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Network Overview</h4>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span>Total Contacts:</span>
-                            <span class="font-medium">${analytics.totalContacts}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Network Score:</span>
-                            <span class="font-medium text-purple-600">${analytics.networkScore}/100</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>References Available:</span>
-                            <span class="font-medium">${contacts.filter(c => c.isReference === 'Yes').length}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Top Companies</h4>
-                    <div class="space-y-2 text-sm">
-                        ${topCompanies.map(([company, count]) => `
-                            <div class="flex justify-between">
-                                <span class="truncate">${company}</span>
-                                <span class="font-medium">${count}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Relationship Strength</h4>
-                    <div class="space-y-2 text-sm">
-                        ${Object.entries(strengthDistribution).map(([strength, count]) => {
-                            const label = ['', 'Just met', 'Acquaintance', 'Professional', 'Strong', 'Close'][strength] || 'Unknown';
-                            return `
-                                <div class="flex justify-between">
-                                    <span>${label} (${strength}/5):</span>
-                                    <span class="font-medium">${count}</span>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-                
-                <div class="bg-yellow-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Action Needed</h4>
-                    <div class="text-sm">
-                        <p class="text-yellow-800 mb-2">${needsFollowUp.length} contacts need follow-up</p>
-                        ${needsFollowUp.slice(0, 5).map(contact => `
-                            <div class="text-yellow-700">• ${contact.name} (${contact.company || 'Unknown'})</div>
-                        `).join('')}
-                        ${needsFollowUp.length > 5 ? `<div class="text-yellow-600 mt-2">...and ${needsFollowUp.length - 5} more</div>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    function loadNetworkData() {
-        const saved = localStorage.getItem('jobos_network_data');
-        if (saved) {
-            const data = JSON.parse(saved);
-            networkData.activities = data.activities || [];
-            networkData.followups = data.followups || [];
-        }
-        
-        updateRecentActivity();
-        updateFollowUpReminders();
-    }
-    
-    function saveNetworkData() {
-        localStorage.setItem('jobos_network_data', JSON.stringify({
-            activities: networkData.activities,
-            followups: networkData.followups
-        }));
-    }
-
     // Make functions globally accessible for debugging
     window.clearUploadedFile = clearUploadedFile;
     window.downloadAsPDF = downloadAsPDF;

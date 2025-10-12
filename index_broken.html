@@ -10,11 +10,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-storage-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .modal { display: none; }
-        .modal.active { display: flex; }
+        .modal { 
+            display: none;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            z-index: 9999 !important;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { 
+            display: flex !important; 
+        }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
         ::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 4px; }
@@ -272,6 +287,7 @@
                         <button class="nav-tab" data-tab="smart-resume">Smart Resume</button>
                         <button class="nav-tab" data-tab="interview-prep">Interview Prep</button>
                         <button class="nav-tab" data-tab="cover-letter">Cover Letter</button>
+                        <button class="nav-tab" data-tab="skills-assessment">Skills Assessment</button>
                         <button class="nav-tab" data-tab="network">Network Manager</button>
                         <button class="nav-tab" data-tab="history">Work History</button>
                     </div>
@@ -389,6 +405,188 @@
                     <div id="jobs-board-container" class="kanban-board-wrapper">
                         <div id="kanban-board" class="flex space-x-4 pb-4">
                             <!-- Columns will be injected here by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Assessment View -->
+            <div id="skills-assessment-view" class="app-view hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-3">Skills Assessment Center</h2>
+                        <p class="text-gray-600 text-lg">Evaluate your skills, track progress, and get personalized improvement recommendations</p>
+                    </div>
+                    
+                    <!-- Skills Overview Dashboard -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Skills Summary Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Skills Overview</h3>
+                                    <p class="text-gray-600 text-sm">Your current skill profile</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Assessments Completed</span>
+                                    <span id="assessments-completed" class="font-semibold text-blue-600">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Skills Evaluated</span>
+                                    <span id="skills-evaluated" class="font-semibold text-green-600">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Overall Score</span>
+                                    <span id="overall-score" class="font-semibold text-purple-600">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Assessment Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg mr-4">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Quick Assessment</h3>
+                                    <p class="text-gray-600 text-sm">5-minute skill evaluation</p>
+                                </div>
+                            </div>
+                            <button id="start-quick-assessment" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-200 font-medium">
+                                Start Quick Assessment
+                            </button>
+                        </div>
+                        
+                        <!-- Recommendations Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg mr-4">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Learning Path</h3>
+                                    <p class="text-gray-600 text-sm">Personalized recommendations</p>
+                                </div>
+                            </div>
+                            <div id="recommendations-preview" class="text-sm text-gray-600">
+                                Complete an assessment to see personalized recommendations
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Skills Categories -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Skill Categories</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Technical Skills -->
+                            <div class="skill-category-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition duration-200 cursor-pointer" data-category="technical">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800">Technical Skills</h4>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Programming, software, tools, and technical competencies</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">12 skills</span>
+                                    <span class="text-xs font-medium text-blue-600">Start Assessment</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Soft Skills -->
+                            <div class="skill-category-card p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:shadow-md transition duration-200 cursor-pointer" data-category="soft">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800">Soft Skills</h4>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Communication, leadership, teamwork, and interpersonal skills</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">10 skills</span>
+                                    <span class="text-xs font-medium text-green-600">Start Assessment</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Industry Specific -->
+                            <div class="skill-category-card p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition duration-200 cursor-pointer" data-category="industry">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800">Industry Specific</h4>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Domain knowledge, industry standards, and specialized skills</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">8 skills</span>
+                                    <span class="text-xs font-medium text-purple-600">Start Assessment</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Assessment Interface (Initially Hidden) -->
+                    <div id="assessment-interface" class="bg-white rounded-xl shadow-lg p-6 hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 id="assessment-title" class="text-xl font-semibold text-gray-800">Technical Skills Assessment</h3>
+                            <button id="close-assessment" class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-600">Progress</span>
+                                <span id="progress-text" class="text-sm text-gray-600">1 of 10</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Question Container -->
+                        <div id="question-container" class="mb-6">
+                            <h4 id="question-text" class="text-lg font-medium text-gray-800 mb-4">Loading question...</h4>
+                            <div id="question-options" class="space-y-3">
+                                <!-- Options will be dynamically generated -->
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation -->
+                        <div class="flex justify-between">
+                            <button id="prev-question" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200" disabled>Previous</button>
+                            <button id="next-question" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">Next</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Dashboard -->
+                    <div id="results-dashboard" class="hidden">
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Assessment Results</h3>
+                            <div id="results-content">
+                                <!-- Results will be dynamically generated -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -731,6 +929,12 @@ Software Developer at TechCorp (2020-2023)
                                             </svg>
                                             Copy
                                         </button>
+                                        <button id="edit-resume-btn" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center text-sm">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </button>
                                         <button id="download-resume-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200 flex items-center text-sm">
                                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -739,11 +943,49 @@ Software Developer at TechCorp (2020-2023)
                                         </button>
                                     </div>
                                 </div>
-                                <div id="tailored-resume-output" class="bg-gray-50 p-6 rounded-lg border border-gray-200 h-96 overflow-y-auto resume-output-container">
-                                    <div class="prose prose-sm max-w-none">
-                                        <!-- Formatted resume content will appear here -->
+                                
+                                <div id="tailored-resume-output" class="min-h-96 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="text-center py-16 text-gray-500">
+                                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <p class="text-lg font-medium">Your tailored resume will appear here</p>
+                                        <p class="text-sm">Enter job description and resume content, then click "Generate Tailored Resume"</p>
                                     </div>
                                 </div>
+                                
+                                <!-- Edit Mode -->
+                                <div id="resume-edit-mode" class="hidden">
+                                    <textarea id="resume-editor" class="w-full h-96 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none font-mono text-sm" placeholder="Edit your tailored resume here..."></textarea>
+                                    <div class="flex justify-end space-x-2 mt-4">
+                                        <button id="cancel-resume-edit-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200">Cancel</button>
+                                        <button id="save-resume-edit-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-200">Save Changes</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Resume Analysis -->
+                                <div id="resume-analysis" class="hidden bg-white p-6 rounded-xl shadow-lg mt-6">
+                                    <h4 class="font-semibold text-gray-800 mb-3">📊 Resume Analysis</h4>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                        <div class="bg-blue-50 p-3 rounded-lg">
+                                            <div class="font-medium text-blue-800">Word Count</div>
+                                            <div id="resume-word-count" class="text-blue-600 text-lg font-semibold">-</div>
+                                        </div>
+                                        <div class="bg-green-50 p-3 rounded-lg">
+                                            <div class="font-medium text-green-800">ATS Score</div>
+                                            <div id="resume-ats-score" class="text-green-600 text-lg font-semibold">-</div>
+                                        </div>
+                                        <div class="bg-purple-50 p-3 rounded-lg">
+                                            <div class="font-medium text-purple-800">Keywords</div>
+                                            <div id="resume-keywords-count" class="text-purple-600 text-lg font-semibold">-</div>
+                                        </div>
+                                        <div class="bg-yellow-50 p-3 rounded-lg">
+                                            <div class="font-medium text-yellow-800">Match Rate</div>
+                                            <div id="resume-match-rate" class="text-yellow-600 text-lg font-semibold">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                                     <div class="flex items-start">
                                         <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1270,8 +1512,8 @@ Software Developer at TechCorp (2020-2023)
                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Salary (Posted or Offered)</label>
                         <input type="text" id="j-salary" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="$XX,XXX">
                         
-                        <!-- Calendar Integration Section -->
-                        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <!-- Calendar Integration Section - Only show when editing existing application with interview status -->
+                        <div id="interview-scheduling-section" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200" style="display: none;">
                             <h4 class="text-sm font-semibold text-blue-800 mb-3 flex items-center">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -1349,7 +1591,7 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
     <!-- Add/Edit Contact Modal -->
-    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30" style="display: none;">
+    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="modal-title" class="text-2xl font-semibold">Add New Contact</h3>
@@ -1632,7 +1874,39 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
 <script>
+    // Global variables
+    let extractedResumeText = '';
+    let coverLetterResumeText = '';
+    
+    // Global modal management
+    function closeAllModals() {
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.classList.remove('active');
+        });
+    }
+    
+    function openModal(modalId) {
+        closeAllModals(); // Close any open modals first
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    // ESC key to close modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeAllModals();
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
+        
+        // Initialize PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            console.log('PDF.js initialized successfully');
+        }
         
     const userProvidedConfig = {
       apiKey: "AIzaSyDeyI9tEiu3hUSFqaUDGREiqFJ30IyxpzQ",
@@ -1800,16 +2074,63 @@ Software Developer at TechCorp (2020-2023)
                 }
             }, 100);
         }
+        
+        // Initialize Network Manager when tab is opened
+        if (tab.dataset.tab === 'network') {
+            setTimeout(() => {
+                console.log('🌐 Network Manager tab opened');
+                
+                // Update analytics when switching to network tab
+                if (typeof updateNetworkAnalytics === 'function' && allContacts.length > 0) {
+                    updateNetworkAnalytics();
+                }
+                
+                // Ensure filters are working
+                if (typeof filterContacts === 'function') {
+                    // Reset filters to show all contacts
+                    const relationshipFilter = document.getElementById('relationship-filter');
+                    const typeFilter = document.getElementById('contact-type-filter');
+                    const searchInput = document.getElementById('contact-search');
+                    
+                    if (relationshipFilter) relationshipFilter.value = 'all';
+                    if (typeFilter) typeFilter.value = 'all';
+                    if (searchInput) searchInput.value = '';
+                    
+                    // Show all contacts
+                    renderContacts(allContacts);
+                }
+            }, 100);
+        }
     }
 
     function openJobModal(job = null) {
         jobForm.reset();
         document.getElementById('j-resume-link').innerHTML = '';
         document.getElementById('j-coverLetter-link').innerHTML = '';
+        
+        // Hide interview scheduling section by default
+        const interviewSection = document.getElementById('interview-scheduling-section');
+        if (interviewSection) {
+            interviewSection.style.display = 'none';
+        }
 
         jobIdField.value = job ? job.id : '';
         jobModalTitle.textContent = job ? 'Edit Application' : 'Add New Application';
         if (job) {
+            // Show interview scheduling section if job has interview-related status
+            const interviewStatuses = [
+                'First round interview',
+                'Second round interview', 
+                'Third round interview',
+                'Fourth round interview',
+                'Waiting for offer'
+            ];
+            if (interviewStatuses.some(status => job.appStatus && job.appStatus.includes('interview'))) {
+                if (interviewSection) {
+                    interviewSection.style.display = 'block';
+                }
+            }
+            
             Object.keys(job).forEach(key => {
                 const element = document.getElementById(`j-${key}`);
                 if (element) {
@@ -1830,11 +2151,11 @@ Software Developer at TechCorp (2020-2023)
             // Set default values for new applications
             document.getElementById('j-createCalendarEvent').checked = true;
         }
-        jobModal.classList.add('active');
+        openModal('job-modal');
     }
-    function closeJobModal() { jobModal.classList.remove('active'); }
+    function closeJobModal() { closeAllModals(); }
 
-    function openContactModal_old(contact = null) {
+    function openContactModal(contact = null) {
         contactForm.reset();
         contactIdField.value = contact ? contact.id : '';
         modalTitle.textContent = contact ? 'Edit Contact' : 'Add New Contact';
@@ -1844,26 +2165,9 @@ Software Developer at TechCorp (2020-2023)
                 if(element) element.value = contact[key];
             });
         }
-        contactModal.classList.add('active');
+        openModal('contact-modal');
     }
-    function closeModal() { contactModal.classList.remove('active'); }
-    
-    // Generic modal functions for enhanced components
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('active');
-            modal.style.display = 'flex';
-        }
-    }
-    
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('active');
-            modal.style.display = 'none';
-        }
-    }
+    function closeModal() { closeAllModals(); }
 
     function openHistoryModal(job = null) {
         historyForm.reset();
@@ -1875,9 +2179,9 @@ Software Developer at TechCorp (2020-2023)
                 if (element) element.value = job[key];
             });
         }
-        historyModal.classList.add('active');
+        openModal('history-modal');
     }
-    function closeHistoryModal() { historyModal.classList.remove('active'); }
+    function closeHistoryModal() { closeAllModals(); }
 
     function renderJobs(jobs) {
         // Clean up auto-generated tasks for jobs that no longer need them
@@ -2168,9 +2472,9 @@ Software Developer at TechCorp (2020-2023)
             renderContacts(allContacts);
             updateDashboard();
             
-            // Initialize enhanced Network Manager
-            if (typeof initializeNetworkManager === 'function') {
-                initializeNetworkManager();
+            // Update Network Manager analytics when contacts change
+            if (typeof updateNetworkAnalytics === 'function') {
+                updateNetworkAnalytics();
             }
         }, e => console.error("Error fetching contacts: ", e));
     }
@@ -2407,11 +2711,11 @@ Software Developer at TechCorp (2020-2023)
             document.getElementById('t-relatedJob').value = task.relatedJobId || '';
         }
         
-        taskModal.classList.add('active');
+        openModal('task-modal');
     }
     
     function closeTaskModal() {
-        taskModal.classList.remove('active');
+        closeAllModals();
     }
     
     async function saveTask(event) {
@@ -2628,10 +2932,1446 @@ Software Developer at TechCorp (2020-2023)
             window.currentCalendarModal = null;
         }
     }
+
+    // ===== SKILLS ASSESSMENT FUNCTIONALITY =====
     
-    // ===== SMART RESUME AI FUNCTIONALITY =====
+    let skillsAssessmentData = {
+        currentAssessment: null,
+        currentQuestionIndex: 0,
+        answers: [],
+        scores: {},
+        assessments: [],
+        categories: {
+            technical: {
+                name: 'Technical Skills',
+                color: 'blue',
+                skills: ['Programming', 'Data Analysis', 'Software Design', 'Database Management', 'Cloud Computing', 'Cybersecurity', 'DevOps', 'Machine Learning', 'Mobile Development', 'Web Development', 'System Administration', 'Testing & QA']
+            },
+            soft: {
+                name: 'Soft Skills', 
+                color: 'green',
+                skills: ['Communication', 'Leadership', 'Problem Solving', 'Time Management', 'Teamwork', 'Adaptability', 'Critical Thinking', 'Emotional Intelligence', 'Conflict Resolution', 'Presentation Skills']
+            },
+            industry: {
+                name: 'Industry Specific',
+                color: 'purple', 
+                skills: ['Project Management', 'Business Analysis', 'Financial Modeling', 'Marketing Strategy', 'Sales Techniques', 'Customer Service', 'Operations Management', 'Quality Assurance']
+            }
+        },
+        questions: {
+            technical: [
+                // Programming Questions (Beginner to Expert)
+                {
+                    question: "How would you rate your proficiency in programming languages?",
+                    type: "scale",
+                    options: ["Beginner", "Intermediate", "Advanced", "Expert"],
+                    skill: "Programming",
+                    difficulty: "basic",
+                    keywords: ["programming", "coding", "development", "software"]
+                },
+                {
+                    question: "Which programming paradigm do you work with most?",
+                    type: "multiple",
+                    options: ["Object-Oriented Programming", "Functional Programming", "Procedural Programming", "Multiple paradigms fluently"],
+                    skill: "Programming",
+                    difficulty: "intermediate",
+                    keywords: ["oop", "functional", "paradigm"]
+                },
+                {
+                    question: "How do you approach code optimization and performance tuning?",
+                    type: "multiple",
+                    options: ["Haven't done optimization", "Basic performance awareness", "Regular profiling and optimization", "Advanced performance engineering"],
+                    skill: "Programming",
+                    difficulty: "advanced",
+                    keywords: ["optimization", "performance", "profiling"]
+                },
+                
+                // Data Analysis Questions
+                {
+                    question: "Which best describes your experience with data analysis?",
+                    type: "multiple",
+                    options: ["No experience", "Basic analysis with Excel", "Statistical analysis with Python/R", "Advanced analytics and machine learning"],
+                    skill: "Data Analysis",
+                    difficulty: "basic",
+                    keywords: ["data", "analysis", "analytics", "statistics"]
+                },
+                {
+                    question: "What data visualization tools do you use regularly?",
+                    type: "multiple",
+                    options: ["Excel charts only", "Tableau or Power BI", "Python/R visualization libraries", "Custom dashboard development"],
+                    skill: "Data Analysis",
+                    difficulty: "intermediate",
+                    keywords: ["visualization", "tableau", "powerbi", "matplotlib"]
+                },
+                {
+                    question: "How do you handle big data processing and analysis?",
+                    type: "multiple",
+                    options: ["Not applicable to my work", "Sampling and aggregation", "Distributed computing (Spark, Hadoop)", "Real-time streaming analytics"],
+                    skill: "Data Analysis",
+                    difficulty: "advanced",
+                    keywords: ["big data", "spark", "hadoop", "streaming"]
+                },
+                
+                // Cloud Computing Questions
+                {
+                    question: "How comfortable are you with cloud platforms (AWS, Azure, GCP)?",
+                    type: "scale",
+                    options: ["Not familiar", "Basic knowledge", "Intermediate usage", "Expert level"],
+                    skill: "Cloud Computing",
+                    difficulty: "basic",
+                    keywords: ["cloud", "aws", "azure", "gcp"]
+                },
+                {
+                    question: "Which cloud services do you work with most?",
+                    type: "multiple",
+                    options: ["Basic compute and storage", "Managed databases and APIs", "Serverless and microservices", "Enterprise architecture and multi-cloud"],
+                    skill: "Cloud Computing",
+                    difficulty: "intermediate",
+                    keywords: ["serverless", "microservices", "lambda", "kubernetes"]
+                },
+                {
+                    question: "How do you approach cloud security and compliance?",
+                    type: "multiple",
+                    options: ["Basic access controls", "Security best practices", "Compliance frameworks (SOC, HIPAA)", "Zero-trust architecture design"],
+                    skill: "Cloud Computing",
+                    difficulty: "advanced",
+                    keywords: ["security", "compliance", "zero-trust", "encryption"]
+                },
+                
+                // Database Management Questions
+                {
+                    question: "What is your experience with database management?",
+                    type: "multiple",
+                    options: ["No experience", "Basic SQL queries", "Database design and optimization", "Advanced database administration"],
+                    skill: "Database Management",
+                    difficulty: "basic",
+                    keywords: ["database", "sql", "mysql", "postgresql"]
+                },
+                {
+                    question: "Which database types do you work with?",
+                    type: "multiple",
+                    options: ["Relational databases only", "NoSQL databases", "Both SQL and NoSQL", "Specialized databases (Graph, Time-series)"],
+                    skill: "Database Management",
+                    difficulty: "intermediate",
+                    keywords: ["nosql", "mongodb", "graph", "timeseries"]
+                },
+                {
+                    question: "How do you handle database performance and scaling?",
+                    type: "multiple",
+                    options: ["Basic indexing", "Query optimization", "Horizontal scaling and sharding", "Distributed database architectures"],
+                    skill: "Database Management",
+                    difficulty: "advanced",
+                    keywords: ["scaling", "sharding", "indexing", "optimization"]
+                },
+                
+                // Testing & QA Questions
+                {
+                    question: "How would you describe your software testing abilities?",
+                    type: "scale",
+                    options: ["No experience", "Manual testing", "Automated testing", "Test strategy and frameworks"],
+                    skill: "Testing & QA",
+                    difficulty: "basic",
+                    keywords: ["testing", "qa", "automation", "selenium"]
+                },
+                {
+                    question: "What testing approaches do you use?",
+                    type: "multiple",
+                    options: ["Manual testing only", "Unit and integration tests", "End-to-end automation", "Test-driven development (TDD)"],
+                    skill: "Testing & QA",
+                    difficulty: "intermediate",
+                    keywords: ["tdd", "unit testing", "integration", "e2e"]
+                },
+                {
+                    question: "How do you approach quality assurance in CI/CD pipelines?",
+                    type: "multiple",
+                    options: ["Manual deployment testing", "Automated test suites", "Continuous testing integration", "Advanced quality gates and metrics"],
+                    skill: "Testing & QA",
+                    difficulty: "advanced",
+                    keywords: ["ci/cd", "pipeline", "jenkins", "quality gates"]
+                },
+                
+                // Additional Technical Skills
+                {
+                    question: "What is your experience with version control systems?",
+                    type: "multiple",
+                    options: ["Basic Git usage", "Branching and merging", "Advanced Git workflows", "Enterprise version control strategies"],
+                    skill: "DevOps",
+                    difficulty: "basic",
+                    keywords: ["git", "version control", "github", "gitlab"]
+                },
+                {
+                    question: "How comfortable are you with containerization and orchestration?",
+                    type: "multiple",
+                    options: ["No experience", "Basic Docker usage", "Kubernetes deployment", "Production orchestration management"],
+                    skill: "DevOps",
+                    difficulty: "intermediate",
+                    keywords: ["docker", "kubernetes", "containers", "orchestration"]
+                }
+            ],
+            soft: [
+                // Communication Questions
+                {
+                    question: "How effectively do you communicate complex ideas to different audiences?",
+                    type: "scale",
+                    options: ["Struggle with communication", "Communicate clearly most times", "Strong communicator", "Exceptional communication skills"],
+                    skill: "Communication",
+                    difficulty: "basic",
+                    keywords: ["communication", "presentation", "writing", "speaking"]
+                },
+                {
+                    question: "How do you adapt your communication style for different stakeholders?",
+                    type: "multiple",
+                    options: ["Use same approach for everyone", "Adjust based on audience", "Tailor messaging strategically", "Expert at stakeholder communication"],
+                    skill: "Communication",
+                    difficulty: "intermediate",
+                    keywords: ["stakeholder", "adaptation", "messaging"]
+                },
+                {
+                    question: "When presenting to executives, how do you structure your message?",
+                    type: "multiple",
+                    options: ["Provide all details upfront", "Start with key points", "Lead with business impact", "Strategic narrative with clear ROI"],
+                    skill: "Communication",
+                    difficulty: "advanced",
+                    keywords: ["executive", "presentation", "business impact", "roi"]
+                },
+                
+                // Leadership Questions
+                {
+                    question: "Describe your leadership experience:",
+                    type: "multiple",
+                    options: ["No formal leadership", "Led small projects/teams", "Managed teams regularly", "Senior leadership experience"],
+                    skill: "Leadership",
+                    difficulty: "basic",
+                    keywords: ["leadership", "management", "team lead", "supervisor"]
+                },
+                {
+                    question: "How do you motivate team members with different working styles?",
+                    type: "multiple",
+                    options: ["Treat everyone the same", "Recognize individual preferences", "Customize motivation approaches", "Expert at individual development"],
+                    skill: "Leadership",
+                    difficulty: "intermediate",
+                    keywords: ["motivation", "team dynamics", "individual development"]
+                },
+                {
+                    question: "When faced with team conflict, what's your approach?",
+                    type: "multiple",
+                    options: ["Avoid or escalate conflict", "Address issues directly", "Mediate and find solutions", "Transform conflict into growth opportunities"],
+                    skill: "Leadership",
+                    difficulty: "advanced",
+                    keywords: ["conflict resolution", "mediation", "team management"]
+                },
+                
+                // Problem Solving Questions
+                {
+                    question: "How do you handle challenging problems?",
+                    type: "multiple",
+                    options: ["Get overwhelmed easily", "Work through step by step", "Enjoy complex challenges", "Thrive on solving difficult problems"],
+                    skill: "Problem Solving",
+                    difficulty: "basic",
+                    keywords: ["problem solving", "analytical", "troubleshooting"]
+                },
+                {
+                    question: "When facing an unfamiliar problem, what's your first step?",
+                    type: "multiple",
+                    options: ["Ask for help immediately", "Research similar problems", "Break down into components", "Systematic analysis and hypothesis testing"],
+                    skill: "Problem Solving",
+                    difficulty: "intermediate",
+                    keywords: ["analysis", "research", "systematic approach"]
+                },
+                {
+                    question: "How do you approach problems with no clear solution?",
+                    type: "multiple",
+                    options: ["Wait for guidance", "Try different approaches", "Create structured experiments", "Design innovative solution frameworks"],
+                    skill: "Problem Solving",
+                    difficulty: "advanced",
+                    keywords: ["innovation", "experimentation", "creative solutions"]
+                },
+                
+                // Time Management Questions
+                {
+                    question: "How well do you manage your time and priorities?",
+                    type: "scale",
+                    options: ["Often behind schedule", "Usually meet deadlines", "Good time management", "Excellent at prioritization"],
+                    skill: "Time Management",
+                    difficulty: "basic",
+                    keywords: ["time management", "prioritization", "deadlines", "organization"]
+                },
+                {
+                    question: "How do you handle competing priorities from multiple stakeholders?",
+                    type: "multiple",
+                    options: ["Get stressed and reactive", "Try to please everyone", "Negotiate and communicate tradeoffs", "Strategic priority framework with stakeholder alignment"],
+                    skill: "Time Management",
+                    difficulty: "intermediate",
+                    keywords: ["competing priorities", "stakeholder management", "negotiation"]
+                },
+                {
+                    question: "When everything is 'urgent', how do you prioritize?",
+                    type: "multiple",
+                    options: ["Work on loudest requests", "Use importance vs urgency matrix", "Business impact prioritization", "Strategic value and risk assessment framework"],
+                    skill: "Time Management",
+                    difficulty: "advanced",
+                    keywords: ["prioritization framework", "business impact", "strategic thinking"]
+                },
+                
+                // Teamwork Questions
+                {
+                    question: "How do you work in team environments?",
+                    type: "multiple",
+                    options: ["Prefer working alone", "Work well in teams", "Natural team player", "Excellent team collaborator and motivator"],
+                    skill: "Teamwork",
+                    difficulty: "basic",
+                    keywords: ["teamwork", "collaboration", "team player"]
+                },
+                {
+                    question: "How do you contribute to team success beyond your individual tasks?",
+                    type: "multiple",
+                    options: ["Focus on my assigned work", "Help teammates when asked", "Proactively support team goals", "Drive team performance and culture"],
+                    skill: "Teamwork",
+                    difficulty: "intermediate",
+                    keywords: ["team contribution", "proactive support", "team goals"]
+                },
+                {
+                    question: "How do you handle working with difficult team members?",
+                    type: "multiple",
+                    options: ["Avoid or complain about them", "Work around the issues", "Address concerns constructively", "Transform challenging dynamics into team strengths"],
+                    skill: "Teamwork",
+                    difficulty: "advanced",
+                    keywords: ["difficult people", "team dynamics", "conflict management"]
+                },
+                
+                // Additional Soft Skills
+                {
+                    question: "How do you handle stress and pressure?",
+                    type: "multiple",
+                    options: ["Get overwhelmed easily", "Manage with some difficulty", "Thrive under pressure", "Use pressure as performance catalyst"],
+                    skill: "Emotional Intelligence",
+                    difficulty: "basic",
+                    keywords: ["stress management", "pressure", "resilience"]
+                },
+                {
+                    question: "How do you approach learning new skills or technologies?",
+                    type: "multiple",
+                    options: ["Wait for formal training", "Self-directed learning", "Continuous learning mindset", "Learning leader who teaches others"],
+                    skill: "Adaptability",
+                    difficulty: "intermediate",
+                    keywords: ["learning", "adaptability", "continuous improvement"]
+                },
+                {
+                    question: "How do you give feedback to colleagues or team members?",
+                    type: "multiple",
+                    options: ["Avoid giving feedback", "Give feedback when necessary", "Regular constructive feedback", "Expert at developmental feedback and coaching"],
+                    skill: "Communication",
+                    difficulty: "advanced",
+                    keywords: ["feedback", "coaching", "development"]
+                }
+            ],
+            industry: [
+                // Project Management Questions
+                {
+                    question: "What is your project management experience?",
+                    type: "multiple",
+                    options: ["No formal experience", "Managed small projects", "Led multiple projects", "Expert project manager with certifications"],
+                    skill: "Project Management",
+                    difficulty: "basic",
+                    keywords: ["project management", "pmp", "agile", "scrum"]
+                },
+                {
+                    question: "Which project management methodologies do you use?",
+                    type: "multiple",
+                    options: ["Traditional/Waterfall only", "Agile/Scrum", "Multiple methodologies", "Tailored hybrid approaches"],
+                    skill: "Project Management",
+                    difficulty: "intermediate",
+                    keywords: ["waterfall", "agile", "scrum", "kanban", "hybrid"]
+                },
+                {
+                    question: "How do you handle project risks and stakeholder management?",
+                    type: "multiple",
+                    options: ["Basic risk identification", "Risk management planning", "Proactive risk mitigation", "Enterprise risk and stakeholder strategy"],
+                    skill: "Project Management",
+                    difficulty: "advanced",
+                    keywords: ["risk management", "stakeholder management", "mitigation"]
+                },
+                
+                // Business Analysis Questions
+                {
+                    question: "How experienced are you with business analysis?",
+                    type: "scale",
+                    options: ["No experience", "Basic analysis", "Regular business analysis", "Expert business analyst"],
+                    skill: "Business Analysis",
+                    difficulty: "basic",
+                    keywords: ["business analysis", "requirements", "process improvement"]
+                },
+                {
+                    question: "What business analysis techniques do you use?",
+                    type: "multiple",
+                    options: ["Basic data gathering", "Requirements documentation", "Process modeling and analysis", "Strategic business transformation"],
+                    skill: "Business Analysis",
+                    difficulty: "intermediate",
+                    keywords: ["requirements gathering", "process modeling", "user stories"]
+                },
+                {
+                    question: "How do you approach digital transformation initiatives?",
+                    type: "multiple",
+                    options: ["Not involved in transformation", "Support transformation projects", "Lead transformation analysis", "Strategic transformation architect"],
+                    skill: "Business Analysis",
+                    difficulty: "advanced",
+                    keywords: ["digital transformation", "change management", "strategy"]
+                },
+                
+                // Customer Service Questions
+                {
+                    question: "Describe your customer service experience:",
+                    type: "multiple",
+                    options: ["No customer service", "Basic customer interaction", "Regular customer service", "Expert in customer success"],
+                    skill: "Customer Service",
+                    difficulty: "basic",
+                    keywords: ["customer service", "customer support", "client relations"]
+                },
+                {
+                    question: "How do you handle difficult or upset customers?",
+                    type: "multiple",
+                    options: ["Escalate immediately", "Follow standard procedures", "De-escalate and solve problems", "Transform complaints into loyalty opportunities"],
+                    skill: "Customer Service",
+                    difficulty: "intermediate",
+                    keywords: ["de-escalation", "complaint handling", "customer satisfaction"]
+                },
+                {
+                    question: "How do you measure and improve customer experience?",
+                    type: "multiple",
+                    options: ["Basic satisfaction surveys", "Regular feedback collection", "Customer journey optimization", "Strategic CX transformation and metrics"],
+                    skill: "Customer Service",
+                    difficulty: "advanced",
+                    keywords: ["customer experience", "cx", "customer journey", "metrics"]
+                },
+                
+                // Sales & Marketing Questions
+                {
+                    question: "What is your experience with sales processes?",
+                    type: "multiple",
+                    options: ["No sales experience", "Basic sales support", "Direct sales experience", "Sales leadership and strategy"],
+                    skill: "Sales Techniques",
+                    difficulty: "basic",
+                    keywords: ["sales", "selling", "revenue", "pipeline"]
+                },
+                {
+                    question: "How do you approach lead generation and qualification?",
+                    type: "multiple",
+                    options: ["Follow provided leads", "Basic prospecting", "Strategic lead generation", "Comprehensive sales funnel optimization"],
+                    skill: "Sales Techniques",
+                    difficulty: "intermediate",
+                    keywords: ["lead generation", "prospecting", "qualification"]
+                },
+                {
+                    question: "What is your experience with digital marketing?",
+                    type: "multiple",
+                    options: ["No digital marketing", "Basic social media", "Multi-channel campaigns", "Advanced marketing automation and analytics"],
+                    skill: "Marketing Strategy",
+                    difficulty: "intermediate",
+                    keywords: ["digital marketing", "social media", "campaigns", "automation"]
+                },
+                
+                // Financial & Operations Questions
+                {
+                    question: "How comfortable are you with financial analysis?",
+                    type: "multiple",
+                    options: ["Basic budgeting", "Financial reporting", "Financial modeling", "Strategic financial analysis and planning"],
+                    skill: "Financial Modeling",
+                    difficulty: "basic",
+                    keywords: ["financial analysis", "budgeting", "modeling", "forecasting"]
+                },
+                {
+                    question: "What is your experience with operations management?",
+                    type: "multiple",
+                    options: ["No operations experience", "Process documentation", "Operations optimization", "Strategic operations transformation"],
+                    skill: "Operations Management",
+                    difficulty: "intermediate",
+                    keywords: ["operations", "process improvement", "efficiency", "optimization"]
+                },
+                {
+                    question: "How do you approach quality assurance in business processes?",
+                    type: "multiple",
+                    options: ["Follow existing procedures", "Basic quality checks", "Quality improvement initiatives", "Comprehensive quality management systems"],
+                    skill: "Quality Assurance",
+                    difficulty: "advanced",
+                    keywords: ["quality assurance", "quality management", "process improvement"]
+                }
+            ]
+        }
+    };
     
-    let uploadedResumeFile = null;
+    function initializeSkillsAssessment() {
+        console.log('Initializing Skills Assessment...');
+        
+        // Initialize event listeners
+        const quickAssessmentBtn = document.getElementById('start-quick-assessment');
+        const categoryCards = document.querySelectorAll('.skill-category-card');
+        const closeAssessmentBtn = document.getElementById('close-assessment');
+        const nextQuestionBtn = document.getElementById('next-question');
+        const prevQuestionBtn = document.getElementById('prev-question');
+        
+        if (quickAssessmentBtn) {
+            quickAssessmentBtn.addEventListener('click', startQuickAssessment);
+        }
+        
+        categoryCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                const category = e.currentTarget.dataset.category;
+                startCategoryAssessment(category);
+            });
+        });
+        
+        if (closeAssessmentBtn) {
+            closeAssessmentBtn.addEventListener('click', closeAssessment);
+        }
+        
+        if (nextQuestionBtn) {
+            nextQuestionBtn.addEventListener('click', nextQuestion);
+        }
+        
+        if (prevQuestionBtn) {
+            prevQuestionBtn.addEventListener('click', prevQuestion);
+        }
+        
+        // Load saved data
+        loadSkillsData();
+        updateDashboard();
+        
+        console.log('Skills Assessment initialized successfully');
+    }
+    
+    function startQuickAssessment() {
+        // Intelligent quick assessment with adaptive selection
+        const userProfile = analyzeUserProfile();
+        const selectedQuestions = selectAdaptiveQuestions('quick', userProfile);
+        
+        startAssessment('Quick Assessment', selectedQuestions);
+    }
+    
+    function analyzeUserProfile() {
+        // Analyze uploaded resume for keywords and experience level
+        const profile = {
+            skills: [],
+            experienceLevel: 'intermediate',
+            industry: 'general',
+            keywords: []
+        };
+        
+        if (extractedResumeText) {
+            const resumeText = extractedResumeText.toLowerCase();
+            
+            // Extract technical skills
+            const techKeywords = ['programming', 'python', 'javascript', 'java', 'react', 'node', 'sql', 'aws', 'azure', 'docker', 'kubernetes'];
+            const softKeywords = ['leadership', 'management', 'communication', 'team', 'project'];
+            const industryKeywords = ['healthcare', 'finance', 'retail', 'technology', 'education', 'manufacturing'];
+            
+            profile.skills = techKeywords.filter(keyword => resumeText.includes(keyword));
+            profile.keywords = [...profile.skills];
+            
+            // Determine experience level based on resume content
+            if (resumeText.includes('senior') || resumeText.includes('lead') || resumeText.includes('principal')) {
+                profile.experienceLevel = 'advanced';
+            } else if (resumeText.includes('junior') || resumeText.includes('entry') || resumeText.includes('intern')) {
+                profile.experienceLevel = 'basic';
+            }
+            
+            // Detect industry
+            for (const industry of industryKeywords) {
+                if (resumeText.includes(industry)) {
+                    profile.industry = industry;
+                    break;
+                }
+            }
+        }
+        
+        return profile;
+    }
+    
+    function selectAdaptiveQuestions(assessmentType, userProfile) {
+        const allQuestions = {
+            technical: skillsAssessmentData.questions.technical,
+            soft: skillsAssessmentData.questions.soft,
+            industry: skillsAssessmentData.questions.industry
+        };
+        
+        if (assessmentType === 'quick') {
+            // Smart selection for quick assessment
+            const selected = [];
+            
+            // Select 2-3 technical questions based on user's skills
+            const relevantTech = filterQuestionsByRelevance(allQuestions.technical, userProfile);
+            selected.push(...getQuestionsByDifficulty(relevantTech, userProfile.experienceLevel, 2));
+            
+            // Select 2 soft skills questions
+            const relevantSoft = filterQuestionsByRelevance(allQuestions.soft, userProfile);
+            selected.push(...getQuestionsByDifficulty(relevantSoft, userProfile.experienceLevel, 2));
+            
+            // Select 1 industry question
+            const relevantIndustry = filterQuestionsByRelevance(allQuestions.industry, userProfile);
+            selected.push(...getQuestionsByDifficulty(relevantIndustry, userProfile.experienceLevel, 1));
+            
+            return selected;
+        }
+        
+        return [];
+    }
+    
+    function filterQuestionsByRelevance(questions, userProfile) {
+        if (!userProfile.keywords || userProfile.keywords.length === 0) {
+            return questions;
+        }
+        
+        // Score questions based on keyword relevance
+        const scoredQuestions = questions.map(q => {
+            let relevanceScore = 0;
+            
+            if (q.keywords) {
+                relevanceScore = q.keywords.filter(keyword => 
+                    userProfile.keywords.some(userKeyword => 
+                        keyword.includes(userKeyword) || userKeyword.includes(keyword)
+                    )
+                ).length;
+            }
+            
+            return { ...q, relevanceScore };
+        });
+        
+        // Sort by relevance, keeping some variety
+        scoredQuestions.sort((a, b) => b.relevanceScore - a.relevanceScore);
+        
+        // Return mix of relevant and general questions
+        const relevant = scoredQuestions.filter(q => q.relevanceScore > 0);
+        const general = scoredQuestions.filter(q => q.relevanceScore === 0);
+        
+        return [...relevant, ...general];
+    }
+    
+    function getQuestionsByDifficulty(questions, targetDifficulty, count) {
+        const difficultyOrder = ['basic', 'intermediate', 'advanced'];
+        const targetIndex = difficultyOrder.indexOf(targetDifficulty);
+        
+        // Get questions at target difficulty and adjacent levels
+        const suitable = questions.filter(q => {
+            if (!q.difficulty) return true; // Include questions without difficulty
+            const qIndex = difficultyOrder.indexOf(q.difficulty);
+            return Math.abs(qIndex - targetIndex) <= 1;
+        });
+        
+        // Shuffle and return requested count
+        const shuffled = suitable.sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+    }
+    
+    function startCategoryAssessment(category) {
+        const categoryData = skillsAssessmentData.categories[category];
+        const questions = skillsAssessmentData.questions[category] || [];
+        
+        if (questions.length === 0) {
+            showToast('Assessment questions not available for this category yet', 'info');
+            return;
+        }
+        
+        startAssessment(`${categoryData.name} Assessment`, questions);
+    }
+    
+    function startAssessment(title, questions) {
+        skillsAssessmentData.currentAssessment = {
+            title: title,
+            questions: questions,
+            startTime: new Date()
+        };
+        skillsAssessmentData.currentQuestionIndex = 0;
+        skillsAssessmentData.answers = [];
+        
+        // Show assessment interface
+        document.getElementById('assessment-interface').classList.remove('hidden');
+        document.getElementById('assessment-title').textContent = title;
+        
+        // Scroll to assessment
+        document.getElementById('assessment-interface').scrollIntoView({ behavior: 'smooth' });
+        
+        showCurrentQuestion();
+    }
+    
+    function showCurrentQuestion() {
+        const assessment = skillsAssessmentData.currentAssessment;
+        const questionIndex = skillsAssessmentData.currentQuestionIndex;
+        const question = assessment.questions[questionIndex];
+        
+        // Update progress
+        const progress = ((questionIndex + 1) / assessment.questions.length) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = `${questionIndex + 1} of ${assessment.questions.length}`;
+        
+        // Show question
+        document.getElementById('question-text').textContent = question.question;
+        
+        // Generate options
+        const optionsContainer = document.getElementById('question-options');
+        optionsContainer.innerHTML = '';
+        
+        question.options.forEach((option, index) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'question-option p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition duration-200';
+            optionDiv.innerHTML = `
+                <label class="flex items-center cursor-pointer">
+                    <input type="radio" name="question-answer" value="${index}" class="mr-3">
+                    <span>${option}</span>
+                </label>
+            `;
+            optionsContainer.appendChild(optionDiv);
+            
+            // Add click handler for the entire div
+            optionDiv.addEventListener('click', () => {
+                // Uncheck all options
+                document.querySelectorAll('input[name="question-answer"]').forEach(input => {
+                    input.checked = false;
+                    input.closest('.question-option').classList.remove('border-blue-500', 'bg-blue-50');
+                });
+                
+                // Check this option
+                const radio = optionDiv.querySelector('input');
+                radio.checked = true;
+                optionDiv.classList.add('border-blue-500', 'bg-blue-50');
+            });
+        });
+        
+        // Update navigation buttons
+        document.getElementById('prev-question').disabled = questionIndex === 0;
+        document.getElementById('next-question').textContent = 
+            questionIndex === assessment.questions.length - 1 ? 'Finish Assessment' : 'Next';
+    }
+    
+    function nextQuestion() {
+        const selectedOption = document.querySelector('input[name="question-answer"]:checked');
+        
+        if (!selectedOption) {
+            showToast('Please select an answer before continuing', 'warning');
+            return;
+        }
+        
+        // Save answer
+        const assessment = skillsAssessmentData.currentAssessment;
+        const question = assessment.questions[skillsAssessmentData.currentQuestionIndex];
+        const score = calculateQuestionScore(question, parseInt(selectedOption.value));
+        
+        skillsAssessmentData.answers.push({
+            questionIndex: skillsAssessmentData.currentQuestionIndex,
+            question: question.question,
+            skill: question.skill,
+            selectedOption: parseInt(selectedOption.value),
+            answer: question.options[selectedOption.value],
+            score: score
+        });
+        
+        // Adaptive question selection for remaining questions
+        if (skillsAssessmentData.currentQuestionIndex < assessment.questions.length - 1) {
+            // Check if we should adapt difficulty for next questions
+            if (assessment.title.includes('Assessment') && skillsAssessmentData.answers.length >= 2) {
+                adaptAssessmentDifficulty(assessment, score);
+            }
+            
+            skillsAssessmentData.currentQuestionIndex++;
+            showCurrentQuestion();
+        } else {
+            finishAssessment();
+        }
+    }
+    
+    function adaptAssessmentDifficulty(assessment, lastScore) {
+        // Calculate recent performance
+        const recentAnswers = skillsAssessmentData.answers.slice(-2);
+        const avgRecentScore = recentAnswers.reduce((sum, a) => sum + a.score, 0) / recentAnswers.length;
+        
+        // Determine if we should adjust difficulty
+        let targetDifficulty = 'intermediate';
+        
+        if (avgRecentScore >= 85) {
+            targetDifficulty = 'advanced';
+        } else if (avgRecentScore <= 40) {
+            targetDifficulty = 'basic';
+        }
+        
+        // Replace remaining questions with appropriate difficulty if needed
+        const remainingIndices = [];
+        for (let i = skillsAssessmentData.currentQuestionIndex + 1; i < assessment.questions.length; i++) {
+            remainingIndices.push(i);
+        }
+        
+        if (remainingIndices.length > 0) {
+            const currentSkill = assessment.questions[skillsAssessmentData.currentQuestionIndex].skill;
+            const category = findCategoryForSkill(currentSkill);
+            
+            if (category) {
+                const alternativeQuestions = skillsAssessmentData.questions[category]
+                    .filter(q => q.skill === currentSkill && q.difficulty === targetDifficulty)
+                    .filter(q => !assessment.questions.find(aq => aq.question === q.question));
+                
+                // Replace next question if we have a better match
+                if (alternativeQuestions.length > 0 && remainingIndices.length > 0) {
+                    const nextIndex = remainingIndices[0];
+                    assessment.questions[nextIndex] = alternativeQuestions[0];
+                }
+            }
+        }
+    }
+    
+    function findCategoryForSkill(skill) {
+        for (const [category, questions] of Object.entries(skillsAssessmentData.questions)) {
+            if (questions.some(q => q.skill === skill)) {
+                return category;
+            }
+        }
+        return null;
+    }
+    
+    function prevQuestion() {
+        if (skillsAssessmentData.currentQuestionIndex > 0) {
+            skillsAssessmentData.currentQuestionIndex--;
+            skillsAssessmentData.answers.pop(); // Remove last answer
+            showCurrentQuestion();
+        }
+    }
+    
+    function calculateQuestionScore(question, selectedIndex) {
+        // Simple scoring: 0-3 scale based on option index
+        return (selectedIndex / (question.options.length - 1)) * 100;
+    }
+    
+    function finishAssessment() {
+        const assessment = skillsAssessmentData.currentAssessment;
+        assessment.endTime = new Date();
+        assessment.answers = [...skillsAssessmentData.answers];
+        
+        // Calculate scores
+        const scoresBySkill = {};
+        let totalScore = 0;
+        
+        skillsAssessmentData.answers.forEach(answer => {
+            if (!scoresBySkill[answer.skill]) {
+                scoresBySkill[answer.skill] = [];
+            }
+            scoresBySkill[answer.skill].push(answer.score);
+            totalScore += answer.score;
+        });
+        
+        // Calculate average scores
+        Object.keys(scoresBySkill).forEach(skill => {
+            const scores = scoresBySkill[skill];
+            scoresBySkill[skill] = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+        });
+        
+        assessment.overallScore = totalScore / skillsAssessmentData.answers.length;
+        assessment.skillScores = scoresBySkill;
+        
+        // Save assessment
+        skillsAssessmentData.assessments.push(assessment);
+        saveSkillsData();
+        
+        // Show results
+        showAssessmentResults(assessment);
+        
+        // Update dashboard
+        updateDashboard();
+        
+        showToast('Assessment completed successfully!', 'success');
+    }
+    
+    function showAssessmentResults(assessment) {
+        // Hide assessment interface
+        document.getElementById('assessment-interface').classList.add('hidden');
+        
+        // Show results
+        const resultsContainer = document.getElementById('results-dashboard');
+        const resultsContent = document.getElementById('results-content');
+        
+        let resultsHTML = `
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-semibold text-gray-800">${assessment.title}</h4>
+                    <span class="text-2xl font-bold text-blue-600">${Math.round(assessment.overallScore)}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-blue-600 h-3 rounded-full" style="width: ${assessment.overallScore}%"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        `;
+        
+        // Show skill scores
+        Object.entries(assessment.skillScores).forEach(([skill, score]) => {
+            const color = score >= 75 ? 'green' : score >= 50 ? 'yellow' : 'red';
+            resultsHTML += `
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-800">${skill}</span>
+                        <span class="font-semibold text-${color}-600">${Math.round(score)}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-${color}-600 h-2 rounded-full" style="width: ${score}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        resultsHTML += `
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-blue-800 mb-2">Strengths:</h5>
+                    <ul class="text-sm text-blue-700 space-y-1">
+        `;
+        
+        // Generate strengths and improvement areas
+        const strengths = [];
+        const improvements = [];
+        
+        Object.entries(assessment.skillScores).forEach(([skill, score]) => {
+            if (score >= 75) {
+                strengths.push({ skill, score });
+            } else if (score < 60) {
+                improvements.push({ skill, score });
+            }
+        });
+        
+        // Display strengths
+        if (strengths.length > 0) {
+            strengths.forEach(({ skill, score }) => {
+                resultsHTML += `<li>• ${skill} (${Math.round(score)}% - Strong performance)</li>`;
+            });
+        } else {
+            resultsHTML += `<li>• Continue building on your existing skills</li>`;
+        }
+        
+        resultsHTML += `
+                    </ul>
+                </div>
+                
+                <div class="bg-orange-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-orange-800 mb-2">Growth Opportunities:</h5>
+                    <ul class="text-sm text-orange-700 space-y-1">
+        `;
+        
+        // Display improvement areas
+        if (improvements.length > 0) {
+            improvements.forEach(({ skill, score }) => {
+                resultsHTML += `<li>• ${skill} (${Math.round(score)}% - Focus area for development)</li>`;
+            });
+        } else {
+            resultsHTML += `<li>• Great baseline! Consider advancing to expert level in your strengths</li>`;
+        }
+        
+        resultsHTML += `
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h5 class="font-semibold text-green-800 mb-2">Personalized Recommendations:</h5>
+                <ul class="text-sm text-green-700 space-y-1">
+        `;
+        
+        // Generate intelligent recommendations
+        const recommendations = generateIntelligentRecommendations(assessment);
+        recommendations.forEach(rec => {
+            resultsHTML += `<li>• ${rec}</li>`;
+        });
+        
+        resultsHTML += `
+                </ul>
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <button onclick="closeResults()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200">Close Results</button>
+            </div>
+        `;
+        
+        resultsContent.innerHTML = resultsHTML;
+        resultsContainer.classList.remove('hidden');
+        
+        // Scroll to results
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function generateIntelligentRecommendations(assessment) {
+        const recommendations = [];
+        const overallScore = assessment.overallScore;
+        const skillScores = assessment.skillScores;
+        
+        // Performance-based recommendations
+        if (overallScore >= 85) {
+            recommendations.push("Excellent performance! Consider taking on leadership roles or mentoring others");
+            recommendations.push("Look into advanced certifications in your strongest skills");
+        } else if (overallScore >= 70) {
+            recommendations.push("Strong foundation! Focus on advancing your top skills to expert level");
+            recommendations.push("Consider cross-training in complementary skills");
+        } else {
+            recommendations.push("Focus on building foundational skills through structured learning programs");
+            recommendations.push("Consider finding a mentor in your field for guidance");
+        }
+        
+        // Skill-specific recommendations
+        Object.entries(skillScores).forEach(([skill, score]) => {
+            if (score < 50) {
+                switch(skill) {
+                    case 'Programming':
+                        recommendations.push("Start with online coding bootcamps or platforms like Codecademy");
+                        break;
+                    case 'Communication':
+                        recommendations.push("Join Toastmasters or practice presentation skills regularly");
+                        break;
+                    case 'Leadership':
+                        recommendations.push("Volunteer for team lead roles or take leadership courses");
+                        break;
+                    case 'Project Management':
+                        recommendations.push("Consider PMP certification or Agile/Scrum training");
+                        break;
+                    default:
+                        recommendations.push(`Seek online courses or workshops specific to ${skill}`);
+                }
+            } else if (score >= 80) {
+                recommendations.push(`Your ${skill} skills are excellent - consider teaching or mentoring others`);
+            }
+        });
+        
+        // Assessment-specific recommendations
+        if (assessment.title.includes('Technical')) {
+            recommendations.push("Build a portfolio showcasing your technical projects");
+            recommendations.push("Stay updated with latest industry trends and technologies");
+        } else if (assessment.title.includes('Soft Skills')) {
+            recommendations.push("Practice these skills in real workplace scenarios");
+            recommendations.push("Seek feedback from colleagues on your soft skills development");
+        }
+        
+        return recommendations.slice(0, 5); // Limit to top 5 recommendations
+    }
+    
+    function closeAssessment() {
+        document.getElementById('assessment-interface').classList.add('hidden');
+        skillsAssessmentData.currentAssessment = null;
+    }
+    
+    function closeResults() {
+        document.getElementById('results-dashboard').classList.add('hidden');
+    }
+    
+    function updateDashboard() {
+        const assessmentsCount = skillsAssessmentData.assessments.length;
+        const skillsEvaluated = new Set();
+        let totalScore = 0;
+        
+        skillsAssessmentData.assessments.forEach(assessment => {
+            Object.keys(assessment.skillScores).forEach(skill => skillsEvaluated.add(skill));
+            totalScore += assessment.overallScore;
+        });
+        
+        const overallScore = assessmentsCount > 0 ? Math.round(totalScore / assessmentsCount) : 0;
+        
+        document.getElementById('assessments-completed').textContent = assessmentsCount;
+        document.getElementById('skills-evaluated').textContent = skillsEvaluated.size;
+        document.getElementById('overall-score').textContent = assessmentsCount > 0 ? `${overallScore}%` : '--';
+        
+        // Update recommendations
+        const recommendationsEl = document.getElementById('recommendations-preview');
+        if (assessmentsCount > 0) {
+            recommendationsEl.innerHTML = `
+                <div class="text-sm">
+                    <div class="font-medium text-gray-700 mb-1">Top recommendations:</div>
+                    <div class="text-gray-600">• Complete more assessments for detailed insights</div>
+                    <div class="text-gray-600">• Focus on improving lower-scoring skills</div>
+                </div>
+            `;
+        }
+    }
+    
+    function saveSkillsData() {
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem('jobos_skills_data', JSON.stringify({
+                assessments: skillsAssessmentData.assessments,
+                scores: skillsAssessmentData.scores
+            }));
+        }
+    }
+    
+    function loadSkillsData() {
+        if (typeof(Storage) !== "undefined") {
+            const saved = localStorage.getItem('jobos_skills_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                skillsAssessmentData.assessments = data.assessments || [];
+                skillsAssessmentData.scores = data.scores || {};
+            }
+        }
+    }
+
+    // ===== ENHANCED NETWORK MANAGER FUNCTIONALITY =====
+    
+    let networkData = {
+        contacts: [],
+        activities: [],
+        followups: [],
+        analytics: {
+            totalContacts: 0,
+            activeRelationships: 0,
+            pendingFollowups: 0,
+            networkScore: 0
+        }
+    };
+    
+    function initializeNetworkManager() {
+        console.log('Initializing Enhanced Network Manager...');
+        
+        // Initialize contact form tabs
+        initializeContactTabs();
+        
+        // Set up event listeners after a short delay to ensure elements exist
+        setTimeout(() => {
+            // Initialize event listeners
+            const addContactBtn = document.getElementById('add-contact-btn');
+            const bulkFollowUpBtn = document.getElementById('bulk-follow-up-btn');
+            const insightsBtn = document.getElementById('networking-insights-btn');
+            const contactForm = document.getElementById('contact-form');
+            const cancelBtn = document.getElementById('cancel-btn');
+            
+            // Filter elements
+            const relationshipFilter = document.getElementById('relationship-filter');
+            const contactTypeFilter = document.getElementById('contact-type-filter');
+            const contactSearch = document.getElementById('contact-search');
+            
+            if (addContactBtn) {
+                addContactBtn.addEventListener('click', () => openContactModal());
+                console.log('Add contact button listener attached');
+            }
+            
+            if (bulkFollowUpBtn) {
+                bulkFollowUpBtn.addEventListener('click', showBulkFollowUpModal);
+            }
+            
+            if (insightsBtn) {
+                insightsBtn.addEventListener('click', showNetworkInsights);
+            }
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', saveContact);
+            }
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => closeModal('contact-modal'));
+            }
+            
+            // Filter listeners with debugging
+            if (relationshipFilter) {
+                relationshipFilter.addEventListener('change', () => {
+                    console.log('Relationship filter changed:', relationshipFilter.value);
+                    filterContacts();
+                });
+                console.log('Relationship filter listener attached');
+            }
+            
+            if (contactTypeFilter) {
+                contactTypeFilter.addEventListener('change', () => {
+                    console.log('Type filter changed:', contactTypeFilter.value);
+                    filterContacts();
+                });
+                console.log('Type filter listener attached');
+            }
+            
+            if (contactSearch) {
+                contactSearch.addEventListener('input', () => {
+                    console.log('Search input changed:', contactSearch.value);
+                    filterContacts();
+                });
+                console.log('Search filter listener attached');
+            }
+            
+            // Load data and update dashboard
+            loadNetworkData();
+            
+            // Update analytics when contacts are available
+            if (allContacts && allContacts.length > 0) {
+                updateNetworkAnalytics();
+            }
+            
+        }, 500);
+        
+        console.log('Enhanced Network Manager initialized successfully');
+    }
+    
+    function initializeContactTabs() {
+        const tabButtons = document.querySelectorAll('.contact-tab-btn');
+        const tabContents = document.querySelectorAll('.contact-tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active from all tabs
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Add active to clicked tab
+                button.classList.add('active', 'border-indigo-500', 'text-indigo-600');
+                button.classList.remove('border-transparent', 'text-gray-500');
+                
+                // Show corresponding content
+                const targetTab = button.dataset.tab;
+                const targetContent = document.getElementById(targetTab + '-tab');
+                if (targetContent) {
+                    targetContent.classList.remove('hidden');
+                }
+            });
+        });
+    }
+    
+    function openContactModal(contact = null) {
+        const modal = document.getElementById('contact-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const form = document.getElementById('contact-form');
+        
+        // Reset form and tabs
+        form.reset();
+        document.getElementById('contact-id').value = '';
+        
+        // Reset to first tab
+        document.querySelectorAll('.contact-tab-btn').forEach(btn => {
+            btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
+            btn.classList.add('border-transparent', 'text-gray-500');
+        });
+        document.querySelectorAll('.contact-tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Activate first tab
+        const firstTab = document.querySelector('.contact-tab-btn[data-tab=\"basic\"]');
+        if (firstTab) {
+            firstTab.classList.add('active', 'border-indigo-500', 'text-indigo-600');
+            firstTab.classList.remove('border-transparent', 'text-gray-500');
+        }
+        document.getElementById('basic-tab').classList.remove('hidden');
+        
+        if (contact) {
+            modalTitle.textContent = 'Edit Contact';
+            populateContactForm(contact);
+        } else {
+            modalTitle.textContent = 'Add New Contact';
+            // Set default values
+            document.getElementById('relationship-strength').value = '3';
+            document.getElementById('relationship-standing').value = 'Active';
+            document.getElementById('priority-level').value = 'medium';
+        }
+        
+        openModal('contact-modal');
+    }
+    
+    function populateContactForm(contact) {
+        document.getElementById('contact-id').value = contact.id || '';
+        document.getElementById('name').value = contact.name || '';
+        document.getElementById('company').value = contact.company || '';
+        document.getElementById('job-title').value = contact.jobTitle || '';
+        document.getElementById('type').value = contact.type || 'professional';
+        document.getElementById('email').value = contact.email || '';
+        document.getElementById('phone').value = contact.phone || '';
+        document.getElementById('linkedin-url').value = contact.linkedinUrl || '';
+        document.getElementById('location').value = contact.location || '';
+        
+        // Relationship tab
+        document.getElementById('relationship-strength').value = contact.relationshipStrength || '3';
+        document.getElementById('relationship-standing').value = contact.relationshipStanding || 'Active';
+        document.getElementById('is-reference').value = contact.isReference || 'No';
+        document.getElementById('when-we-met').value = contact.whenWeMet || '';
+        document.getElementById('how-we-met').value = contact.howWeMet || '';
+        document.getElementById('last-comm-date').value = contact.lastCommDate || '';
+        document.getElementById('last-comm-method').value = contact.lastCommMethod || 'Email';
+        document.getElementById('mutual-connections').value = contact.mutualConnections || '';
+        document.getElementById('notes').value = contact.notes || '';
+        
+        // Follow-up tab
+        document.getElementById('followup-frequency').value = contact.followupFrequency || 'none';
+        document.getElementById('next-followup-date').value = contact.nextFollowupDate || '';
+        document.getElementById('priority-level').value = contact.priorityLevel || 'medium';
+        document.getElementById('contact-tags').value = contact.tags || '';
+        document.getElementById('opportunities').value = contact.opportunities || '';
+        document.getElementById('followup-notes').value = contact.followupNotes || '';
+    }
+    
+    async function saveContact(e) {
+        e.preventDefault();
+        
+        try {
+            const contactData = {
+                name: document.getElementById('name').value,
+                company: document.getElementById('company').value,
+                jobTitle: document.getElementById('job-title').value,
+                type: document.getElementById('type').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                linkedinUrl: document.getElementById('linkedin-url').value,
+                location: document.getElementById('location').value,
+                
+                // Relationship data
+                relationshipStrength: document.getElementById('relationship-strength').value,
+                relationshipStanding: document.getElementById('relationship-standing').value,
+                isReference: document.getElementById('is-reference').value,
+                whenWeMet: document.getElementById('when-we-met').value,
+                howWeMet: document.getElementById('how-we-met').value,
+                lastCommDate: document.getElementById('last-comm-date').value,
+                lastCommMethod: document.getElementById('last-comm-method').value,
+                mutualConnections: document.getElementById('mutual-connections').value,
+                notes: document.getElementById('notes').value,
+                
+                // Follow-up data
+                followupFrequency: document.getElementById('followup-frequency').value,
+                nextFollowupDate: document.getElementById('next-followup-date').value,
+                priorityLevel: document.getElementById('priority-level').value,
+                tags: document.getElementById('contact-tags').value,
+                opportunities: document.getElementById('opportunities').value,
+                followupNotes: document.getElementById('followup-notes').value,
+                
+                // Metadata
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            const contactId = document.getElementById('contact-id').value;
+            
+            if (contactId) {
+                // Update existing contact
+                contactData.id = contactId;
+                await updateDoc(doc(db, `users/${userId}/contacts`, contactId), contactData);
+                showToast('Contact updated successfully!', 'success');
+                
+                // Log activity
+                logNetworkActivity('contact_updated', `Updated contact: ${contactData.name}`);
+            } else {
+                // Add new contact
+                const docRef = await addDoc(collection(db, `users/${userId}/contacts`), contactData);
+                contactData.id = docRef.id;
+                showToast('Contact added successfully!', 'success');
+                
+                // Log activity
+                logNetworkActivity('contact_added', `Added new contact: ${contactData.name}`);
+            }
+            
+            // Schedule follow-up if specified
+            if (contactData.nextFollowupDate) {
+                scheduleFollowUp(contactData);
+            }
+            
+            closeModal('contact-modal');
+            loadContacts(); // Reload contact list
+            updateNetworkAnalytics();
+            
+        } catch (error) {
+            console.error('Error saving contact:', error);
+            showToast('Error saving contact. Please try again.', 'error');
+        }
+    }
+    
+    function logNetworkActivity(type, description) {
+        const activity = {
+            type: type,
+            description: description,
+            timestamp: new Date().toISOString(),
+            date: new Date().toLocaleDateString()
+        };
+        
+        networkData.activities.unshift(activity);
+        
+        // Keep only last 10 activities for display
+        if (networkData.activities.length > 10) {
+            networkData.activities = networkData.activities.slice(0, 10);
+        }
+        
+        updateRecentActivity();
+    }
+    
+    function scheduleFollowUp(contact) {
+        const followup = {
+            contactId: contact.id,
+            contactName: contact.name,
+            contactCompany: contact.company,
+            followupDate: contact.nextFollowupDate,
+            priorityLevel: contact.priorityLevel,
+            notes: contact.followupNotes,
+            createdAt: new Date().toISOString()
+        };
+        
+        networkData.followups.push(followup);
+        updateFollowUpReminders();
+    }
+    
+    function updateNetworkAnalytics() {
+        const totalContacts = allContacts.length;
+        const activeRelationships = allContacts.filter(c => c.relationshipStanding === 'Active').length;
+        
+        // Get pending follow-ups from the enhanced contact data
+        const pendingFollowups = allContacts.filter(contact => {
+            if (!contact.nextFollowupDate) return false;
+            return new Date(contact.nextFollowupDate) <= new Date();
+        }).length;
+        
+        // Calculate network score (0-100)
+        let networkScore = 0;
+        if (totalContacts > 0) {
+            const activePercentage = (activeRelationships / totalContacts) * 40;
+            const referenceContacts = allContacts.filter(c => c.isReference === 'Yes').length;
+            const referenceScore = Math.min((referenceContacts / Math.max(totalContacts * 0.2, 1)) * 30, 30);
+            const recentActivity = allContacts.filter(c => {
+                if (!c.lastCommDate) return false;
+                const daysSince = (new Date() - new Date(c.lastCommDate)) / (1000 * 60 * 60 * 24);
+                return daysSince <= 90; // Active in last 3 months
+            }).length;
+            const activityScore = Math.min((recentActivity / Math.max(totalContacts * 0.3, 1)) * 30, 30);
+            
+            networkScore = Math.round(activePercentage + referenceScore + activityScore);
+        }
+        
+        // Update dashboard elements
+        const totalContactsEl = document.getElementById('total-contacts');
+        const activeRelationshipsEl = document.getElementById('active-relationships');
+        const pendingFollowupsEl = document.getElementById('pending-followups');
+        const networkScoreEl = document.getElementById('network-score');
+        
+        if (totalContactsEl) totalContactsEl.textContent = totalContacts;
+        if (activeRelationshipsEl) activeRelationshipsEl.textContent = activeRelationships;
+        if (pendingFollowupsEl) pendingFollowupsEl.textContent = pendingFollowups;
+        if (networkScoreEl) networkScoreEl.textContent = networkScore;
+        
+        // Store analytics
+        networkData.analytics = {
+            totalContacts,
+            activeRelationships,
+            pendingFollowups,
+            networkScore
+        };
+        
+        console.log('Network analytics updated:', networkData.analytics);
+    }
+    
+    function updateRecentActivity() {
+        const container = document.getElementById('recent-activity');
+        
+        if (networkData.activities.length === 0) {
+            container.innerHTML = '<p class=\"text-gray-500 text-center py-4\">No recent activity</p>';
+            return;
+        }
+        
+        const activitiesHTML = networkData.activities.slice(0, 5).map(activity => `
+            <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-800 truncate">${activity.description}</p>
+                    <p class="text-xs text-gray-500">${activity.date}</p>
+                </div>
+            </div>
+        `).join('');\n        \n        container.innerHTML = activitiesHTML;\n    }\n    \n    function updateFollowUpReminders() {\n        const container = document.getElementById('followup-reminders');\n        \n        // Get upcoming follow-ups (next 30 days)\n        const upcoming = networkData.followups.filter(f => {\n            const followupDate = new Date(f.followupDate);\n            const now = new Date();\n            const thirtyDays = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));\n            return followupDate >= now && followupDate <= thirtyDays;\n        }).sort((a, b) => new Date(a.followupDate) - new Date(b.followupDate));\n        \n        if (upcoming.length === 0) {\n            container.innerHTML = '<p class=\"text-gray-500 text-center py-4\">No pending follow-ups</p>';\n            return;\n        }\n        \n        const remindersHTML = upcoming.slice(0, 5).map(reminder => {\n            const daysUntil = Math.ceil((new Date(reminder.followupDate) - new Date()) / (1000 * 60 * 60 * 24));\n            const urgencyClass = daysUntil <= 3 ? 'text-red-600' : daysUntil <= 7 ? 'text-yellow-600' : 'text-gray-600';\n            \n            return `\n                <div class=\"flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer\" onclick=\"openContactDetails('${reminder.contactId}')\">\n                    <div class=\"flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2\"></div>\n                    <div class=\"flex-1 min-w-0\">\n                        <p class=\"text-sm text-gray-800 truncate\">${reminder.contactName}</p>\n                        <p class=\"text-xs ${urgencyClass}\">${daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`}</p>\n                    </div>\n                </div>\n            `;\n        }).join('');\n        \n        container.innerHTML = remindersHTML;\n    }\n    \n    function filterContacts() {\n        const relationshipFilter = document.getElementById('relationship-filter').value;\n        const typeFilter = document.getElementById('contact-type-filter').value;\n        const searchTerm = document.getElementById('contact-search').value.toLowerCase();\n        \n        let filteredContacts = [...networkData.contacts];\n        \n        // Apply relationship filter\n        if (relationshipFilter !== 'all') {\n            const filterValue = relationshipFilter === 'active' ? 'Active' : 'Lost touch';\n            filteredContacts = filteredContacts.filter(contact => \n                contact.relationshipStanding === filterValue\n            );\n        }\n        \n        // Apply type filter\n        if (typeFilter !== 'all') {\n            filteredContacts = filteredContacts.filter(contact => \n                contact.type && contact.type.toLowerCase() === typeFilter\n            );\n        }\n        \n        // Apply search filter\n        if (searchTerm) {\n            filteredContacts = filteredContacts.filter(contact => \n                (contact.name && contact.name.toLowerCase().includes(searchTerm)) ||\n                (contact.company && contact.company.toLowerCase().includes(searchTerm)) ||\n                (contact.jobTitle && contact.jobTitle.toLowerCase().includes(searchTerm)) ||\n                (contact.email && contact.email.toLowerCase().includes(searchTerm))\n            );\n        }\n        \n        renderFilteredContacts(filteredContacts);\n    }\n    \n    function renderFilteredContacts(contacts) {\n        if (contacts.length === 0) {\n            networkTableContainer.innerHTML = '<p class=\"text-center text-gray-500 py-8\">No contacts match your filters.</p>';\n            return;\n        }\n        \n        renderContacts(contacts);\n    }\n    \n    function showBulkFollowUpModal() {\n        // Simple implementation - show toast for now\n        showToast('Bulk follow-up feature coming soon!', 'info');\n    }\n    \n    function showNetworkInsights() {\n        // Create and show insights modal\n        const insights = generateNetworkInsights();\n        \n        const modal = document.createElement('div');\n        modal.className = 'modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';\n        modal.innerHTML = `\n            <div class=\"bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto\">\n                <div class=\"p-6 border-b\">\n                    <h3 class=\"text-2xl font-semibold\">Network Insights & Analytics</h3>\n                </div>\n                <div class=\"p-6\">\n                    ${insights}\n                </div>\n                <div class=\"p-6 border-t flex justify-end\">\n                    <button onclick=\"this.closest('.modal').remove()\" class=\"bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200\">Close</button>\n                </div>\n            </div>\n        `;\n        \n        document.body.appendChild(modal);\n    }\n    \n    function generateNetworkInsights() {\n        const contacts = networkData.contacts;\n        const analytics = networkData.analytics;\n        \n        if (contacts.length === 0) {\n            return '<p class=\"text-gray-500 text-center py-8\">Add some contacts to see insights!</p>';\n        }\n        \n        // Generate insights\n        const companyDistribution = {};\n        const typeDistribution = {};\n        const strengthDistribution = {};\n        \n        contacts.forEach(contact => {\n            // Company distribution\n            const company = contact.company || 'Unknown';\n            companyDistribution[company] = (companyDistribution[company] || 0) + 1;\n            \n            // Type distribution\n            const type = contact.type || 'Unknown';\n            typeDistribution[type] = (typeDistribution[type] || 0) + 1;\n            \n            // Strength distribution\n            const strength = contact.relationshipStrength || '3';\n            strengthDistribution[strength] = (strengthDistribution[strength] || 0) + 1;\n        });\n        \n        const topCompanies = Object.entries(companyDistribution)\n            .sort(([,a], [,b]) => b - a)\n            .slice(0, 5);\n            \n        const needsFollowUp = contacts.filter(contact => {\n            if (!contact.lastCommDate) return true;\n            const daysSince = (new Date() - new Date(contact.lastCommDate)) / (1000 * 60 * 60 * 24);\n            return daysSince > 90; // No contact in 3 months\n        });\n        \n        return `\n            <div class=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div class=\"bg-gray-50 p-4 rounded-lg\">\n                    <h4 class=\"font-semibold text-gray-800 mb-3\">Network Overview</h4>\n                    <div class=\"space-y-2 text-sm\">\n                        <div class=\"flex justify-between\">\n                            <span>Total Contacts:</span>\n                            <span class=\"font-medium\">${analytics.totalContacts}</span>\n                        </div>\n                        <div class=\"flex justify-between\">\n                            <span>Network Score:</span>\n                            <span class=\"font-medium text-purple-600\">${analytics.networkScore}/100</span>\n                        </div>\n                        <div class=\"flex justify-between\">\n                            <span>References Available:</span>\n                            <span class=\"font-medium\">${contacts.filter(c => c.isReference === 'Yes').length}</span>\n                        </div>\n                    </div>\n                </div>\n                \n                <div class=\"bg-gray-50 p-4 rounded-lg\">\n                    <h4 class=\"font-semibold text-gray-800 mb-3\">Top Companies</h4>\n                    <div class=\"space-y-2 text-sm\">\n                        ${topCompanies.map(([company, count]) => `\n                            <div class=\"flex justify-between\">\n                                <span class=\"truncate\">${company}</span>\n                                <span class=\"font-medium\">${count}</span>\n                            </div>\n                        `).join('')}\n                    </div>\n                </div>\n                \n                <div class=\"bg-gray-50 p-4 rounded-lg\">\n                    <h4 class=\"font-semibold text-gray-800 mb-3\">Relationship Strength</h4>\n                    <div class=\"space-y-2 text-sm\">\n                        ${Object.entries(strengthDistribution).map(([strength, count]) => {\n                            const label = ['', 'Just met', 'Acquaintance', 'Professional', 'Strong', 'Close'][strength] || 'Unknown';\n                            return `\n                                <div class=\"flex justify-between\">\n                                    <span>${label} (${strength}/5):</span>\n                                    <span class=\"font-medium\">${count}</span>\n                                </div>\n                            `;\n                        }).join('')}\n                    </div>\n                </div>\n                \n                <div class=\"bg-yellow-50 p-4 rounded-lg\">\n                    <h4 class=\"font-semibold text-gray-800 mb-3\">Action Needed</h4>\n                    <div class=\"text-sm\">\n                        <p class=\"text-yellow-800 mb-2\">${needsFollowUp.length} contacts need follow-up</p>\n                        ${needsFollowUp.slice(0, 5).map(contact => `\n                            <div class=\"text-yellow-700\">• ${contact.name} (${contact.company || 'Unknown'})</div>\n                        `).join('')}\n                        ${needsFollowUp.length > 5 ? `<div class=\"text-yellow-600 mt-2\">...and ${needsFollowUp.length - 5} more</div>` : ''}\n                    </div>\n                </div>\n            </div>\n        `;\n    }\n    \n    function loadNetworkData() {\n        // Load from localStorage for now (Firebase integration already exists)\n        const saved = localStorage.getItem('jobos_network_data');\n        if (saved) {\n            const data = JSON.parse(saved);\n            networkData.activities = data.activities || [];\n            networkData.followups = data.followups || [];\n        }\n        \n        updateRecentActivity();\n        updateFollowUpReminders();\n    }\n    \n    function saveNetworkData() {\n        localStorage.setItem('jobos_network_data', JSON.stringify({\n            activities: networkData.activities,\n            followups: networkData.followups\n        }));\n    }\n\n    // ===== SMART RESUME AI FUNCTIONALITY =====    let uploadedResumeFile = null;
 
     
     // Initialize resume input type handlers
@@ -2776,8 +4516,6 @@ Research Assistant | Pace University | September 2023 – Present
     }
     
     // Smart Resume PDF Upload functions
-    let extractedResumeText = '';
-    
     function initializeSmartResume() {
         console.log('Initializing Smart Resume...');
         
@@ -3653,6 +5391,9 @@ Research Assistant | Pace University | September 2023 – Present
             // Generate tailored resume using AI prompt
             const tailoredResume = await processResumeWithAI(jobDescription, currentResume);
             
+            // Store the content globally for editing
+            window.currentResumeContent = tailoredResume;
+            
             // Display results with improved formatting
             displayFormattedResume(outputDiv, tailoredResume);
             resultsContainer.classList.remove('hidden');
@@ -3824,49 +5565,354 @@ TAILORED RESUME:`;
     }
     
     function displayFormattedResume(container, resumeText) {
-        // Parse and format the resume text into HTML
-        const lines = resumeText.split('\n');
-        let formattedHTML = '';
-        let currentSection = '';
+        // Store the current resume content for editing
+        window.currentResumeContent = resumeText;
         
-        lines.forEach(line => {
-            const trimmedLine = line.trim();
-            if (!trimmedLine) {
-                formattedHTML += '<br>';
-                return;
+        // Clear placeholder content and show beautifully formatted resume
+        container.innerHTML = formatResumeHTML(resumeText);
+        
+        // Show analysis
+        displayResumeAnalysis(resumeText);
+        
+        // Show action buttons (they should already be visible)
+        const resultsContainer = document.getElementById('results-container');
+        if (resultsContainer) {
+            resultsContainer.classList.remove('hidden');
+        }
+    }
+    
+    function formatResumeHTML(resumeText) {
+        // Parse and intelligently format the resume into professional sections
+        const lines = resumeText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        
+        // Parse resume into structured sections
+        const resumeData = parseResumeIntoSections(lines);
+        
+        // Generate formatted HTML with intelligent structure
+        let formattedHTML = '<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-4xl mx-auto" style="font-family: Georgia, serif; line-height: 1.6;">';
+        
+        // Header Section (Name and Contact)
+        if (resumeData.header.name) {
+            formattedHTML += `<div class="text-center border-b border-gray-200 pb-4 mb-6">`;
+            formattedHTML += `<h1 class="text-2xl font-semibold text-gray-900 mb-2">${resumeData.header.name}</h1>`;
+            if (resumeData.header.contact) {
+                formattedHTML += `<p class="text-sm text-gray-600">${resumeData.header.contact}</p>`;
+            }
+            formattedHTML += `</div>`;
+        }
+        
+        // Professional Summary Section
+        if (resumeData.summary.length > 0) {
+            formattedHTML += formatSection('Professional Summary', resumeData.summary, 'summary');
+        }
+        
+        // Experience Section
+        if (resumeData.experience.length > 0) {
+            formattedHTML += formatSection('Professional Experience', resumeData.experience, 'experience');
+        }
+        
+        // Education Section
+        if (resumeData.education.length > 0) {
+            formattedHTML += formatSection('Education', resumeData.education, 'education');
+        }
+        
+        // Skills Section
+        if (resumeData.skills.length > 0) {
+            formattedHTML += formatSection('Technical Skills', resumeData.skills, 'skills');
+        }
+        
+        // Certifications Section
+        if (resumeData.certifications.length > 0) {
+            formattedHTML += formatSection('Certifications', resumeData.certifications, 'certifications');
+        }
+        
+        // Additional Sections
+        if (resumeData.other.length > 0) {
+            formattedHTML += formatSection('Additional Information', resumeData.other, 'other');
+        }
+        
+        formattedHTML += '</div>';
+        return formattedHTML;
+    }
+    
+    function parseResumeIntoSections(lines) {
+        const sections = {
+            header: { name: '', contact: '' },
+            summary: [],
+            experience: [],
+            education: [],
+            skills: [],
+            certifications: [],
+            other: []
+        };
+        
+        let currentSection = 'header';
+        let headerLineCount = 0;
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // Detect section headers
+            const sectionType = detectSectionType(line);
+            if (sectionType) {
+                currentSection = sectionType;
+                continue;
             }
             
-            // Detect headers (all caps or specific sections)
-            if (isHeader(trimmedLine)) {
-                formattedHTML += `<h3 class="text-lg font-bold text-gray-800 mt-6 mb-3 border-b-2 border-indigo-200 pb-1">${trimmedLine}</h3>`;
-                currentSection = trimmedLine.toLowerCase();
+            // Parse header (first few lines)
+            if (currentSection === 'header' && headerLineCount < 3) {
+                if (headerLineCount === 0 && isNameLine(line)) {
+                    sections.header.name = line;
+                } else if (isContactLine(line)) {
+                    sections.header.contact = line;
+                }
+                headerLineCount++;
+                continue;
             }
-            // Detect name (usually first line)
-            else if (formattedHTML === '' || isName(trimmedLine)) {
-                formattedHTML += `<h1 class="text-2xl font-bold text-gray-900 mb-2">${trimmedLine}</h1>`;
+            
+            // Add content to appropriate section
+            if (sections[currentSection]) {
+                sections[currentSection].push(line);
             }
-            // Detect contact info
-            else if (isContactInfo(trimmedLine)) {
-                formattedHTML += `<p class="text-gray-600 mb-4">${trimmedLine}</p>`;
-            }
-            // Detect bullet points
-            else if (trimmedLine.startsWith('•') || trimmedLine.startsWith('-') || trimmedLine.startsWith('*')) {
-                const bulletText = trimmedLine.substring(1).trim();
-                formattedHTML += `<li class=\"mb-2 text-gray-700\">${bulletText}</li>`;
-            }
-            // Detect job titles or education entries
-            else if (isJobTitle(trimmedLine) || isEducationEntry(trimmedLine)) {
-                formattedHTML += `<h4 class=\"text-md font-semibold text-gray-800 mt-4 mb-2\">${trimmedLine}</h4>`;
-            }
-            // Regular content
-            else {
-                formattedHTML += `<p class=\"text-gray-700 mb-2\">${trimmedLine}</p>`;
+        }
+        
+        return sections;
+    }
+    
+    function formatSection(title, content, type) {
+        if (content.length === 0) return '';
+        
+        let html = `<div class="mb-6">`;
+        html += `<h2 class="text-base font-semibold text-gray-800 mb-3 pb-1 border-b border-gray-300 uppercase tracking-wide" style="font-size: 14px;">${title}</h2>`;
+        
+        if (type === 'summary') {
+            html += `<div class="mb-3">`;
+            content.forEach(line => {
+                html += `<p class="text-sm text-gray-700 mb-2 italic" style="line-height: 1.6;">${line}</p>`;
+            });
+            html += `</div>`;
+        } else if (type === 'experience') {
+            html += formatExperienceSection(content);
+        } else if (type === 'education') {
+            html += formatEducationSection(content);
+        } else if (type === 'skills') {
+            html += formatSkillsSection(content);
+        } else {
+            html += formatGenericSection(content);
+        }
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    function formatExperienceSection(content) {
+        let html = '';
+        let currentJob = null;
+        
+        content.forEach(line => {
+            if (isJobTitleLine(line)) {
+                if (currentJob) {
+                    html += `</div>`;
+                }
+                html += `<div class="mb-4">`;
+                html += `<h3 class="text-sm font-medium text-gray-800 mb-1">${line}</h3>`;
+                currentJob = line;
+            } else if (isCompanyDateLine(line)) {
+                html += `<p class="text-xs text-gray-600 mb-2 italic">${line}</p>`;
+            } else if (line.startsWith('•') || line.startsWith('-') || line.startsWith('*') || line.startsWith('●')) {
+                if (!html.includes('<ul class="ml-4 space-y-1">')) {
+                    html += `<ul class="ml-4 space-y-1">`;
+                }
+                const bulletText = line.substring(1).trim();
+                html += `<li class="text-xs text-gray-700 flex items-start"><span class="text-indigo-600 mr-2">•</span><span>${bulletText}</span></li>`;
+            } else if (line.trim()) {
+                html += `<p class="text-xs text-gray-700 mb-2">${line}</p>`;
             }
         });
         
-        container.innerHTML = `<div class=\"formatted-resume\">${formattedHTML}</div>`;
+        if (currentJob && html.includes('<ul class="ml-4 space-y-1">')) {
+            html += `</ul>`;
+        }
+        if (currentJob) {
+            html += `</div>`;
+        }
+        
+        return html;
     }
     
+    function formatEducationSection(content) {
+        let html = '';
+        content.forEach(line => {
+            if (isEducationTitleLine(line)) {
+                html += `<div class="mb-3">`;
+                html += `<h3 class="text-sm font-medium text-gray-800">${line}</h3>`;
+            } else if (isEducationDetailsLine(line)) {
+                html += `<p class="text-xs text-gray-600 italic">${line}</p>`;
+                html += `</div>`;
+            } else if (line.trim()) {
+                html += `<p class="text-xs text-gray-700 mb-1">${line}</p>`;
+            }
+        });
+        return html;
+    }
+    
+    function formatSkillsSection(content) {
+        let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-2">';
+        
+        content.forEach(line => {
+            if (line.startsWith('•') || line.startsWith('-') || line.startsWith('*') || line.startsWith('●')) {
+                const skillText = line.substring(1).trim();
+                html += `<div class="flex items-center"><span class="text-indigo-600 mr-2 text-xs">•</span><span class="text-xs text-gray-700">${skillText}</span></div>`;
+            } else if (line.includes(',')) {
+                // Handle comma-separated skills
+                const skills = line.split(',').map(s => s.trim());
+                skills.forEach(skill => {
+                    html += `<div class="flex items-center"><span class="text-indigo-600 mr-2 text-xs">•</span><span class="text-xs text-gray-700">${skill}</span></div>`;
+                });
+            } else if (line.trim()) {
+                html += `<div class="flex items-center"><span class="text-indigo-600 mr-2 text-xs">•</span><span class="text-xs text-gray-700">${line}</span></div>`;
+            }
+        });
+        
+        html += '</div>';
+        return html;
+    }
+    
+    function formatGenericSection(content) {
+        let html = '';
+        content.forEach(line => {
+            if (line.startsWith('•') || line.startsWith('-') || line.startsWith('*') || line.startsWith('●')) {
+                const text = line.substring(1).trim();
+                html += `<div class="flex items-start mb-1"><span class="text-indigo-600 mr-2 text-xs">•</span><span class="text-xs text-gray-700">${text}</span></div>`;
+            } else if (line.trim()) {
+                html += `<p class="text-xs text-gray-700 mb-2">${line}</p>`;
+            }
+        });
+        return html;
+    }
+    
+    function detectSectionType(line) {
+        const upperLine = line.toUpperCase();
+        
+        if (upperLine.includes('PROFESSIONAL SUMMARY') || upperLine.includes('SUMMARY') || upperLine.includes('OBJECTIVE')) {
+            return 'summary';
+        }
+        if (upperLine.includes('EXPERIENCE') || upperLine.includes('EMPLOYMENT') || upperLine.includes('WORK HISTORY')) {
+            return 'experience';
+        }
+        if (upperLine.includes('EDUCATION') || upperLine.includes('ACADEMIC')) {
+            return 'education';
+        }
+        if (upperLine.includes('SKILLS') || upperLine.includes('TECHNICAL') || upperLine.includes('COMPETENCIES')) {
+            return 'skills';
+        }
+        if (upperLine.includes('CERTIFICATION') || upperLine.includes('LICENSES')) {
+            return 'certifications';
+        }
+        if (upperLine.includes('PROJECTS') || upperLine.includes('ACHIEVEMENTS') || upperLine.includes('REFERENCES')) {
+            return 'other';
+        }
+        
+        return null;
+    }
+    
+    function isNameLine(line) {
+        const words = line.split(' ');
+        return words.length >= 2 && words.length <= 4 && 
+               words.every(word => word.charAt(0) === word.charAt(0).toUpperCase()) &&
+               !line.includes('@') && !line.includes('(') && !line.includes('|');
+    }
+    
+    function isContactLine(line) {
+        return line.includes('@') || line.includes('(') || line.includes('+') || 
+               line.includes('|') || line.includes('LinkedIn') || line.includes('GitHub');
+    }
+    
+    function isEducationTitleLine(line) {
+        return line.includes('University') || line.includes('College') || line.includes('Institute') ||
+               line.includes('Bachelor') || line.includes('Master') || line.includes('PhD') ||
+               line.includes('Degree') || line.includes('Diploma');
+    }
+    
+    function isEducationDetailsLine(line) {
+        return line.includes('GPA') || line.match(/\d{4}/) || line.includes('Expected');
+    }
+    
+    function isResumeHeader(line) {
+        const headers = ['PROFESSIONAL SUMMARY', 'SUMMARY', 'EXPERIENCE', 'EDUCATION', 'SKILLS', 'TECHNICAL SKILLS', 
+                        'CERTIFICATIONS', 'PROJECTS', 'ACHIEVEMENTS', 'REFERENCES', 'WORK HISTORY', 'EMPLOYMENT'];
+        return headers.some(header => line.toUpperCase().includes(header)) || 
+               (line === line.toUpperCase() && line.length > 3 && line.length < 30);
+    }
+    
+    function isJobTitleLine(line) {
+        // Detect job titles - usually contain position keywords
+        const jobKeywords = ['Manager', 'Engineer', 'Developer', 'Analyst', 'Specialist', 'Coordinator', 
+                            'Director', 'Assistant', 'Officer', 'Representative', 'Consultant', 'Technician'];
+        return jobKeywords.some(keyword => line.includes(keyword)) && !line.includes('|') && !line.includes('@');
+    }
+    
+    function isCompanyDateLine(line) {
+        // Detect company and date lines - usually contain company names with dates or pipes
+        return (line.includes('|') || line.match(/\d{4}/) || line.includes('Present') || 
+                line.includes('Ltd') || line.includes('Inc') || line.includes('Corp') || 
+                line.includes('LLC') || line.includes('Company')) && !line.includes('@');
+    }
+    
+    function displayResumeAnalysis(resumeText) {
+        const analysisDiv = document.getElementById('resume-analysis');
+        if (!analysisDiv) return;
+        
+        // Calculate metrics
+        const wordCount = resumeText.split(/\s+/).length;
+        const keywords = extractKeywords(resumeText);
+        const atsScore = calculateATSScore(resumeText);
+        const matchRate = calculateMatchRate(resumeText);
+        
+        // Update analysis display
+        document.getElementById('resume-word-count').textContent = wordCount;
+        document.getElementById('resume-ats-score').textContent = atsScore + '%';
+        document.getElementById('resume-keywords-count').textContent = keywords.length;
+        document.getElementById('resume-match-rate').textContent = matchRate + '%';
+        
+        // Show analysis
+        analysisDiv.classList.remove('hidden');
+    }
+    
+    function calculateATSScore(resumeText) {
+        let score = 70; // Base score
+        
+        // Check for common ATS-friendly elements
+        if (resumeText.includes('•') || resumeText.includes('-')) score += 10;
+        if (resumeText.match(/\d{4}/)) score += 5; // Contains years
+        if (resumeText.toLowerCase().includes('experience')) score += 5;
+        if (resumeText.toLowerCase().includes('skills')) score += 5;
+        if (resumeText.toLowerCase().includes('education')) score += 5;
+        
+        return Math.min(100, score);
+    }
+    
+    function calculateMatchRate(resumeText) {
+        // Get job description from input
+        const jobDescInput = document.getElementById('job-description-input');
+        if (!jobDescInput || !jobDescInput.value) return 0;
+        
+        const jobKeywords = extractKeywords(jobDescInput.value);
+        const resumeKeywords = extractKeywords(resumeText);
+        
+        if (jobKeywords.length === 0) return 0;
+        
+        const matches = jobKeywords.filter(keyword => 
+            resumeKeywords.some(rKeyword => 
+                rKeyword.toLowerCase().includes(keyword.toLowerCase()) ||
+                keyword.toLowerCase().includes(rKeyword.toLowerCase())
+            )
+        );
+        
+        return Math.round((matches.length / jobKeywords.length) * 100);
+    }
+    
+    // Helper functions for resume formatting
     function isHeader(line) {
         const headers = ['PROFESSIONAL SUMMARY', 'EXPERIENCE', 'EDUCATION', 'SKILLS', 'TECHNICAL SKILLS', 
                         'CORE COMPETENCIES', 'PROJECTS', 'CERTIFICATIONS', 'ACHIEVEMENTS', 'AWARDS'];
@@ -4186,6 +6232,50 @@ TAILORED RESUME:`;
         if (modal) {
             modal.remove();
         }
+    }
+    
+    // Resume Edit Functions
+    function editTailoredResume() {
+        if (!window.currentResumeContent) {
+            showToast('No resume content to edit', 'error');
+            return;
+        }
+        
+        // Switch to edit mode
+        document.getElementById('tailored-resume-output').classList.add('hidden');
+        document.getElementById('resume-edit-mode').classList.remove('hidden');
+        document.getElementById('resume-editor').value = window.currentResumeContent;
+        document.getElementById('resume-analysis').classList.add('hidden');
+    }
+    
+    function cancelResumeEdit() {
+        // Switch back to view mode
+        document.getElementById('tailored-resume-output').classList.remove('hidden');
+        document.getElementById('resume-edit-mode').classList.add('hidden');
+        document.getElementById('resume-analysis').classList.remove('hidden');
+    }
+    
+    function saveResumeEdit() {
+        const editedContent = document.getElementById('resume-editor').value;
+        if (!editedContent.trim()) {
+            showToast('Resume content cannot be empty', 'error');
+            return;
+        }
+        
+        // Update content
+        window.currentResumeContent = editedContent;
+        
+        // Update display
+        const outputDiv = document.getElementById('tailored-resume-output');
+        outputDiv.innerHTML = formatResumeHTML(editedContent);
+        
+        // Update analysis
+        displayResumeAnalysis(editedContent);
+        
+        // Switch back to view mode
+        cancelResumeEdit();
+        
+        showToast('Resume updated successfully!', 'success');
     }
     
     function isResumeHeader(line) {
@@ -4618,7 +6708,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         const ref = db.collection('artifacts').doc('job-os-app').collection('users').doc(userId).collection('contacts').doc(id);
         if (target.classList.contains('edit-btn')) {
             const doc = await ref.get();
-            if (doc.exists) openContactModal_old({ id: doc.id, ...doc.data() });
+            if (doc.exists) openModal({ id: doc.id, ...doc.data() });
         }
         if (target.classList.contains('delete-btn')) {
             await ref.delete();
@@ -4695,9 +6785,29 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
     addJobBtn.addEventListener('click', () => openJobModal());
     jobCancelBtn.addEventListener('click', closeJobModal);
     jobForm.addEventListener('submit', saveJob);
+    
+    // Show/hide interview scheduling based on app status selection
+    document.getElementById('j-appStatus').addEventListener('change', function() {
+        const interviewSection = document.getElementById('interview-scheduling-section');
+        const selectedStatus = this.value;
+        const interviewStatuses = [
+            'First round interview',
+            'Second round interview', 
+            'Third round interview',
+            'Fourth round interview',
+            'Waiting for offer'
+        ];
+        
+        if (interviewStatuses.includes(selectedStatus)) {
+            interviewSection.style.display = 'block';
+        } else {
+            interviewSection.style.display = 'none';
+        }
+    });
+    
     jobsTableContainer.addEventListener('click', handleJobTableClick);
 
-    addContactBtn.addEventListener('click', () => openContactModal_old());
+    addContactBtn.addEventListener('click', () => openContactModal());
     cancelBtn.addEventListener('click', closeModal);
     contactForm.addEventListener('submit', saveContact);
     networkTableContainer.addEventListener('click', handleTableClick);
@@ -4716,7 +6826,10 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
     // Smart Resume Event Listeners
     document.getElementById('generate-resume-btn').addEventListener('click', generateTailoredResume);
     document.getElementById('copy-resume-btn').addEventListener('click', copyTailoredResume);
+    document.getElementById('edit-resume-btn').addEventListener('click', editTailoredResume);
     document.getElementById('download-resume-btn').addEventListener('click', downloadTailoredResume);
+    document.getElementById('cancel-resume-edit-btn').addEventListener('click', cancelResumeEdit);
+    document.getElementById('save-resume-edit-btn').addEventListener('click', saveResumeEdit);
 
     navTabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab)));
     
@@ -4757,7 +6870,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         
         // Cover Letter Generator state
         let currentCoverLetter = '';
-        let coverLetterResumeText = ''; // Separate resume text for cover letter
+        // coverLetterResumeText already declared globally
         let coverUploadedResumeFile = null;
         
         // Initialize Cover Letter functionality
@@ -5044,7 +7157,7 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
             
             // Extract user's name from resume
             const userName = extractNameFromResume(resumeContent);
-            console.log('🗃️ Using name:', userName);
+            console.log('🗃️ Extracted name:', userName);
             
             // CRITICAL DEBUG: Show exactly what resume content we're working with
             console.log('🚨 RESUME CONTENT DEBUG:');
@@ -5052,20 +7165,24 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
             console.log('🚨 Resume content is null/undefined:', resumeContent == null);
             console.log('🚨 Resume content length:', resumeContent ? resumeContent.length : 'N/A');
             if (resumeContent) {
-                console.log('🚨 First 300 characters:', resumeContent.substring(0, 300));
-                console.log('🚨 First 5 lines:', resumeContent.split('\\n').slice(0, 5));
+                console.log('🚨 First 500 characters:', resumeContent.substring(0, 500));
+                console.log('🚨 Resume contains "Ibrahim":', resumeContent.includes('Ibrahim'));
+                console.log('🚨 Resume contains "QuickBooks":', resumeContent.includes('QuickBooks'));
+                console.log('🚨 Resume contains "MS Excel":', resumeContent.includes('MS Excel'));
+                const lines = resumeContent.split('\n');
+                console.log('🚨 First 10 lines:', lines.slice(0, 10));
             }
             
             // Analyze job description for keywords
             const keywords = extractKeywords(jobDescription);
             console.log('🔑 Extracted keywords:', keywords);
             
-            // Extract relevant data from resume
-            const relevantExperience = extractRelevantExperience(resumeContent, keywords);
+            // Extract relevant data from resume - FORCE extraction even if no keywords
+            const relevantExperience = extractRelevantExperience(resumeContent, []);
             const userSkills = extractSkillsFromResume(resumeContent);
             
-            console.log('📋 Extracted experience points:', relevantExperience.length, relevantExperience);
-            console.log('🛠️ Extracted skills:', userSkills.length, userSkills);
+            console.log('📋 FORCED EXTRACTION - Experience points:', relevantExperience.length, relevantExperience);
+            console.log('🛠️ FORCED EXTRACTION - Skills:', userSkills.length, userSkills);
             
             // Add extra debug for resume content
             console.log('📄 First 500 chars of resume:', resumeContent.substring(0, 500));
@@ -5231,20 +7348,35 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         function getCoverLetterResumeContent() {
             console.log('🔍 Checking for cover letter resume content...');
             
-            // Check if user has uploaded a PDF resume for cover letter
+            // Priority 1: Check if user has uploaded a PDF resume specifically for cover letter
             if (coverLetterResumeText && coverLetterResumeText.trim()) {
-                console.log('✅ Using cover letter PDF resume content');
+                console.log('✅ Using cover letter specific PDF resume content');
                 return coverLetterResumeText;
             }
             
-            // Check if user has entered text resume for cover letter
+            // Priority 2: Check if user has entered text resume specifically for cover letter
             const textInput = document.getElementById('cover-current-resume-input');
             if (textInput && textInput.value.trim()) {
-                console.log('✅ Using cover letter text input resume content');
+                console.log('✅ Using cover letter specific text input resume content');
                 return textInput.value.trim();
             }
             
-            console.log('❌ No cover letter resume content found');
+            // Priority 3: Use the global Smart Resume extracted text
+            if (extractedResumeText && extractedResumeText.trim()) {
+                console.log('✅ Using Smart Resume extracted PDF content for cover letter');
+                console.log('📄 Using extracted resume text length:', extractedResumeText.length);
+                console.log('📄 First 200 chars:', extractedResumeText.substring(0, 200));
+                return extractedResumeText;
+            }
+            
+            // Priority 4: Check Smart Resume text input
+            const smartResumeTextInput = document.getElementById('current-resume-input');
+            if (smartResumeTextInput && smartResumeTextInput.value.trim()) {
+                console.log('✅ Using Smart Resume text input for cover letter');
+                return smartResumeTextInput.value.trim();
+            }
+            
+            console.log('❌ No resume content found anywhere');
             return null;
         }
         function getCurrentResumeContent() {
@@ -5290,8 +7422,11 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
             lines.forEach((line, index) => {
                 const trimmedLine = line.trim();
                 
-                // Check if we're in experience section
-                if (trimmedLine.toUpperCase().includes('EXPERIENCE') && 
+                // More flexible experience section detection
+                if ((trimmedLine.toUpperCase().includes('EXPERIENCE') ||
+                     trimmedLine.toUpperCase().includes('EMPLOYMENT') ||
+                     trimmedLine.toUpperCase().includes('WORK HISTORY') ||
+                     trimmedLine.toUpperCase().includes('PROFESSIONAL EXPERIENCE')) && 
                     !trimmedLine.toUpperCase().includes('YEARS OF EXPERIENCE')) {
                     inExperienceSection = true;
                     console.log('📋 Found experience section at line', index + 1, ':', trimmedLine);
@@ -5302,23 +7437,28 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
                 if (inExperienceSection && (trimmedLine.toUpperCase().includes('EDUCATION') ||
                     trimmedLine.toUpperCase().includes('SKILLS') ||
                     trimmedLine.toUpperCase().includes('CERTIFICATIONS') ||
-                    trimmedLine.toUpperCase().includes('REFERENCES'))) {
+                    trimmedLine.toUpperCase().includes('REFERENCES') ||
+                    trimmedLine.toUpperCase().includes('TECHNICAL SKILLS'))) {
                     console.log('📋 Leaving experience section at line', index + 1, ':', trimmedLine);
                     inExperienceSection = false;
                     return;
                 }
                 
-                // Extract relevant bullet points from experience
-                if (inExperienceSection && (trimmedLine.startsWith('●') || trimmedLine.startsWith('•') || trimmedLine.startsWith('-'))) {
-                    const cleanedExperience = trimmedLine.replace(/^[●•\-]\s*/, '');
+                // Extract bullet points from experience OR anywhere in resume (fallback)
+                if ((inExperienceSection || relevantExperience.length < 2) && 
+                    (trimmedLine.startsWith('●') || trimmedLine.startsWith('•') || trimmedLine.startsWith('-') || trimmedLine.startsWith('*'))) {
+                    const cleanedExperience = trimmedLine.replace(/^[●•\-\*]\s*/, '');
                     
-                    // Check if this experience point contains relevant keywords or is accounting-related
+                    // Skip very short or generic lines
+                    if (cleanedExperience.length < 20) return;
+                    
+                    // Check if this experience point contains relevant keywords
                     const hasRelevantKeyword = keywords.length === 0 || keywords.some(keyword => 
                         cleanedExperience.toLowerCase().includes(keyword.toLowerCase())
                     );
                     
-                    // Always include accounting/finance-related experience
-                    const isAccountingRelated = cleanedExperience.toLowerCase().includes('accounting') ||
+                    // Always include accounting/finance/business-related experience
+                    const isRelevantExperience = cleanedExperience.toLowerCase().includes('accounting') ||
                                                cleanedExperience.toLowerCase().includes('payroll') ||
                                                cleanedExperience.toLowerCase().includes('payable') ||
                                                cleanedExperience.toLowerCase().includes('receivable') ||
@@ -5326,17 +7466,25 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
                                                cleanedExperience.toLowerCase().includes('tax') ||
                                                cleanedExperience.toLowerCase().includes('reconciliation') ||
                                                cleanedExperience.toLowerCase().includes('quickbooks') ||
-                                               cleanedExperience.toLowerCase().includes('invoice');
+                                               cleanedExperience.toLowerCase().includes('invoice') ||
+                                               cleanedExperience.toLowerCase().includes('customer') ||
+                                               cleanedExperience.toLowerCase().includes('client') ||
+                                               cleanedExperience.toLowerCase().includes('manage') ||
+                                               cleanedExperience.toLowerCase().includes('process') ||
+                                               cleanedExperience.toLowerCase().includes('prepare') ||
+                                               cleanedExperience.toLowerCase().includes('maintain') ||
+                                               cleanedExperience.toLowerCase().includes('report');
                     
-                    if (hasRelevantKeyword || isAccountingRelated || relevantExperience.length < 4) {
+                    if (hasRelevantKeyword || isRelevantExperience || relevantExperience.length < 3) {
                         relevantExperience.push(cleanedExperience);
-                        console.log('✅ Added experience:', cleanedExperience.substring(0, 60) + '...');
+                        console.log('✅ Added experience:', cleanedExperience.substring(0, 80) + '...');
                     }
                 }
             });
             
             console.log('📋 Total experience points extracted:', relevantExperience.length);
-            return relevantExperience.slice(0, 4); // Return top 4 relevant experiences
+            console.log('📋 Experience points:', relevantExperience);
+            return relevantExperience.slice(0, 5); // Return top 5 relevant experiences
         }
         
         // Extract user's name from resume
@@ -5396,58 +7544,72 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
             let inSkillsSection = false;
             let skillsHeaderFound = false;
             
+            // Common skill patterns to look for throughout the resume
+            const commonSkills = [
+                'QuickBooks', 'MS Excel', 'MS Word', 'Microsoft Excel', 'Microsoft Word',
+                'Accounting', 'Payroll', 'Accounts Payable', 'Accounts Receivable',
+                'Financial Reporting', 'Tax Preparation', 'Reconciliation',
+                'Customer Service', 'Data Entry', 'Invoice Processing',
+                'JavaScript', 'Python', 'React', 'Node.js', 'SQL', 'HTML', 'CSS'
+            ];
+            
             lines.forEach((line, index) => {
                 const trimmedLine = line.trim();
                 
-                // Check if we're in skills section - handle "Skills & Certifications" or "Technical Skills"
+                // Check if we're in skills section - more flexible detection
                 if (trimmedLine.toUpperCase().includes('SKILLS') || 
                     trimmedLine.toUpperCase().includes('TECHNICAL SKILLS') ||
                     trimmedLine.toUpperCase().includes('COMPETENCIES') ||
-                    trimmedLine.toUpperCase().includes('TECHNOLOGIES')) {
+                    trimmedLine.toUpperCase().includes('TECHNOLOGIES') ||
+                    trimmedLine.toUpperCase().includes('PROFICIENCIES')) {
                     skillsHeaderFound = true;
-                    console.log('🛠️ Found skills header at line', index + 1, ':', trimmedLine);
-                }
-                
-                // Look for "Technical Skills" subsection specifically
-                if (skillsHeaderFound && trimmedLine.toUpperCase().includes('TECHNICAL SKILLS')) {
                     inSkillsSection = true;
-                    console.log('🛠️ Entering technical skills section at line', index + 1, ':', trimmedLine);
+                    console.log('🛠️ Found skills section at line', index + 1, ':', trimmedLine);
                     return;
                 }
                 
                 // Check if we've moved to another section after skills
-                if (inSkillsSection && (trimmedLine.toUpperCase().includes('PROFESSIONAL COMPETENCIES') ||
-                    trimmedLine.toUpperCase().includes('CERTIFICATIONS') ||
-                    trimmedLine.toUpperCase().includes('REFERENCES') ||
+                if (inSkillsSection && (trimmedLine.toUpperCase().includes('EXPERIENCE') ||
                     trimmedLine.toUpperCase().includes('EDUCATION') ||
-                    trimmedLine.toUpperCase().includes('EXPERIENCE'))) {
+                    trimmedLine.toUpperCase().includes('CERTIFICATIONS') ||
+                    trimmedLine.toUpperCase().includes('REFERENCES'))) {
                     console.log('🛠️ Leaving skills section at line', index + 1, ':', trimmedLine);
                     inSkillsSection = false;
-                    return;
                 }
                 
-                // Extract skills - handle bullet points
-                if (inSkillsSection && (trimmedLine.startsWith('●') || trimmedLine.startsWith('•') || trimmedLine.startsWith('-'))) {
-                    let skillLine = trimmedLine.replace(/^[●•\-]\s*/, '');
-                    
-                    // Clean up the skill name (remove extra text)
-                    skillLine = skillLine.trim();
-                    
-                    if (skillLine.length > 1) {
-                        skills.push(skillLine);
-                        console.log('✅ Added skill:', skillLine);
+                // Extract skills from skills section
+                if (inSkillsSection && trimmedLine.length > 0) {
+                    // Look for comma-separated skills or bullet points
+                    if (trimmedLine.includes(',') || trimmedLine.includes('•') || trimmedLine.includes('●')) {
+                        const lineSkills = trimmedLine
+                            .replace(/[•●\-]/g, '')
+                            .split(/[,;]/)
+                            .map(skill => skill.trim())
+                            .filter(skill => skill.length > 2 && skill.length < 30);
+                        
+                        lineSkills.forEach(skill => {
+                            if (!skills.includes(skill)) {
+                                skills.push(skill);
+                                console.log('🛠️ Added skill from skills section:', skill);
+                            }
+                        });
                     }
                 }
+                
+                // Also scan entire resume for common skills (fallback)
+                commonSkills.forEach(skill => {
+                    if (trimmedLine.includes(skill) && !skills.includes(skill)) {
+                        skills.push(skill);
+                        console.log('🛠️ Found skill in resume text:', skill);
+                    }
+                });
             });
             
-            // Remove duplicates and clean up
-            const uniqueSkills = [...new Set(skills)].filter(skill => 
-                skill.length > 1 && !skill.toLowerCase().includes('&')
-            ).map(skill => skill.trim());
-            
-            console.log('🛠️ Total skills extracted:', uniqueSkills.length, uniqueSkills);
-            return uniqueSkills.slice(0, 8); // Return top 8 skills
+            console.log('🛠️ Total skills extracted:', skills.length);
+            console.log('🛠️ Skills found:', skills);
+            return skills.slice(0, 8); // Return top 8 skills
         }
+        
         function generateSmartCoverLetter(job, tone, length, focusAreas) {
             const currentDate = new Date().toLocaleDateString('en-US', { 
                 year: 'numeric', 
@@ -5954,647 +8116,6 @@ Sincerely,
     // Make Cover Letter functions globally accessible
     window.clearCoverUploadedFile = clearCoverUploadedFile;
     
-    // ===== ENHANCED NETWORK MANAGER FUNCTIONALITY =====
-    
-    let networkData = {
-        contacts: [],
-        activities: [],
-        followups: [],
-        analytics: {
-            totalContacts: 0,
-            activeRelationships: 0,
-            pendingFollowups: 0,
-            networkScore: 0
-        }
-    };
-    
-    function initializeNetworkManager() {
-        console.log('🚀 Initializing Enhanced Network Manager...');
-        
-        // Initialize contact form tabs
-        initializeContactTabs();
-        
-        // Set up event listeners after a short delay to ensure elements exist
-        setTimeout(() => {
-            console.log('⏰ Setting up Network Manager event listeners...');
-            
-            // Initialize event listeners
-            const addContactBtn = document.getElementById('add-contact-btn');
-            const bulkFollowUpBtn = document.getElementById('bulk-follow-up-btn');
-            const insightsBtn = document.getElementById('networking-insights-btn');
-            const contactForm = document.getElementById('contact-form');
-            const cancelBtn = document.getElementById('cancel-btn');
-            
-            console.log('🔍 Found elements:', {
-                addContactBtn: !!addContactBtn,
-                bulkFollowUpBtn: !!bulkFollowUpBtn,
-                insightsBtn: !!insightsBtn,
-                contactForm: !!contactForm,
-                cancelBtn: !!cancelBtn
-            });
-            
-            // Filter elements
-            const relationshipFilter = document.getElementById('relationship-filter');
-            const contactTypeFilter = document.getElementById('contact-type-filter');
-            const contactSearch = document.getElementById('contact-search');
-            
-            if (addContactBtn) {
-                addContactBtn.addEventListener('click', () => {
-                    console.log('🎯 Add Contact button clicked!');
-                    openContactModal();
-                });
-                console.log('✅ Add contact button listener attached');
-            } else {
-                console.error('❌ Add contact button not found!');
-            }
-            
-            if (bulkFollowUpBtn) {
-                bulkFollowUpBtn.addEventListener('click', showBulkFollowUpModal);
-            }
-            
-            if (insightsBtn) {
-                insightsBtn.addEventListener('click', showNetworkInsights);
-            }
-            
-            if (contactForm) {
-                contactForm.addEventListener('submit', saveContact);
-            }
-            
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => closeModal('contact-modal'));
-            }
-            
-            // Filter listeners with debugging
-            if (relationshipFilter) {
-                relationshipFilter.addEventListener('change', () => {
-                    console.log('Relationship filter changed:', relationshipFilter.value);
-                    filterContacts();
-                });
-                console.log('Relationship filter listener attached');
-            }
-            
-            if (contactTypeFilter) {
-                contactTypeFilter.addEventListener('change', () => {
-                    console.log('Type filter changed:', contactTypeFilter.value);
-                    filterContacts();
-                });
-                console.log('Type filter listener attached');
-            }
-            
-            if (contactSearch) {
-                contactSearch.addEventListener('input', () => {
-                    console.log('Search input changed:', contactSearch.value);
-                    filterContacts();
-                });
-                console.log('Search filter listener attached');
-            }
-            
-            // Load data and update dashboard
-            loadNetworkData();
-            
-            // Update analytics when contacts are available
-            if (allContacts && allContacts.length > 0) {
-                updateNetworkAnalytics();
-            }
-            
-        }, 500);
-        
-        console.log('Enhanced Network Manager initialized successfully');
-    }
-    
-    function initializeContactTabs() {
-        const tabButtons = document.querySelectorAll('.contact-tab-btn');
-        const tabContents = document.querySelectorAll('.contact-tab-content');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active from all tabs
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                });
-                
-                tabContents.forEach(content => {
-                    content.classList.add('hidden');
-                });
-                
-                // Add active to clicked tab
-                button.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-                button.classList.remove('border-transparent', 'text-gray-500');
-                
-                // Show corresponding content
-                const targetTab = button.dataset.tab;
-                const targetContent = document.getElementById(targetTab + '-tab');
-                if (targetContent) {
-                    targetContent.classList.remove('hidden');
-                }
-            });
-        });
-    }
-    
-    function openContactModal(contact = null) {
-        console.log('🔓 Opening contact modal...', contact);
-        
-        const modal = document.getElementById('contact-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const form = document.getElementById('contact-form');
-        
-        console.log('🔍 Modal elements found:', {
-            modal: !!modal,
-            modalTitle: !!modalTitle,
-            form: !!form
-        });
-        
-        if (!modal) {
-            console.error('❌ Contact modal not found!');
-            return;
-        }
-        
-        // Reset form and tabs
-        form.reset();
-        document.getElementById('contact-id').value = '';
-        
-        // Reset to first tab
-        document.querySelectorAll('.contact-tab-btn').forEach(btn => {
-            btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-            btn.classList.add('border-transparent', 'text-gray-500');
-        });
-        document.querySelectorAll('.contact-tab-content').forEach(content => {
-            content.classList.add('hidden');
-        });
-        
-        // Activate first tab
-        const firstTab = document.querySelector('.contact-tab-btn[data-tab="basic"]');
-        if (firstTab) {
-            firstTab.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-            firstTab.classList.remove('border-transparent', 'text-gray-500');
-        }
-        document.getElementById('basic-tab').classList.remove('hidden');
-        
-        if (contact) {
-            modalTitle.textContent = 'Edit Contact';
-            populateContactForm(contact);
-        } else {
-            modalTitle.textContent = 'Add New Contact';
-            // Set default values
-            document.getElementById('relationship-strength').value = '3';
-            document.getElementById('relationship-standing').value = 'Active';
-            document.getElementById('priority-level').value = 'medium';
-        }
-        
-        openModal('contact-modal');
-    }
-    
-    function populateContactForm(contact) {
-        document.getElementById('contact-id').value = contact.id || '';
-        document.getElementById('name').value = contact.name || '';
-        document.getElementById('company').value = contact.company || '';
-        document.getElementById('job-title').value = contact.jobTitle || '';
-        document.getElementById('type').value = contact.type || 'professional';
-        document.getElementById('email').value = contact.email || '';
-        document.getElementById('phone').value = contact.phone || '';
-        document.getElementById('linkedin-url').value = contact.linkedinUrl || '';
-        document.getElementById('location').value = contact.location || '';
-        
-        // Relationship tab
-        document.getElementById('relationship-strength').value = contact.relationshipStrength || '3';
-        document.getElementById('relationship-standing').value = contact.relationshipStanding || 'Active';
-        document.getElementById('is-reference').value = contact.isReference || 'No';
-        document.getElementById('when-we-met').value = contact.whenWeMet || '';
-        document.getElementById('how-we-met').value = contact.howWeMet || '';
-        document.getElementById('last-comm-date').value = contact.lastCommDate || '';
-        document.getElementById('last-comm-method').value = contact.lastCommMethod || 'Email';
-        document.getElementById('mutual-connections').value = contact.mutualConnections || '';
-        document.getElementById('notes').value = contact.notes || '';
-        
-        // Follow-up tab
-        document.getElementById('followup-frequency').value = contact.followupFrequency || 'none';
-        document.getElementById('next-followup-date').value = contact.nextFollowupDate || '';
-        document.getElementById('priority-level').value = contact.priorityLevel || 'medium';
-        document.getElementById('contact-tags').value = contact.tags || '';
-        document.getElementById('opportunities').value = contact.opportunities || '';
-        document.getElementById('followup-notes').value = contact.followupNotes || '';
-    }
-    
-    async function saveContact(e) {
-        e.preventDefault();
-        
-        try {
-            const contactData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                jobTitle: document.getElementById('job-title').value,
-                type: document.getElementById('type').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                linkedinUrl: document.getElementById('linkedin-url').value,
-                location: document.getElementById('location').value,
-                
-                // Relationship data
-                relationshipStrength: document.getElementById('relationship-strength').value,
-                relationshipStanding: document.getElementById('relationship-standing').value,
-                isReference: document.getElementById('is-reference').value,
-                whenWeMet: document.getElementById('when-we-met').value,
-                howWeMet: document.getElementById('how-we-met').value,
-                lastCommDate: document.getElementById('last-comm-date').value,
-                lastCommMethod: document.getElementById('last-comm-method').value,
-                mutualConnections: document.getElementById('mutual-connections').value,
-                notes: document.getElementById('notes').value,
-                
-                // Follow-up data
-                followupFrequency: document.getElementById('followup-frequency').value,
-                nextFollowupDate: document.getElementById('next-followup-date').value,
-                priorityLevel: document.getElementById('priority-level').value,
-                tags: document.getElementById('contact-tags').value,
-                opportunities: document.getElementById('opportunities').value,
-                followupNotes: document.getElementById('followup-notes').value,
-                
-                // Metadata
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            
-            const contactId = document.getElementById('contact-id').value;
-            
-            if (contactId) {
-                // Update existing contact
-                contactData.id = contactId;
-                await updateDoc(doc(db, `users/${userId}/contacts`, contactId), contactData);
-                showToast('Contact updated successfully!', 'success');
-                
-                // Log activity
-                logNetworkActivity('contact_updated', `Updated contact: ${contactData.name}`);
-            } else {
-                // Add new contact
-                const docRef = await addDoc(collection(db, `users/${userId}/contacts`), contactData);
-                contactData.id = docRef.id;
-                showToast('Contact added successfully!', 'success');
-                
-                // Log activity
-                logNetworkActivity('contact_added', `Added new contact: ${contactData.name}`);
-            }
-            
-            // Schedule follow-up if specified
-            if (contactData.nextFollowupDate) {
-                scheduleFollowUp(contactData);
-            }
-            
-            closeModal('contact-modal');
-            updateNetworkAnalytics();
-            
-        } catch (error) {
-            console.error('Error saving contact:', error);
-            showToast('Error saving contact. Please try again.', 'error');
-        }
-    }
-    
-    function logNetworkActivity(type, description) {
-        const activity = {
-            type: type,
-            description: description,
-            timestamp: new Date().toISOString(),
-            date: new Date().toLocaleDateString()
-        };
-        
-        networkData.activities.unshift(activity);
-        
-        // Keep only last 10 activities for display
-        if (networkData.activities.length > 10) {
-            networkData.activities = networkData.activities.slice(0, 10);
-        }
-        
-        updateRecentActivity();
-        saveNetworkData();
-    }
-    
-    function scheduleFollowUp(contact) {
-        const followup = {
-            contactId: contact.id,
-            contactName: contact.name,
-            contactCompany: contact.company,
-            followupDate: contact.nextFollowupDate,
-            priorityLevel: contact.priorityLevel,
-            notes: contact.followupNotes,
-            createdAt: new Date().toISOString()
-        };
-        
-        networkData.followups.push(followup);
-        updateFollowUpReminders();
-        saveNetworkData();
-    }
-    
-    function updateNetworkAnalytics() {
-        const totalContacts = allContacts.length;
-        const activeRelationships = allContacts.filter(c => c.relationshipStanding === 'Active').length;
-        
-        // Get pending follow-ups from the enhanced contact data
-        const pendingFollowups = allContacts.filter(contact => {
-            if (!contact.nextFollowupDate) return false;
-            return new Date(contact.nextFollowupDate) <= new Date();
-        }).length;
-        
-        // Calculate network score (0-100)
-        let networkScore = 0;
-        if (totalContacts > 0) {
-            const activePercentage = (activeRelationships / totalContacts) * 40;
-            const referenceContacts = allContacts.filter(c => c.isReference === 'Yes').length;
-            const referenceScore = Math.min((referenceContacts / Math.max(totalContacts * 0.2, 1)) * 30, 30);
-            const recentActivity = allContacts.filter(c => {
-                if (!c.lastCommDate) return false;
-                const daysSince = (new Date() - new Date(c.lastCommDate)) / (1000 * 60 * 60 * 24);
-                return daysSince <= 90; // Active in last 3 months
-            }).length;
-            const activityScore = Math.min((recentActivity / Math.max(totalContacts * 0.3, 1)) * 30, 30);
-            
-            networkScore = Math.round(activePercentage + referenceScore + activityScore);
-        }
-        
-        // Update dashboard elements
-        const totalContactsEl = document.getElementById('total-contacts');
-        const activeRelationshipsEl = document.getElementById('active-relationships');
-        const pendingFollowupsEl = document.getElementById('pending-followups');
-        const networkScoreEl = document.getElementById('network-score');
-        
-        if (totalContactsEl) totalContactsEl.textContent = totalContacts;
-        if (activeRelationshipsEl) activeRelationshipsEl.textContent = activeRelationships;
-        if (pendingFollowupsEl) pendingFollowupsEl.textContent = pendingFollowups;
-        if (networkScoreEl) networkScoreEl.textContent = networkScore;
-        
-        // Store analytics
-        networkData.analytics = {
-            totalContacts,
-            activeRelationships,
-            pendingFollowups,
-            networkScore
-        };
-        
-        console.log('Network analytics updated:', networkData.analytics);
-    }
-    
-    function updateRecentActivity() {
-        const container = document.getElementById('recent-activity');
-        
-        if (!container || networkData.activities.length === 0) {
-            if (container) container.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
-            return;
-        }
-        
-        const activitiesHTML = networkData.activities.slice(0, 5).map(activity => `
-            <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50">
-                <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-800 truncate">${activity.description}</p>
-                    <p class="text-xs text-gray-500">${activity.date}</p>
-                </div>
-            </div>
-        `).join('');
-        
-        container.innerHTML = activitiesHTML;
-    }
-    
-    function updateFollowUpReminders() {
-        const container = document.getElementById('followup-reminders');
-        
-        if (!container) return;
-        
-        // Get upcoming follow-ups (next 30 days)
-        const upcoming = networkData.followups.filter(f => {
-            const followupDate = new Date(f.followupDate);
-            const now = new Date();
-            const thirtyDays = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
-            return followupDate >= now && followupDate <= thirtyDays;
-        }).sort((a, b) => new Date(a.followupDate) - new Date(b.followupDate));
-        
-        if (upcoming.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-4">No pending follow-ups</p>';
-            return;
-        }
-        
-        const remindersHTML = upcoming.slice(0, 5).map(reminder => {
-            const daysUntil = Math.ceil((new Date(reminder.followupDate) - new Date()) / (1000 * 60 * 60 * 24));
-            const urgencyClass = daysUntil <= 3 ? 'text-red-600' : daysUntil <= 7 ? 'text-yellow-600' : 'text-gray-600';
-            
-            return `
-                <div class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                    <div class="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm text-gray-800 truncate">${reminder.contactName}</p>
-                        <p class="text-xs ${urgencyClass}">${daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`}</p>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        container.innerHTML = remindersHTML;
-    }
-    
-    function filterContacts() {
-        const relationshipFilter = document.getElementById('relationship-filter');
-        const typeFilter = document.getElementById('contact-type-filter');
-        const searchInput = document.getElementById('contact-search');
-        
-        if (!relationshipFilter || !typeFilter || !searchInput) {
-            console.log('Filter elements not found');
-            return;
-        }
-        
-        const relationshipValue = relationshipFilter.value;
-        const typeValue = typeFilter.value;
-        const searchTerm = searchInput.value.toLowerCase();
-        
-        let filteredContacts = [...allContacts];
-        
-        // Apply relationship filter
-        if (relationshipValue !== 'all') {
-            if (relationshipValue === 'active') {
-                filteredContacts = filteredContacts.filter(contact => 
-                    contact.relationshipStanding === 'Active'
-                );
-            } else if (relationshipValue === 'lost-touch') {
-                filteredContacts = filteredContacts.filter(contact => 
-                    contact.relationshipStanding === 'Lost touch'
-                );
-            }
-        }
-        
-        // Apply type filter
-        if (typeValue !== 'all') {
-            filteredContacts = filteredContacts.filter(contact => 
-                contact.type && contact.type.toLowerCase() === typeValue.toLowerCase()
-            );
-        }
-        
-        // Apply search filter
-        if (searchTerm) {
-            filteredContacts = filteredContacts.filter(contact => 
-                (contact.name && contact.name.toLowerCase().includes(searchTerm)) ||
-                (contact.company && contact.company.toLowerCase().includes(searchTerm)) ||
-                (contact.jobTitle && contact.jobTitle.toLowerCase().includes(searchTerm)) ||
-                (contact.email && contact.email.toLowerCase().includes(searchTerm)) ||
-                (contact.phone && contact.phone.toLowerCase().includes(searchTerm))
-            );
-        }
-        
-        console.log('Filtered contacts:', filteredContacts.length, 'from', allContacts.length);
-        renderFilteredContacts(filteredContacts);
-    }
-    
-    function renderFilteredContacts(contacts) {
-        const networkTableContainer = document.getElementById('network-table-container');
-        
-        if (contacts.length === 0) {
-            networkTableContainer.innerHTML = '<p class="text-center text-gray-500 py-8">No contacts match your filters.</p>';
-            return;
-        }
-        
-        renderContacts(contacts);
-    }
-    
-    function showBulkFollowUpModal() {
-        showToast('Bulk follow-up feature coming soon!', 'info');
-    }
-    
-    function showNetworkInsights() {
-        const insights = generateNetworkInsights();
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-        modal.innerHTML = `
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                <div class="p-6 border-b">
-                    <h3 class="text-2xl font-semibold">Network Insights & Analytics</h3>
-                </div>
-                <div class="p-6">
-                    ${insights}
-                </div>
-                <div class="p-6 border-t flex justify-end">
-                    <button onclick="this.closest('.modal').remove()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition duration-200">Close</button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-    }
-    
-    function generateNetworkInsights() {
-        const contacts = allContacts;
-        const analytics = networkData.analytics;
-        
-        if (contacts.length === 0) {
-            return '<p class="text-gray-500 text-center py-8">Add some contacts to see insights!</p>';
-        }
-        
-        // Generate insights
-        const companyDistribution = {};
-        const typeDistribution = {};
-        const strengthDistribution = {};
-        
-        contacts.forEach(contact => {
-            // Company distribution
-            const company = contact.company || 'Unknown';
-            companyDistribution[company] = (companyDistribution[company] || 0) + 1;
-            
-            // Type distribution
-            const type = contact.type || 'Unknown';
-            typeDistribution[type] = (typeDistribution[type] || 0) + 1;
-            
-            // Strength distribution
-            const strength = contact.relationshipStrength || '3';
-            strengthDistribution[strength] = (strengthDistribution[strength] || 0) + 1;
-        });
-        
-        const topCompanies = Object.entries(companyDistribution)
-            .sort(([,a], [,b]) => b - a)
-            .slice(0, 5);
-            
-        const needsFollowUp = contacts.filter(contact => {
-            if (!contact.lastCommDate) return true;
-            const daysSince = (new Date() - new Date(contact.lastCommDate)) / (1000 * 60 * 60 * 24);
-            return daysSince > 90; // No contact in 3 months
-        });
-        
-        return `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Network Overview</h4>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span>Total Contacts:</span>
-                            <span class="font-medium">${analytics.totalContacts}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Network Score:</span>
-                            <span class="font-medium text-purple-600">${analytics.networkScore}/100</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>References Available:</span>
-                            <span class="font-medium">${contacts.filter(c => c.isReference === 'Yes').length}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Top Companies</h4>
-                    <div class="space-y-2 text-sm">
-                        ${topCompanies.map(([company, count]) => `
-                            <div class="flex justify-between">
-                                <span class="truncate">${company}</span>
-                                <span class="font-medium">${count}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Relationship Strength</h4>
-                    <div class="space-y-2 text-sm">
-                        ${Object.entries(strengthDistribution).map(([strength, count]) => {
-                            const label = ['', 'Just met', 'Acquaintance', 'Professional', 'Strong', 'Close'][strength] || 'Unknown';
-                            return `
-                                <div class="flex justify-between">
-                                    <span>${label} (${strength}/5):</span>
-                                    <span class="font-medium">${count}</span>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-                
-                <div class="bg-yellow-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-800 mb-3">Action Needed</h4>
-                    <div class="text-sm">
-                        <p class="text-yellow-800 mb-2">${needsFollowUp.length} contacts need follow-up</p>
-                        ${needsFollowUp.slice(0, 5).map(contact => `
-                            <div class="text-yellow-700">• ${contact.name} (${contact.company || 'Unknown'})</div>
-                        `).join('')}
-                        ${needsFollowUp.length > 5 ? `<div class="text-yellow-600 mt-2">...and ${needsFollowUp.length - 5} more</div>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    function loadNetworkData() {
-        const saved = localStorage.getItem('jobos_network_data');
-        if (saved) {
-            const data = JSON.parse(saved);
-            networkData.activities = data.activities || [];
-            networkData.followups = data.followups || [];
-        }
-        
-        updateRecentActivity();
-        updateFollowUpReminders();
-    }
-    
-    function saveNetworkData() {
-        localStorage.setItem('jobos_network_data', JSON.stringify({
-            activities: networkData.activities,
-            followups: networkData.followups
-        }));
-    }
-
     // Make functions globally accessible for debugging
     window.clearUploadedFile = clearUploadedFile;
     window.downloadAsPDF = downloadAsPDF;
@@ -6606,6 +8127,8 @@ Sincerely,
     initializeSmartResume();
     initializeInterviewPrep();
     initializeCoverLetter();
+    initializeSkillsAssessment();
+    initializeNetworkManager();
     switchTab(document.querySelector('.nav-tab[data-tab="dashboard"]'));
     
     // Test download button connection
@@ -6618,8 +8141,10 @@ Sincerely,
         }
     }, 1000);
 
-    // Add debug test function to global scope for console testing
-    window.testResumeParsing = function() {
+}); // End of DOMContentLoaded
+
+// Add debug test function to global scope for console testing
+window.testResumeParsing = function() {
         const testResume = `IBRAHIM LAHAI
 18 Hennessy Street, Kingtom, Freetown, Sierra Leone
 +232 78 377 336 / +232 31 077 461 | lahaiibrahim@gmail.com
@@ -6651,7 +8176,6 @@ Technical Skills
         return { name, skills, experience };
     };
 
-    });
 </script>
 </body>
 </html>

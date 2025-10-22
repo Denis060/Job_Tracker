@@ -14,7 +14,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .modal { display: none; }
-        .modal.active { display: flex; }
+        .modal.active { display: flex !important; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
         ::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 4px; }
@@ -25,16 +25,73 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+        /* Sidebar Styles */
+        .sidebar {
+            width: 256px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 40;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-collapsed {
+            width: 80px;
+        }
+        .main-content {
+            margin-left: 256px;
+            transition: all 0.3s ease;
+        }
+        .main-content.sidebar-collapsed {
+            margin-left: 80px;
+        }
         .nav-tab {
-            padding-bottom: 8px;
-            border-bottom-width: 2px;
-            border-color: transparent;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
             transition: all 0.2s ease-in-out;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 14px;
+            border-radius: 8px;
+            margin: 2px 8px;
+        }
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(4px);
         }
         .nav-tab.active-tab {
-            border-color: #6366f1; /* indigo-500 */
-            color: #4f46e5; /* indigo-600 */
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .nav-text {
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .sidebar-collapsed .nav-tab {
+            justify-content: center;
+            padding: 12px;
+        }
+        .sidebar-collapsed .nav-icon {
+            margin-right: 0;
         }
         .app-view.hidden, .job-view.hidden {
             display: none;
@@ -251,36 +308,105 @@
     <!-- Main Container -->
     <div id="app" class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-white shadow-sm sticky top-0 z-20">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex items-center">
-                         <svg class="h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-white border-opacity-20">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 text-white p-2 rounded-lg">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
                         </svg>
-                        <h1 class="text-2xl font-bold text-gray-800 ml-3">Job OS</h1>
                     </div>
-                    <div id="auth-status" class="text-xs text-gray-500 font-mono text-right">Connecting...</div>
+                    <div class="nav-text">
+                        <h1 class="text-lg font-bold text-white">Job OS</h1>
+                        <p class="text-xs text-white text-opacity-70">Career Platform</p>
+                    </div>
                 </div>
             </div>
-             <!-- Navigation -->
-            <nav class="bg-white border-t border-gray-200">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex items-center space-x-8">
-                        <button class="nav-tab active-tab" data-tab="dashboard">Dashboard</button>
-                        <button class="nav-tab" data-tab="jobs">Job Tracker</button>
-                        <button class="nav-tab" data-tab="smart-resume">Smart Resume</button>
-                        <button class="nav-tab" data-tab="interview-prep">Interview Prep</button>
-                        <button class="nav-tab" data-tab="cover-letter">Cover Letter</button>
-                        <button class="nav-tab" data-tab="network">Network Manager</button>
-                        <button class="nav-tab" data-tab="history">Work History</button>
-                    </div>
-                </div>
+            
+            <!-- Navigation Items -->
+            <nav class="mt-6 px-2">
+                <button class="nav-tab active-tab" data-tab="dashboard">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    <span class="nav-text">Dashboard</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="jobs">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 002 2h2a2 2 0 002-2V6z" />
+                    </svg>
+                    <span class="nav-text">Job Tracker</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="smart-resume">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="nav-text">Smart Resume</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="interview-prep">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span class="nav-text">Interview Prep</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="cover-letter">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <span class="nav-text">Cover Letter</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="network">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span class="nav-text">Network Manager</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="analytics">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span class="nav-text">Analytics</span>
+                </button>
+                
+                <button class="nav-tab" data-tab="history">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="nav-text">Work History</span>
+                </button>
+            </nav>
+            
+            <!-- Sidebar Toggle Button -->
+            <div class="absolute bottom-4 left-4 right-4">
+                <button id="sidebar-toggle" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                    <span class="nav-text ml-2">Collapse</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Top Header (simplified) -->
+        <header class="main-content bg-white shadow-sm border-b border-gray-200">
+            <div class="px-6 py-4 flex justify-end items-center">
+                <div id="auth-status" class="text-xs text-gray-500 font-mono text-right">Connecting...</div>
+            </div>
+        </header>
             </nav>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+        <main class="main-content flex-grow p-6 bg-gray-50 min-h-screen">
              <!-- Dashboard View -->
             <div id="dashboard-view" class="app-view">
                  <h2 class="text-3xl font-bold text-gray-800 mb-6">Your Dashboard</h2>
@@ -765,16 +891,265 @@
             <div id="history-view" class="app-view hidden">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
                     <h2 class="text-3xl font-semibold text-gray-700">Work History</h2>
-                    <button id="add-history-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
+                    <button id="add-job-btn-history" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
                         <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                         </svg>
-                        Add Job
+                        Add Work History
                     </button>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <div id="history-table-container" class="table-responsive">
                        <p id="history-loading-state" class="text-center text-gray-500 py-8">Loading work history...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Analytics Dashboard View -->
+            <div id="analytics-view" class="app-view hidden">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-3">📊 Advanced Analytics Dashboard</h2>
+                        <p class="text-gray-600 text-lg">Comprehensive insights across your entire career management platform</p>
+                        <div class="mt-4">
+                            <button id="refresh-analytics-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center mx-auto">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Refresh Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Overview Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-indigo-100 text-sm font-medium">Career Score</p>
+                                    <p id="analytics-career-score" class="text-3xl font-bold">0</p>
+                                    <p class="text-indigo-200 text-xs">Overall Progress</p>
+                                </div>
+                                <div class="bg-indigo-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-emerald-100 text-sm font-medium">Success Rate</p>
+                                    <p id="analytics-success-rate" class="text-3xl font-bold">0%</p>
+                                    <p class="text-emerald-200 text-xs">Interview Success</p>
+                                </div>
+                                <div class="bg-emerald-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-amber-100 text-sm font-medium">Active Goals</p>
+                                    <p id="analytics-active-goals" class="text-3xl font-bold">0</p>
+                                    <p class="text-amber-200 text-xs">In Progress</p>
+                                </div>
+                                <div class="bg-amber-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-rose-100 text-sm font-medium">Time Investment</p>
+                                    <p id="analytics-time-investment" class="text-3xl font-bold">0h</p>
+                                    <p class="text-rose-200 text-xs">This Month</p>
+                                </div>
+                                <div class="bg-rose-400 bg-opacity-30 rounded-lg p-3">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Analytics Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                        <!-- Job Application Analytics -->
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-semibold text-gray-800">📈 Application Performance</h3>
+                                <select id="analytics-time-range" class="border border-gray-300 rounded-lg px-3 py-1 text-sm">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30" selected>Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                    <option value="365">Last year</option>
+                                    <option value="all">All time</option>
+                                </select>
+                            </div>
+                            <div class="h-80">
+                                <canvas id="application-trends-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Performance Metrics -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">🎯 Key Metrics</h3>
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-blue-500 pl-4">
+                                    <div class="text-sm text-gray-600">Applications Submitted</div>
+                                    <div id="analytics-total-apps" class="text-2xl font-bold text-gray-800">0</div>
+                                    <div class="text-xs text-gray-500">This period</div>
+                                </div>
+                                <div class="border-l-4 border-green-500 pl-4">
+                                    <div class="text-sm text-gray-600">Response Rate</div>
+                                    <div id="analytics-response-rate" class="text-2xl font-bold text-gray-800">0%</div>
+                                    <div class="text-xs text-gray-500">Replies received</div>
+                                </div>
+                                <div class="border-l-4 border-yellow-500 pl-4">
+                                    <div class="text-sm text-gray-600">Interview Rate</div>
+                                    <div id="analytics-interview-rate" class="text-2xl font-bold text-gray-800">0%</div>
+                                    <div class="text-xs text-gray-500">Interviews secured</div>
+                                </div>
+                                <div class="border-l-4 border-purple-500 pl-4">
+                                    <div class="text-sm text-gray-600">Offer Rate</div>
+                                    <div id="analytics-offer-rate" class="text-2xl font-bold text-gray-800">0%</div>
+                                    <div class="text-xs text-gray-500">Offers received</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network & Career Insights -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <!-- Network Growth -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">🌐 Network Growth</h3>
+                            <div class="h-64">
+                                <canvas id="network-growth-chart"></canvas>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-2xl font-bold text-blue-600" id="analytics-network-size">0</div>
+                                    <div class="text-sm text-blue-800">Total Contacts</div>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded-lg">
+                                    <div class="text-2xl font-bold text-green-600" id="analytics-network-score">0</div>
+                                    <div class="text-sm text-green-800">Network Score</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills & Career Development -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">🎓 Skills Analysis</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Most In-Demand Skills</span>
+                                        <span class="text-gray-500">Applications</span>
+                                    </div>
+                                    <div id="analytics-top-skills" class="space-y-2">
+                                        <!-- Dynamic skill bars will be inserted here -->
+                                    </div>
+                                </div>
+                                <div class="border-t pt-4">
+                                    <h4 class="font-semibold text-gray-700 mb-3">📊 Skill Gap Analysis</h4>
+                                    <div id="analytics-skill-gaps" class="space-y-2">
+                                        <!-- Dynamic skill gap recommendations -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Analytics Tables -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <!-- Application Sources Performance -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">📊 Source Performance</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Applications</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Response Rate</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Success</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="analytics-source-table" class="divide-y divide-gray-200">
+                                        <!-- Dynamic rows will be inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Timeline & Goals -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">⏰ Timeline & Goals</h3>
+                            <div class="space-y-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-700 mb-2">🎯 This Month's Goals</h4>
+                                    <div id="analytics-monthly-goals" class="space-y-2">
+                                        <!-- Dynamic goals will be inserted here -->
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-700 mb-2">📈 Progress Tracking</h4>
+                                    <div id="analytics-progress-tracking" class="space-y-3">
+                                        <!-- Dynamic progress bars will be inserted here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actionable Insights & Recommendations -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            🎯 AI-Powered Insights & Recommendations
+                        </h3>
+                        <div id="analytics-recommendations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Dynamic recommendations will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Export & Actions -->
+                    <div class="mt-8 flex flex-wrap gap-4 justify-center">
+                        <button id="export-analytics-pdf" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Export PDF Report
+                        </button>
+                        <button id="export-analytics-csv" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                            </svg>
+                            Export Data (CSV)
+                        </button>
+                        <button id="schedule-report" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Schedule Reports
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1419,7 +1794,7 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
     <!-- Add/Edit Job Application Modal -->
-    <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30">
+    <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="job-modal-title" class="text-2xl font-semibold">Add New Application</h3>
@@ -1724,7 +2099,7 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
     <!-- Add/Edit Contact Modal -->
-    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30" style="display: none;">
+    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50" style="display: none;">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="modal-title" class="text-2xl font-semibold">Add New Contact</h3>
@@ -1905,8 +2280,8 @@ Software Developer at TechCorp (2020-2023)
     </div>
 
     <!-- Add/Edit History Modal -->
-    <div id="history-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div id="history-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="z-index: 9999;">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="history-modal-title" class="text-2xl font-semibold">Add Work History</h3>
             </div>
@@ -1950,20 +2325,39 @@ Software Developer at TechCorp (2020-2023)
                         <input type="text" id="h-manager" class="w-full border-gray-300 rounded-lg shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Reason for leaving</label>
                         <input type="text" id="h-reason" class="w-full border-gray-300 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Key Responsibilities</label>
+                        <textarea id="h-responsibilities" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Describe your main responsibilities and achievements..."></textarea>
                         <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Employment Verification Details</label>
-                        <textarea id="h-verification" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
+                        <textarea id="h-verification" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t flex justify-end space-x-3">
                     <button type="button" id="history-cancel-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-200">Cancel</button>
-                    <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200">Save Job</button>
+                    <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200">Save Work History</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Work History Details View Modal -->
+    <div id="history-details-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="z-index: 9999;">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="text-2xl font-semibold">Work History Details</h3>
+                <button id="history-details-close-btn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="history-details-content" class="p-6">
+                <!-- Details will be populated here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Add/Edit Task Modal -->
-    <div id="task-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-30">
+    <div id="task-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b">
                 <h3 id="task-modal-title" class="text-2xl font-semibold">Add Task</h3>
@@ -2037,6 +2431,7 @@ Software Developer at TechCorp (2020-2023)
     const jobsBoardView = document.getElementById('jobs-board-view');
     const kanbanBoard = document.getElementById('kanban-board');
     const addJobBtn = document.getElementById('add-job-btn');
+    const addJobBtnHistory = document.getElementById('add-job-btn-history');
     const jobModal = document.getElementById('job-modal');
     const jobForm = document.getElementById('job-form');
     const jobCancelBtn = document.getElementById('job-cancel-btn');
@@ -2051,7 +2446,6 @@ Software Developer at TechCorp (2020-2023)
     const contactIdField = document.getElementById('contact-id');
     const networkTableContainer = document.getElementById('network-table-container');
     const loadingState = document.getElementById('loading-state');
-    const addHistoryBtn = document.getElementById('add-history-btn');
     const historyModal = document.getElementById('history-modal');
     const historyForm = document.getElementById('history-form');
     const historyCancelBtn = document.getElementById('history-cancel-btn');
@@ -2175,6 +2569,22 @@ Software Developer at TechCorp (2020-2023)
                 }
             }, 100);
         }
+        
+        // Initialize Advanced Analytics when tab is opened
+        if (tab.dataset.tab === 'analytics') {
+            setTimeout(() => {
+                console.log('📊 Analytics tab opened');
+                initializeAdvancedAnalytics();
+            }, 100);
+        }
+        
+        // Initialize Work History when tab is opened
+        if (tab.dataset.tab === 'history') {
+            setTimeout(() => {
+                console.log('🏢 Work History tab opened');
+                fetchHistory();
+            }, 100);
+        }
     }
 
     function openJobModal(job = null) {
@@ -2241,18 +2651,139 @@ Software Developer at TechCorp (2020-2023)
     }
 
     function openHistoryModal(job = null) {
-        historyForm.reset();
-        historyIdField.value = job ? job.id : '';
-        historyModalTitle.textContent = job ? 'Edit Work History' : 'Add Work History';
+        console.log('🎯 Opening History Modal...', { job });
+        
+        const historyModal = document.getElementById('history-modal');
+        const historyForm = document.getElementById('history-form');
+        const historyIdField = document.getElementById('history-id');
+        const historyModalTitle = document.getElementById('history-modal-title');
+        
+        console.log('🔍 History Modal Elements:', {
+            historyModal: !!historyModal,
+            historyForm: !!historyForm,
+            historyIdField: !!historyIdField,
+            historyModalTitle: !!historyModalTitle
+        });
+        
+        if (!historyModal) {
+            console.error('❌ History modal not found!');
+            return;
+        }
+        
+        if (historyForm) historyForm.reset();
+        if (historyIdField) historyIdField.value = job ? job.id : '';
+        if (historyModalTitle) historyModalTitle.textContent = job ? 'Edit Work History' : 'Add Work History';
+        
         if (job) {
              Object.keys(job).forEach(key => {
                 const element = document.getElementById(`h-${key}`);
                 if (element) element.value = job[key];
             });
         }
+        
         historyModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        console.log('✅ History modal should now be visible');
+        console.log('🔍 Modal classes:', historyModal.className);
+        console.log('🔍 Modal display style:', historyModal.style.display);
+        console.log('🔍 Modal computed styles:', {
+            display: window.getComputedStyle(historyModal).display,
+            visibility: window.getComputedStyle(historyModal).visibility,
+            zIndex: window.getComputedStyle(historyModal).zIndex,
+            position: window.getComputedStyle(historyModal).position
+        });
     }
-    function closeHistoryModal() { historyModal.classList.remove('active'); }
+    function closeHistoryModal() { 
+        const historyModal = document.getElementById('history-modal');
+        if (historyModal) {
+            historyModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scrolling
+            console.log('✅ History modal closed');
+        }
+    }
+
+    function showHistoryDetails(job) {
+        const detailsModal = document.getElementById('history-details-modal');
+        const detailsContent = document.getElementById('history-details-content');
+        
+        if (!detailsModal || !detailsContent) return;
+        
+        const formatSalary = (salary) => salary ? (salary.startsWith('$') ? salary : `$${salary}`) : 'Not specified';
+        const formatDate = (date) => date ? new Date(date).toLocaleDateString() : 'Not specified';
+        
+        detailsContent.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Company Information</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <p><span class="font-medium">Company:</span> ${job.company || 'Not specified'}</p>
+                            <p><span class="font-medium">Address:</span> ${job.address || 'Not specified'}</p>
+                            <p><span class="font-medium">Employment Type:</span> ${job.employmentType || 'Not specified'}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Position Details</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <p><span class="font-medium">Starting Position:</span> ${job.startPosition || 'Not specified'}</p>
+                            <p><span class="font-medium">Ending Position:</span> ${job.endPosition || job.startPosition || 'Not specified'}</p>
+                            <p><span class="font-medium">Manager(s):</span> ${job.manager || 'Not specified'}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Employment Period</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <p><span class="font-medium">Start Date:</span> ${formatDate(job.startDate)}</p>
+                            <p><span class="font-medium">End Date:</span> ${job.endDate ? formatDate(job.endDate) : 'Present'}</p>
+                            <p><span class="font-medium">Reason for Leaving:</span> ${job.reason || 'Not specified'}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Compensation</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <p><span class="font-medium">Starting Salary:</span> ${formatSalary(job.startBase)}</p>
+                            <p><span class="font-medium">Ending Salary:</span> ${formatSalary(job.endBase)}</p>
+                            <p><span class="font-medium">Bonus:</span> ${formatSalary(job.bonus)}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            ${job.responsibilities ? `
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Key Responsibilities</h4>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">${job.responsibilities}</p>
+                    </div>
+                </div>
+            ` : ''}
+            
+            ${job.verification ? `
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Employment Verification</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-600 whitespace-pre-wrap">${job.verification}</p>
+                    </div>
+                </div>
+            ` : ''}
+        `;
+        
+        detailsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeHistoryDetailsModal() {
+        const detailsModal = document.getElementById('history-details-modal');
+        if (detailsModal) {
+            detailsModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
 
     function renderJobs(jobs) {
         // Clean up auto-generated tasks for jobs that no longer need them
@@ -2369,8 +2900,9 @@ Software Developer at TechCorp (2020-2023)
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><div>${job.endBase || job.startBase || 'N/A'}</div><div class="text-xs text-gray-500">Bonus: ${job.bonus || 'N/A'}</div></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${job.manager || ''}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="history-edit-btn text-indigo-600 hover:text-indigo-900" data-id="${job.id}">Edit</button>
-                                <button class="history-delete-btn text-red-600 hover:text-red-900 ml-4" data-id="${job.id}">Delete</button>
+                                <button class="history-view-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${job.id}">View</button>
+                                <button class="history-edit-btn text-indigo-600 hover:text-indigo-900 mr-2" data-id="${job.id}">Edit</button>
+                                <button class="history-delete-btn text-red-600 hover:text-red-900" data-id="${job.id}">Delete</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -2530,6 +3062,9 @@ Software Developer at TechCorp (2020-2023)
             
             // Initialize Enhanced Job Tracker
             initializeJobTrackerOnLoad();
+            
+            // Initialize Advanced Analytics
+            initializeAnalyticsOnLoad();
         }, e => {
             console.error("❌ Error fetching jobs: ", e);
             console.log('🔍 Trying to fetch jobs from path:', ref.path);
@@ -2549,6 +3084,14 @@ Software Developer at TechCorp (2020-2023)
             // Initialize enhanced Network Manager
             if (typeof initializeNetworkManager === 'function') {
                 initializeNetworkManager();
+            }
+            
+            // Recalculate analytics when contacts data loads
+            if (typeof calculateAdvancedAnalytics === 'function') {
+                setTimeout(() => {
+                    calculateAdvancedAnalytics();
+                    console.log('📊 Analytics recalculated after contacts loaded');
+                }, 500);
             }
         }, e => console.error("Error fetching contacts: ", e));
     }
@@ -3397,13 +3940,20 @@ Research Assistant | Pace University | September 2023 – Present
             displayInterviewQuestions(interviewQuestions);
             updateFilterButtons('all');
         });
-        document.getElementById('filter-behavioral').addEventListener('click', () => filterQuestions('behavioral'));
-        document.getElementById('filter-technical').addEventListener('click', () => filterQuestions('technical'));
-        document.getElementById('filter-company').addEventListener('click', () => filterQuestions('company'));
+        
+        const filterBehavioral = document.getElementById('filter-behavioral');
+        const filterTechnical = document.getElementById('filter-technical');
+        const filterCompany = document.getElementById('filter-company');
+        const getFeedbackBtn = document.getElementById('get-feedback-btn');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        
+        if (filterBehavioral) filterBehavioral.addEventListener('click', () => filterQuestions('behavioral'));
+        if (filterTechnical) filterTechnical.addEventListener('click', () => filterQuestions('technical'));
+        if (filterCompany) filterCompany.addEventListener('click', () => filterQuestions('company'));
         
         // Practice mode handlers
-        document.getElementById('get-feedback-btn').addEventListener('click', generateFeedback);
-        document.getElementById('next-question-btn').addEventListener('click', nextPracticeQuestion);
+        if (getFeedbackBtn) getFeedbackBtn.addEventListener('click', generateFeedback);
+        if (nextQuestionBtn) nextQuestionBtn.addEventListener('click', nextPracticeQuestion);
         
         console.log('Interview Prep initialized successfully');
     }
@@ -4960,16 +5510,23 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
             startDate: document.getElementById('h-startDate').value, endDate: document.getElementById('h-endDate').value,
             startBase: document.getElementById('h-startBase').value, endBase: document.getElementById('h-endBase').value,
             bonus: document.getElementById('h-bonus').value, reason: document.getElementById('h-reason').value,
+            responsibilities: document.getElementById('h-responsibilities').value,
             verification: document.getElementById('h-verification').value, employmentType: document.getElementById('h-employmentType').value,
             manager: document.getElementById('h-manager').value,
         };
-        const id = historyIdField.value;
+        const historyIdField = document.getElementById('history-id');
+        const id = historyIdField ? historyIdField.value : '';
         const ref = db.collection('artifacts').doc('job-os-app').collection('users').doc(userId).collection('history');
         try {
             if (id) await ref.doc(id).update(data);
             else await ref.add(data);
             closeHistoryModal();
-        } catch (e) { console.error("Error saving job history:", e); }
+            fetchHistory(); // Refresh the history display after saving
+            console.log('✅ Work history saved successfully!');
+        } catch (e) { 
+            console.error("Error saving job history:", e); 
+            alert('Error saving work history. Please try again.');
+        }
     }
 
      async function handleJobTableClick(event) {
@@ -5008,12 +5565,19 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         const id = target.dataset.id;
         if (!id || !userId) return;
         const ref = db.collection('artifacts').doc('job-os-app').collection('users').doc(userId).collection('history').doc(id);
+        if (target.classList.contains('history-view-btn')) {
+            const doc = await ref.get();
+            if (doc.exists) showHistoryDetails({ id: doc.id, ...doc.data() });
+        }
         if (target.classList.contains('history-edit-btn')) {
             const doc = await ref.get();
             if (doc.exists) openHistoryModal({ id: doc.id, ...doc.data() });
         }
         if (target.classList.contains('history-delete-btn')) {
-            await ref.delete();
+            if (confirm('Are you sure you want to delete this work history entry?')) {
+                await ref.delete();
+                fetchHistory(); // Refresh the list
+            }
         }
     }
 
@@ -5070,33 +5634,80 @@ ${eventDetails.description.replace(/\\n/g, '\n')}`;
         }
     });
 
-    addJobBtn.addEventListener('click', () => openJobModal());
-    jobCancelBtn.addEventListener('click', closeJobModal);
-    jobForm.addEventListener('submit', saveJob);
-    jobsTableContainer.addEventListener('click', handleJobTableClick);
+    if (addJobBtn) {
+        console.log('✅ Add Job button found, attaching listener');
+        addJobBtn.addEventListener('click', () => {
+            console.log('🎯 Add Job button clicked!');
+            openJobModal();
+        });
+    } else {
+        console.error('❌ Add Job button not found!');
+    }
+    if (addJobBtnHistory) {
+        console.log('✅ Add Job History button found, attaching listener');
+        addJobBtnHistory.addEventListener('click', () => {
+            console.log('🎯 Add Job History button clicked!');
+            openHistoryModal();
+        });
+    } else {
+        console.error('❌ Add Job History button not found!');
+    }
+    if (jobCancelBtn) jobCancelBtn.addEventListener('click', closeJobModal);
+    if (jobForm) jobForm.addEventListener('submit', saveJob);
+    if (jobsTableContainer) jobsTableContainer.addEventListener('click', handleJobTableClick);
 
-    addContactBtn.addEventListener('click', () => openContactModal_old());
-    cancelBtn.addEventListener('click', closeModal);
-    contactForm.addEventListener('submit', saveContact);
-    networkTableContainer.addEventListener('click', handleTableClick);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (contactForm) contactForm.addEventListener('submit', saveContact);
+    if (networkTableContainer) networkTableContainer.addEventListener('click', handleTableClick);
 
-    addHistoryBtn.addEventListener('click', () => openHistoryModal());
-    historyCancelBtn.addEventListener('click', closeHistoryModal);
-    historyForm.addEventListener('submit', saveHistory);
-    historyTableContainer.addEventListener('click', handleHistoryTableClick);
+    if (historyCancelBtn) historyCancelBtn.addEventListener('click', closeHistoryModal);
+    if (historyForm) historyForm.addEventListener('submit', saveHistory);
+    if (historyTableContainer) historyTableContainer.addEventListener('click', handleHistoryTableClick);
+    
+    // History details modal close button
+    const historyDetailsCloseBtn = document.getElementById('history-details-close-btn');
+    if (historyDetailsCloseBtn) historyDetailsCloseBtn.addEventListener('click', closeHistoryDetailsModal);
     
     // Task Management Event Listeners
-    addTaskBtn.addEventListener('click', () => openTaskModal());
-    taskCancelBtn.addEventListener('click', closeTaskModal);
-    taskForm.addEventListener('submit', saveTask);
-    tasksContainer.addEventListener('click', handleTaskAction);
+    if (addTaskBtn) addTaskBtn.addEventListener('click', () => openTaskModal());
+    if (taskCancelBtn) taskCancelBtn.addEventListener('click', closeTaskModal);
+    if (taskForm) taskForm.addEventListener('submit', saveTask);
+    if (tasksContainer) tasksContainer.addEventListener('click', handleTaskAction);
     
     // Smart Resume Event Listeners
-    document.getElementById('generate-resume-btn').addEventListener('click', generateTailoredResume);
-    document.getElementById('copy-resume-btn').addEventListener('click', copyTailoredResume);
-    document.getElementById('download-resume-btn').addEventListener('click', downloadTailoredResume);
+    const generateResumeBtn = document.getElementById('generate-resume-btn');
+    const copyResumeBtn = document.getElementById('copy-resume-btn');
+    const downloadResumeBtn = document.getElementById('download-resume-btn');
+    
+    if (generateResumeBtn) generateResumeBtn.addEventListener('click', generateTailoredResume);
+    if (copyResumeBtn) copyResumeBtn.addEventListener('click', copyTailoredResume);
+    if (downloadResumeBtn) downloadResumeBtn.addEventListener('click', downloadTailoredResume);
 
     navTabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab)));
+    
+    // Sidebar Toggle Functionality
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.querySelectorAll('.main-content');
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.forEach(content => content.classList.toggle('sidebar-collapsed'));
+            
+            // Update toggle button icon
+            const icon = sidebarToggle.querySelector('svg');
+            const text = sidebarToggle.querySelector('.nav-text');
+            
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />';
+                if (text) text.textContent = 'Expand';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />';
+                if (text) text.textContent = 'Collapse';
+            }
+        });
+    }
     
     function cleanupAutoTasks(currentJobs) {
         // Remove auto-generated tasks that are no longer relevant
@@ -6379,7 +6990,7 @@ Sincerely,
             if (addContactBtn) {
                 addContactBtn.addEventListener('click', () => {
                     console.log('🎯 Add Contact button clicked!');
-                    openContactModal();
+                    openContactModal_old();
                 });
                 console.log('✅ Add contact button listener attached');
             } else {
@@ -7853,6 +8464,859 @@ Sincerely,
             setupSmartJobModal();
         }, 100);
     }
+    
+    // ===== ADVANCED ANALYTICS DASHBOARD FUNCTIONALITY =====
+    
+    let analyticsCharts = {
+        applicationTrends: null,
+        networkGrowth: null
+    };
+    
+    let analyticsData = {
+        careerScore: 0,
+        successRate: 0,
+        timeInvestment: 0,
+        skillsAnalysis: {},
+        sourcePerformance: {},
+        monthlyGoals: [],
+        recommendations: []
+    };
+    
+    function initializeAdvancedAnalytics() {
+        console.log('📊 Initializing Advanced Analytics Dashboard...');
+        
+        // Set up time range listener
+        setupAnalyticsTimeRange();
+        
+        // Set up export buttons
+        setupAnalyticsExport();
+        
+        // Load and calculate all analytics
+        setTimeout(() => {
+            calculateAdvancedAnalytics();
+            renderAnalyticsCharts();
+            updateAnalyticsRecommendations();
+        }, 500);
+        
+        console.log('✅ Advanced Analytics Dashboard initialized');
+    }
+    
+    function setupAnalyticsTimeRange() {
+        const timeRangeSelect = document.getElementById('analytics-time-range');
+        if (timeRangeSelect) {
+            timeRangeSelect.addEventListener('change', () => {
+                calculateAdvancedAnalytics();
+                renderAnalyticsCharts();
+            });
+        }
+    }
+    
+    function setupAnalyticsExport() {
+        const exportPdfBtn = document.getElementById('export-analytics-pdf');
+        const exportCsvBtn = document.getElementById('export-analytics-csv');
+        const scheduleReportBtn = document.getElementById('schedule-report');
+        const refreshBtn = document.getElementById('refresh-analytics-btn');
+        
+        if (exportPdfBtn) {
+            exportPdfBtn.addEventListener('click', exportAnalyticsPDF);
+        }
+        
+        if (exportCsvBtn) {
+            exportCsvBtn.addEventListener('click', exportAnalyticsCSV);
+        }
+        
+        if (scheduleReportBtn) {
+            scheduleReportBtn.addEventListener('click', showScheduleReportModal);
+        }
+        
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                console.log('🔄 Manual analytics refresh triggered');
+                console.log('Current data state - Jobs:', allJobs?.length || 0, 'Contacts:', allContacts?.length || 0);
+                calculateAdvancedAnalytics();
+                renderAnalyticsCharts();
+                showToast('Analytics refreshed!', 'success');
+            });
+        }
+    }
+    
+    function calculateAdvancedAnalytics() {
+        if (!allJobs || !allContacts) {
+            console.log('📊 Analytics data not ready - allJobs:', allJobs?.length || 0, 'allContacts:', allContacts?.length || 0);
+            return;
+        }
+        
+        console.log('📊 Calculating advanced analytics with real data - Jobs:', allJobs.length, 'Contacts:', allContacts.length);
+        
+        // Validate we have actual Firebase data
+        if (allJobs.length === 0 && allContacts.length === 0) {
+            console.log('⚠️ No data available from Firebase - showing empty state');
+            updateAnalyticsUIWithEmptyState();
+            return;
+        }
+        
+        // Get time range
+        const timeRange = document.getElementById('analytics-time-range')?.value || '30';
+        const filteredJobs = filterJobsByTimeRange(allJobs, parseInt(timeRange));
+        const filteredContacts = filterContactsByTimeRange(allContacts, parseInt(timeRange));
+        
+        // Calculate career score (0-100)
+        const careerScore = calculateCareerScore(filteredJobs, filteredContacts);
+        
+        // Calculate success rates
+        const successMetrics = calculateSuccessMetrics(filteredJobs);
+        
+        // Calculate time investment
+        const timeInvestment = calculateTimeInvestment(filteredJobs, filteredContacts);
+        
+        // Analyze skills
+        const skillsAnalysis = analyzeSkills(filteredJobs);
+        
+        // Analyze source performance
+        const sourcePerformance = analyzeSourcePerformance(filteredJobs);
+        
+        // Update analytics data
+        analyticsData = {
+            careerScore,
+            successRate: successMetrics.interviewRate,
+            timeInvestment,
+            skillsAnalysis,
+            sourcePerformance,
+            applicationMetrics: successMetrics,
+            monthlyGoals: generateMonthlyGoals(filteredJobs),
+            recommendations: generateAnalyticsRecommendations(filteredJobs, filteredContacts)
+        };
+        
+        // Update UI elements
+        updateAnalyticsUI();
+        
+        console.log('📊 Advanced analytics calculated:', analyticsData);
+    }
+    
+    function filterJobsByTimeRange(jobs, days) {
+        if (days === 'all') return jobs;
+        
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        
+        return jobs.filter(job => {
+            const submissionDate = job.submissionDate ? new Date(job.submissionDate) : new Date(job.createdAt || new Date());
+            return submissionDate >= cutoffDate;
+        });
+    }
+    
+    function filterContactsByTimeRange(contacts, days) {
+        if (days === 'all') return contacts;
+        
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        
+        return contacts.filter(contact => {
+            const createdDate = new Date(contact.createdAt || new Date());
+            return createdDate >= cutoffDate;
+        });
+    }
+    
+    function calculateCareerScore(jobs, contacts) {
+        let score = 0;
+        
+        // Application activity (0-25 points)
+        const appActivity = Math.min((jobs.length / 10) * 25, 25);
+        score += appActivity;
+        
+        // Response rate (0-25 points)
+        const responses = jobs.filter(j => j.appStatus && !j.appStatus.includes('Waiting for application response')).length;
+        const responseRate = jobs.length > 0 ? (responses / jobs.length) * 25 : 0;
+        score += responseRate;
+        
+        // Network quality (0-25 points)
+        const networkScore = contacts.length > 0 ? Math.min((contacts.length / 20) * 25, 25) : 0;
+        score += networkScore;
+        
+        // Career progression (0-25 points)
+        const interviews = jobs.filter(j => j.appStatus && j.appStatus.includes('interview')).length;
+        const offers = jobs.filter(j => j.appStatus && j.appStatus.includes('offer')).length;
+        const progressionScore = Math.min(((interviews * 2 + offers * 5) / 20) * 25, 25);
+        score += progressionScore;
+        
+        return Math.round(score);
+    }
+    
+    function calculateSuccessMetrics(jobs) {
+        const totalApps = jobs.length;
+        
+        if (totalApps === 0) {
+            return {
+                responseRate: 0,
+                interviewRate: 0,
+                offerRate: 0
+            };
+        }
+        
+        const responses = jobs.filter(j => j.appStatus && !j.appStatus.includes('Waiting for application response')).length;
+        const interviews = jobs.filter(j => j.appStatus && j.appStatus.includes('interview')).length;
+        const offers = jobs.filter(j => j.appStatus && j.appStatus.includes('offer')).length;
+        
+        return {
+            responseRate: Math.round((responses / totalApps) * 100),
+            interviewRate: Math.round((interviews / totalApps) * 100),
+            offerRate: Math.round((offers / totalApps) * 100)
+        };
+    }
+    
+    function calculateTimeInvestment(jobs, contacts) {
+        // Estimate time investment based on activities
+        // This is a simplified calculation - in a real system you'd track actual time
+        const appTime = jobs.length * 2; // 2 hours per application on average
+        const networkTime = contacts.length * 0.5; // 30 minutes per contact on average
+        const interviewTime = jobs.filter(j => j.appStatus && j.appStatus.includes('interview')).length * 1.5; // 1.5 hours per interview
+        
+        return Math.round(appTime + networkTime + interviewTime);
+    }
+    
+    function analyzeSkills(jobs) {
+        const skillMap = {};
+        
+        jobs.forEach(job => {
+            if (job.skills) {
+                const skills = job.skills.split(',').map(s => s.trim().toLowerCase());
+                skills.forEach(skill => {
+                    if (skill) {
+                        skillMap[skill] = (skillMap[skill] || 0) + 1;
+                    }
+                });
+            }
+        });
+        
+        // Sort by frequency
+        const sortedSkills = Object.entries(skillMap)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 10);
+        
+        return {
+            topSkills: sortedSkills,
+            totalUniqueSkills: Object.keys(skillMap).length
+        };
+    }
+    
+    function analyzeSourcePerformance(jobs) {
+        const sourceMap = {};
+        
+        jobs.forEach(job => {
+            const source = job.applicationSource || job.foundVia || 'Unknown';
+            if (!sourceMap[source]) {
+                sourceMap[source] = {
+                    total: 0,
+                    responses: 0,
+                    interviews: 0,
+                    offers: 0
+                };
+            }
+            
+            sourceMap[source].total++;
+            
+            if (job.appStatus && !job.appStatus.includes('Waiting for application response')) {
+                sourceMap[source].responses++;
+            }
+            
+            if (job.appStatus && job.appStatus.includes('interview')) {
+                sourceMap[source].interviews++;
+            }
+            
+            if (job.appStatus && job.appStatus.includes('offer')) {
+                sourceMap[source].offers++;
+            }
+        });
+        
+        // Calculate rates
+        Object.keys(sourceMap).forEach(source => {
+            const data = sourceMap[source];
+            data.responseRate = data.total > 0 ? Math.round((data.responses / data.total) * 100) : 0;
+            data.successRate = data.total > 0 ? Math.round((data.offers / data.total) * 100) : 0;
+        });
+        
+        return sourceMap;
+    }
+    
+    function generateMonthlyGoals(jobs) {
+        const goals = [];
+        const thisMonth = new Date().getMonth();
+        const thisYear = new Date().getFullYear();
+        
+        const monthlyApps = jobs.filter(job => {
+            const submissionDate = job.submissionDate ? new Date(job.submissionDate) : new Date(job.createdAt || new Date());
+            return submissionDate.getMonth() === thisMonth && submissionDate.getFullYear() === thisYear;
+        }).length;
+        
+        // Goal suggestions based on current performance
+        if (monthlyApps < 10) {
+            goals.push({
+                title: 'Apply to 10+ positions',
+                current: monthlyApps,
+                target: 10,
+                progress: Math.min((monthlyApps / 10) * 100, 100)
+            });
+        }
+        
+        const interviews = jobs.filter(j => {
+            const isInterview = j.appStatus && j.appStatus.includes('interview');
+            const thisMonthApp = j.submissionDate ? new Date(j.submissionDate).getMonth() === thisMonth : false;
+            return isInterview && thisMonthApp;
+        }).length;
+        
+        if (interviews < 3) {
+            goals.push({
+                title: 'Secure 3+ interviews',
+                current: interviews,
+                target: 3,
+                progress: Math.min((interviews / 3) * 100, 100)
+            });
+        }
+        
+        goals.push({
+            title: 'Maintain >20% response rate',
+            current: monthlyApps > 0 ? Math.round((jobs.filter(j => j.appStatus && !j.appStatus.includes('Waiting')).length / monthlyApps) * 100) : 0,
+            target: 20,
+            progress: monthlyApps > 0 ? Math.min(((jobs.filter(j => j.appStatus && !j.appStatus.includes('Waiting')).length / monthlyApps) * 100 / 20) * 100, 100) : 0
+        });
+        
+        return goals;
+    }
+    
+    function generateAnalyticsRecommendations(jobs, contacts) {
+        const recommendations = [];
+        
+        // Application volume recommendations
+        if (jobs.length < 5) {
+            recommendations.push({
+                type: 'application',
+                priority: 'high',
+                title: 'Increase Application Volume',
+                description: 'Apply to more positions to improve your chances of success',
+                action: 'Set a goal of 5-10 applications per week'
+            });
+        }
+        
+        // Response rate recommendations
+        const responseRate = calculateSuccessMetrics(jobs).responseRate;
+        if (responseRate < 15) {
+            recommendations.push({
+                type: 'optimization',
+                priority: 'high',
+                title: 'Improve Application Quality',
+                description: 'Low response rate suggests room for improvement in resume/cover letter',
+                action: 'Use the Smart Resume tool to optimize your applications'
+            });
+        }
+        
+        // Network recommendations
+        if (contacts.length < 10) {
+            recommendations.push({
+                type: 'networking',
+                priority: 'medium',
+                title: 'Expand Professional Network',
+                description: 'Build stronger professional connections for better opportunities',
+                action: 'Add 2-3 new professional contacts per week'
+            });
+        }
+        
+        // Source diversity recommendations
+        const sources = [...new Set(jobs.map(j => j.applicationSource || j.foundVia || 'Unknown'))];
+        if (sources.length < 3) {
+            recommendations.push({
+                type: 'strategy',
+                priority: 'medium',
+                title: 'Diversify Application Sources',
+                description: 'Using multiple job sources increases your opportunities',
+                action: 'Try LinkedIn, company websites, and job boards'
+            });
+        }
+        
+        // Interview preparation
+        const interviews = jobs.filter(j => j.appStatus && j.appStatus.includes('interview')).length;
+        const offers = jobs.filter(j => j.appStatus && j.appStatus.includes('offer')).length;
+        if (interviews > 2 && offers === 0) {
+            recommendations.push({
+                type: 'interview',
+                priority: 'high',
+                title: 'Improve Interview Performance',
+                description: 'Getting interviews but no offers suggests interview skills need work',
+                action: 'Use the Interview Prep tool for practice and feedback'
+            });
+        }
+        
+        return recommendations;
+    }
+    
+    function updateAnalyticsUI() {
+        // Update summary cards
+        const careerScoreEl = document.getElementById('analytics-career-score');
+        const successRateEl = document.getElementById('analytics-success-rate');
+        const activeGoalsEl = document.getElementById('analytics-active-goals');
+        const timeInvestmentEl = document.getElementById('analytics-time-investment');
+        
+        if (careerScoreEl) careerScoreEl.textContent = analyticsData.careerScore;
+        if (successRateEl) successRateEl.textContent = analyticsData.successRate + '%';
+        if (activeGoalsEl) activeGoalsEl.textContent = analyticsData.monthlyGoals.length;
+        if (timeInvestmentEl) timeInvestmentEl.textContent = analyticsData.timeInvestment + 'h';
+        
+        // Update key metrics
+        const metrics = analyticsData.applicationMetrics;
+        if (metrics) {
+            const totalAppsEl = document.getElementById('analytics-total-apps');
+            const responseRateEl = document.getElementById('analytics-response-rate');
+            const interviewRateEl = document.getElementById('analytics-interview-rate');
+            const offerRateEl = document.getElementById('analytics-offer-rate');
+            
+            if (totalAppsEl) totalAppsEl.textContent = allJobs.length;
+            if (responseRateEl) responseRateEl.textContent = metrics.responseRate + '%';
+            if (interviewRateEl) interviewRateEl.textContent = metrics.interviewRate + '%';
+            if (offerRateEl) offerRateEl.textContent = metrics.offerRate + '%';
+        }
+        
+        // Update network metrics
+        const networkSizeEl = document.getElementById('analytics-network-size');
+        const networkScoreEl = document.getElementById('analytics-network-score');
+        
+        if (networkSizeEl) networkSizeEl.textContent = allContacts.length;
+        if (networkScoreEl) {
+            // Calculate network score from existing network data
+            const networkScore = networkData?.analytics?.networkScore || 0;
+            networkScoreEl.textContent = networkScore;
+        }
+        
+        // Update skills analysis
+        updateSkillsAnalysis();
+        
+        // Update source performance table
+        updateSourcePerformanceTable();
+        
+        // Update monthly goals
+        updateMonthlyGoals();
+        
+        // Update recommendations
+        updateAnalyticsRecommendations();
+    }
+    
+    function updateSkillsAnalysis() {
+        const skillsContainer = document.getElementById('analytics-top-skills');
+        const skillGapsContainer = document.getElementById('analytics-skill-gaps');
+        
+        if (!skillsContainer || !skillGapsContainer) return;
+        
+        const skills = analyticsData.skillsAnalysis.topSkills || [];
+        
+        if (skills.length === 0) {
+            skillsContainer.innerHTML = '<p class="text-gray-500 text-sm">No skills data available</p>';
+            skillGapsContainer.innerHTML = '<p class="text-gray-500 text-sm">Add skills to job applications to see analysis</p>';
+            return;
+        }
+        
+        // Top skills bars
+        const maxCount = skills[0] ? skills[0][1] : 1;
+        skillsContainer.innerHTML = skills.slice(0, 5).map(([skill, count]) => {
+            const width = (count / maxCount) * 100;
+            return `
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="capitalize">${skill}</span>
+                            <span class="text-gray-500">${count}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${width}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Skill gaps (simplified recommendations)
+        const gaps = [
+            'Consider adding more technical skills to your applications',
+            'Highlight soft skills like leadership and communication',
+            'Include industry-specific certifications'
+        ];
+        
+        skillGapsContainer.innerHTML = gaps.map(gap => `
+            <div class="text-sm text-amber-700 bg-amber-50 p-2 rounded border-l-2 border-amber-400">
+                💡 ${gap}
+            </div>
+        `).join('');
+    }
+    
+    function updateSourcePerformanceTable() {
+        const tableBody = document.getElementById('analytics-source-table');
+        if (!tableBody) return;
+        
+        const sources = analyticsData.sourcePerformance;
+        
+        if (Object.keys(sources).length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-4">No source data available</td></tr>';
+            return;
+        }
+        
+        tableBody.innerHTML = Object.entries(sources).map(([source, data]) => `
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 font-medium text-gray-900 capitalize">${source}</td>
+                <td class="px-4 py-2 text-gray-700">${data.total}</td>
+                <td class="px-4 py-2 text-gray-700">${data.responseRate}%</td>
+                <td class="px-4 py-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        data.successRate > 10 ? 'bg-green-100 text-green-800' :
+                        data.successRate > 5 ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                    }">
+                        ${data.successRate}%
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function updateMonthlyGoals() {
+        const goalsContainer = document.getElementById('analytics-monthly-goals');
+        const progressContainer = document.getElementById('analytics-progress-tracking');
+        
+        if (!goalsContainer || !progressContainer) return;
+        
+        const goals = analyticsData.monthlyGoals;
+        
+        if (goals.length === 0) {
+            goalsContainer.innerHTML = '<p class="text-gray-500 text-sm">No goals set for this month</p>';
+            progressContainer.innerHTML = '<p class="text-gray-500 text-sm">Set goals to track progress</p>';
+            return;
+        }
+        
+        goalsContainer.innerHTML = goals.map(goal => `
+            <div class="flex items-center justify-between text-sm">
+                <span>${goal.title}</span>
+                <span class="text-gray-500">${goal.current}/${goal.target}</span>
+            </div>
+        `).join('');
+        
+        progressContainer.innerHTML = goals.map(goal => `
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="font-medium">${goal.title}</span>
+                    <span class="text-gray-500">${Math.round(goal.progress)}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: ${goal.progress}%"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function updateAnalyticsRecommendations() {
+        const container = document.getElementById('analytics-recommendations');
+        if (!container) return;
+        
+        const recommendations = analyticsData.recommendations;
+        
+        if (recommendations.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-4">Great job! No critical recommendations at this time.</div>';
+            return;
+        }
+        
+        container.innerHTML = recommendations.map(rec => {
+            const priorityColor = rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'blue';
+            const priorityBg = rec.priority === 'high' ? 'bg-red-50 border-red-200' : rec.priority === 'medium' ? 'bg-yellow-50 border-yellow-200' : 'bg-blue-50 border-blue-200';
+            
+            return `
+                <div class="p-4 rounded-lg border ${priorityBg}">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800">${rec.title}</h4>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${priorityColor}-100 text-${priorityColor}-800">
+                            ${rec.priority}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-3">${rec.description}</p>
+                    <p class="text-${priorityColor}-700 text-sm font-medium">📋 ${rec.action}</p>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    function renderAnalyticsCharts() {
+        renderApplicationTrendsChart();
+        renderNetworkGrowthChart();
+    }
+    
+    function renderApplicationTrendsChart() {
+        const canvas = document.getElementById('application-trends-chart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Destroy existing chart
+        if (analyticsCharts.applicationTrends) {
+            analyticsCharts.applicationTrends.destroy();
+        }
+        
+        // Generate sample data for the last 30 days
+        const labels = [];
+        const applicationData = [];
+        const responseData = [];
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            
+            // Calculate applications for this day
+            const dayApps = allJobs.filter(job => {
+                const submissionDate = job.submissionDate ? new Date(job.submissionDate) : new Date(job.createdAt || new Date());
+                return submissionDate.toDateString() === date.toDateString();
+            }).length;
+            
+            applicationData.push(dayApps);
+            
+            // Calculate responses (simplified)
+            const dayResponses = allJobs.filter(job => {
+                const responseDate = job.updatedAt ? new Date(job.updatedAt) : new Date(job.createdAt || new Date());
+                return responseDate.toDateString() === date.toDateString() && 
+                       job.appStatus && !job.appStatus.includes('Waiting for application response');
+            }).length;
+            
+            responseData.push(dayResponses);
+        }
+        
+        analyticsCharts.applicationTrends = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Applications Submitted',
+                        data: applicationData,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Responses Received',
+                        data: responseData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white'
+                    }
+                }
+            }
+        });
+    }
+    
+    function renderNetworkGrowthChart() {
+        const canvas = document.getElementById('network-growth-chart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Destroy existing chart
+        if (analyticsCharts.networkGrowth) {
+            analyticsCharts.networkGrowth.destroy();
+        }
+        
+        // Generate network growth data
+        const labels = [];
+        const contactData = [];
+        let cumulativeContacts = 0;
+        
+        for (let i = 11; i >= 0; i--) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            labels.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
+            
+            // Calculate contacts added this month
+            const monthContacts = allContacts.filter(contact => {
+                const createdDate = new Date(contact.createdAt || new Date());
+                return createdDate.getMonth() === date.getMonth() && 
+                       createdDate.getFullYear() === date.getFullYear();
+            }).length;
+            
+            cumulativeContacts += monthContacts;
+            contactData.push(cumulativeContacts);
+        }
+        
+        analyticsCharts.networkGrowth = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Contacts',
+                    data: contactData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white'
+                    }
+                }
+            }
+        });
+    }
+    
+    function exportAnalyticsPDF() {
+        showToast('PDF export feature coming soon!', 'info');
+    }
+    
+    function exportAnalyticsCSV() {
+        const csvData = generateAnalyticsCSV();
+        downloadCSV(csvData, 'analytics-report.csv');
+        showToast('Analytics data exported successfully!', 'success');
+    }
+    
+    function generateAnalyticsCSV() {
+        const headers = [
+            'Metric', 'Value', 'Period', 'Date Generated'
+        ];
+        
+        const today = new Date().toLocaleDateString();
+        const timeRange = document.getElementById('analytics-time-range')?.value || '30';
+        const period = timeRange === 'all' ? 'All Time' : `Last ${timeRange} days`;
+        
+        const rows = [
+            ['Career Score', analyticsData.careerScore, period, today],
+            ['Success Rate', analyticsData.successRate + '%', period, today],
+            ['Time Investment', analyticsData.timeInvestment + 'h', period, today],
+            ['Total Applications', allJobs.length, period, today],
+            ['Total Contacts', allContacts.length, period, today],
+            ['Response Rate', analyticsData.applicationMetrics?.responseRate + '%' || '0%', period, today],
+            ['Interview Rate', analyticsData.applicationMetrics?.interviewRate + '%' || '0%', period, today],
+            ['Offer Rate', analyticsData.applicationMetrics?.offerRate + '%' || '0%', period, today]
+        ];
+        
+        return [headers, ...rows]
+            .map(row => row.map(cell => `"${cell}"`).join(','))
+            .join('\n');
+    }
+    
+    function showScheduleReportModal() {
+        showToast('Scheduled reports feature coming soon!', 'info');
+    }
+    
+    function updateAnalyticsUIWithEmptyState() {
+        // Update summary cards with empty state
+        const careerScoreEl = document.getElementById('analytics-career-score');
+        const successRateEl = document.getElementById('analytics-success-rate');
+        const activeGoalsEl = document.getElementById('analytics-active-goals');
+        const timeInvestmentEl = document.getElementById('analytics-time-investment');
+        
+        if (careerScoreEl) careerScoreEl.textContent = '0';
+        if (successRateEl) successRateEl.textContent = '0%';
+        if (activeGoalsEl) activeGoalsEl.textContent = '0';
+        if (timeInvestmentEl) timeInvestmentEl.textContent = '0h';
+        
+        // Update key metrics
+        const totalAppsEl = document.getElementById('analytics-total-apps');
+        const responseRateEl = document.getElementById('analytics-response-rate');
+        const interviewRateEl = document.getElementById('analytics-interview-rate');
+        const offerRateEl = document.getElementById('analytics-offer-rate');
+        
+        if (totalAppsEl) totalAppsEl.textContent = '0';
+        if (responseRateEl) responseRateEl.textContent = '0%';
+        if (interviewRateEl) interviewRateEl.textContent = '0%';
+        if (offerRateEl) offerRateEl.textContent = '0%';
+        
+        // Update network metrics
+        const networkSizeEl = document.getElementById('analytics-network-size');
+        const networkScoreEl = document.getElementById('analytics-network-score');
+        
+        if (networkSizeEl) networkSizeEl.textContent = '0';
+        if (networkScoreEl) networkScoreEl.textContent = '0';
+        
+        // Show empty state messages
+        const skillsContainer = document.getElementById('analytics-top-skills');
+        const skillGapsContainer = document.getElementById('analytics-skill-gaps');
+        const sourceTableBody = document.getElementById('analytics-source-table');
+        const goalsContainer = document.getElementById('analytics-monthly-goals');
+        const progressContainer = document.getElementById('analytics-progress-tracking');
+        const recommendationsContainer = document.getElementById('analytics-recommendations');
+        
+        if (skillsContainer) skillsContainer.innerHTML = '<p class="text-gray-500 text-sm">Add job applications with skills to see analysis</p>';
+        if (skillGapsContainer) skillGapsContainer.innerHTML = '<p class="text-gray-500 text-sm">Start tracking skills to get recommendations</p>';
+        if (sourceTableBody) sourceTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-4">Add job applications to see source performance</td></tr>';
+        if (goalsContainer) goalsContainer.innerHTML = '<p class="text-gray-500 text-sm">Goals will appear once you start applying to jobs</p>';
+        if (progressContainer) progressContainer.innerHTML = '<p class="text-gray-500 text-sm">Progress tracking will show once you have activity</p>';
+        if (recommendationsContainer) recommendationsContainer.innerHTML = '<div class="col-span-full text-center text-gray-500 py-4">Start using Job OS to get personalized recommendations!</div>';
+        
+        console.log('📊 Analytics updated with empty state');
+    }
+    
+    // Initialize analytics when data is loaded
+    function initializeAnalyticsOnLoad() {
+        if (typeof initializeAdvancedAnalytics === 'function') {
+            console.log('📊 Initializing analytics on load...');
+            initializeAdvancedAnalytics();
+            
+            // Add debugging for data state
+            setTimeout(() => {
+                console.log('📊 Analytics Debug Info:');
+                console.log('  - Jobs loaded:', allJobs?.length || 0);
+                console.log('  - Contacts loaded:', allContacts?.length || 0);
+                console.log('  - User authenticated:', !!userId);
+                console.log('  - Firebase initialized:', !!db);
+                
+                if (allJobs?.length > 0 || allContacts?.length > 0) {
+                    console.log('📊 Real data available, recalculating analytics...');
+                    calculateAdvancedAnalytics();
+                } else {
+                    console.log('⚠️ No real data available - check Firebase connection');
+                    updateAnalyticsUIWithEmptyState();
+                }
+            }, 1000);
+        }
+    }
 
     // Make functions globally accessible for debugging
     window.clearUploadedFile = clearUploadedFile;
@@ -7863,6 +9327,8 @@ Sincerely,
     window.initializeEnhancedJobTracker = initializeEnhancedJobTracker;
     window.setupSmartJobModal = setupSmartJobModal;
     window.openJobModalEnhanced = openJobModalEnhanced;
+    window.initializeAdvancedAnalytics = initializeAdvancedAnalytics;
+    window.calculateAdvancedAnalytics = calculateAdvancedAnalytics;
     
     // Override openJobModal with enhanced version after page loads
     setTimeout(() => {
